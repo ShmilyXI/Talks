@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ConnectRC, Loading, IndexModelState, connect } from 'umi';
-import Talks from '@/components/Talks';
+import Talks from '@/components/TalkList';
 
 interface PageProps {
   index: IndexModelState;
