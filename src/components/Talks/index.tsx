@@ -1,5 +1,7 @@
 import classnames from 'classnames';
 import React, { useState, useEffect } from 'react';
+import { useRequest } from 'ahooks';
+import Api from '@/service/index';
 import Filter from './Filter';
 
 const mockData = [
@@ -44,7 +46,12 @@ type articleItem = {
 };
 
 const Index = () => {
-  const [articleList, setArticleList] = useState<articleItem[]>(mockData); // 文章列表
+  const { data, error, loading }: any = useRequest(Api.getArticleLatestList);
+
+  useEffect(() => {
+    setArticleList(data?.list || []);
+  }, [data]);
+  const [articleList, setArticleList] = useState<articleItem[]>(); // 文章列表
 
   return (
     <div className="lg:max-w-744 md:pl-16">
