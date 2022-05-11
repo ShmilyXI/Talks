@@ -8,7 +8,9 @@ type LayoutProps = {
 const Layout: FC<LayoutProps> = ({ children }) => (
   <Fragment>
     <Header />
-    <div>{children}</div>
+    <div className="bg-white text-grey-53 font-sans text-16 leading-normal antialiased box-border">
+      {children}
+    </div>
     <Footer />
   </Fragment>
 );

@@ -4,34 +4,6 @@ import { useRequest } from 'ahooks';
 import Api from '@/service/index';
 import Filter from './Filter';
 
-const mockData = [
-  {
-    avatar: 'https://via.placeholder.com/150/666666?Text=avatar',
-    avatarLink: '/avatarLink',
-    tag: 'Featured',
-    title: 'Long live Tookapic 💪 The announcement of the new owner 🎉',
-    link: '/link',
-    author: 'Paweł Kadysz',
-    authorLink: '/authorLink',
-    date: 'Feb 21st, 2022',
-    answerCount: 4,
-    answerList: [
-      {
-        avatar: 'https://via.placeholder.com/150/ff0000?Text=answer1',
-        link: '/answer1',
-      },
-      {
-        avatar: 'https://via.placeholder.com/150/ffff00?Text=answer2',
-        link: '/answer2',
-      },
-      {
-        avatar: 'https://via.placeholder.com/150/0000ff?Text=answer3',
-        link: '/answer3',
-      },
-    ],
-  },
-];
-
 type articleItem = {
   avatar: string;
   avatarLink: string;
@@ -47,11 +19,10 @@ type articleItem = {
 
 const Index = () => {
   const { data, error, loading }: any = useRequest(Api.getArticleLatestList);
-
+  const [articleList, setArticleList] = useState<articleItem[]>(); // 文章列表
   useEffect(() => {
     setArticleList(data?.list || []);
   }, [data]);
-  const [articleList, setArticleList] = useState<articleItem[]>(); // 文章列表
 
   return (
     <div className="lg:max-w-744 md:pl-16">
@@ -160,7 +131,7 @@ const Index = () => {
                       <a
                         href={item.link}
                         target="_blank"
-                        className="block text-grey-53"
+                        className="block text-grey-53 hover:text-grey-53"
                       >
                         {item.tag ? (
                           <span
@@ -185,7 +156,7 @@ const Index = () => {
                     <div className="flex flex-wrap text-12 items-center break-words mt-2">
                       <a
                         href={item.authorLink}
-                        className="text-grey-53 truncate mr-8"
+                        className="text-grey-53 truncate mr-8 hover:text-grey-53"
                         target="_blank"
                       >
                         <span className="block">{item.author}</span>

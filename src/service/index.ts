@@ -3,8 +3,8 @@ import request from '@/utils/request';
 type CommonReq = any;
 type CommonRes = any;
 
+// 获取最新文章列表
 const getArticleLatestList = (data: CommonReq) => {
-  console.log('data', data);
   return request<CommonReq, CommonRes>({
     url: '/article/latest-list',
     method: 'GET',
@@ -23,8 +23,28 @@ const getArticleLatestList = (data: CommonReq) => {
   });
 };
 
+// 获取最高贡献成员列表
+const getTopContributorList = (data: CommonReq) => {
+  return request<CommonReq, CommonRes>({
+    url: '/article/top-contributor-list',
+    method: 'GET',
+    data,
+  });
+};
+
+// 获取未被回复的文章列表
+const getUnansweredTalkList = (data: CommonReq) => {
+  return request<CommonReq, CommonRes>({
+    url: '/article/unanswered-talk-list',
+    method: 'GET',
+    data,
+  });
+};
+
 const Api = {
   getArticleLatestList,
+  getTopContributorList,
+  getUnansweredTalkList,
 };
 
 export default Api;
