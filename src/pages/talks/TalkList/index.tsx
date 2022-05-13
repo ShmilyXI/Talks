@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import React, { useState, useEffect } from 'react';
 import { useRequest } from 'ahooks';
 import Api from '@/service/index';
-import Filter from './Filter';
+import Filter from '../../../components/Filter';
 
 type articleItem = {
   avatar: string;
@@ -98,7 +98,21 @@ const Index = () => {
         </div>
         {/* PC */}
         <div className="hidden md:block mt-24">
-          <Filter />
+          <Filter
+            items={[
+              { label: 'Test1', value: '1' },
+              { label: 'Test2', value: '2' },
+              { label: 'Test3', value: '3' },
+              { label: 'Test4', value: '4' },
+              { label: 'Test5', value: '5' },
+              { label: 'Test6', value: '6' },
+              { label: 'Test7', value: '7' },
+            ]}
+            displayCount={3}
+            onChange={(item) => {
+              console.log('item', item);
+            }}
+          />
         </div>
       </div>
 

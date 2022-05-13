@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ConnectRC, Loading, IndexModelState, connect } from 'umi';
-import TalkList from '@/components/TalkList';
-import TopContributors from '@/components/TopContributors';
-import UnansweredTalks from '@/components/UnansweredTalks';
+import TalkList from '@/pages/talks/TalkList';
+import TopContributors from './TopContributors';
+import UnansweredTalks from './UnansweredTalks';
 
 interface PageProps {
   index: IndexModelState;

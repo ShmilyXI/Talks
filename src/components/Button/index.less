@@ -1,0 +1,28 @@
+.button-wrap {
+  position: relative;
+  z-index: 1;
+  &::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+  }
+
+  &:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
+  &::before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0 0 0 0;
+    background: #eaeaea;
+    border-radius: 18px;
+    transition: transform 0.3s ease;
+  }
+}
