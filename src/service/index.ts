@@ -40,11 +40,20 @@ const getUnansweredTalkList = (data: CommonReq) => {
     data,
   });
 };
+// 获取未被回复的文章列表
+const getGalleryPhotoList = (data: CommonReq) => {
+  return request<CommonReq, CommonRes>({
+    url: '/browse/gallery-photo-list',
+    method: 'GET',
+    data,
+  });
+};
 
 const Api = {
   getArticleLatestList,
   getTopContributorList,
   getUnansweredTalkList,
+  getGalleryPhotoList,
 };
 
 export default Api;

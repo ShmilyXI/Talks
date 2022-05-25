@@ -34,7 +34,7 @@ const TopContributors = () => {
       <ul className="list-reset -mt-8 -mb-12">
         {unansweredTalkList?.length
           ? unansweredTalkList.map((item) => (
-              <li className="py-12">
+              <li className="py-12" key={item.articleTitle}>
                 <div className="flex items-center">
                   <div className="flex-none mr-8">
                     <div className="avatar">

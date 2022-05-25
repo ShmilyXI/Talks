@@ -32,88 +32,24 @@ const Index = () => {
             Talks
           </h1>
         </div>
-        {/* mobile */}
-        <div className="w-full md:hidden">
-          <div
-            data-controller="dropdown"
-            data-dropdown-placement="bottom-end"
-            data-dropdown-offset="0,8px"
-          >
-            <button
-              type="button"
-              className="select truncate"
-              data-target="dropdown.trigger"
-              data-action="dropdown#toggle"
-            >
-              Active1
-            </button>
-
-            <div
-              className="absolute z-50 bg-black-95 rounded whitespace-no-wrap min-w-128 shadow-sm hidden"
-              data-target="dropdown.menu"
-              x-placement="bottom-end"
-              style={{
-                position: 'absolute',
-                transform: 'translate3d(0px, 8px, 0px)',
-                top: 0,
-                left: 0,
-                willChange: 'transform',
-              }}
-              x-out-of-boundaries=""
-            >
-              <div className="flex flex-col text-left py-12 text-16 leading-lg">
-                <a
-                  href="https://tookapic.com/talks"
-                  className="px-28 lg:px-16 py-8 lg:py-1 hover:no-underline hover:bg-white-15 text-white font-medium hover:no-underline "
-                >
-                  Active
-                </a>
-                <a
-                  href="https://tookapic.com/talks?stream=recent"
-                  className="px-28 lg:px-16 py-8 lg:py-1 hover:no-underline hover:bg-white-15 text-white hover:no-underline "
-                >
-                  Recent
-                </a>
-                <a
-                  href="https://tookapic.com/talks?stream=unanswered"
-                  className="px-28 lg:px-16 py-8 lg:py-1 hover:no-underline hover:bg-white-15 text-white hover:no-underline "
-                >
-                  Unanswered
-                </a>
-                <a
-                  href="https://tookapic.com/talks?stream=popular"
-                  className="px-28 lg:px-16 py-8 lg:py-1 hover:no-underline hover:bg-white-15 text-white hover:no-underline "
-                >
-                  Popular
-                </a>
-                <a
-                  href="https://tookapic.com/talks?stream=featured"
-                  className="px-28 lg:px-16 py-8 lg:py-1 hover:no-underline hover:bg-white-15 text-white hover:no-underline "
-                >
-                  Featured
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* PC */}
-        <div className="hidden md:block mt-24">
-          <Filter
-            items={[
-              { label: 'Test1', value: '1' },
-              { label: 'Test2', value: '2' },
-              { label: 'Test3', value: '3' },
-              { label: 'Test4', value: '4' },
-              { label: 'Test5', value: '5' },
-              { label: 'Test6', value: '6' },
-              { label: 'Test7', value: '7' },
-            ]}
-            displayCount={3}
-            onChange={(item) => {
-              console.log('item', item);
-            }}
-          />
-        </div>
+        <Filter
+          items={[
+            { label: 'Test1', value: '1' },
+            { label: 'Test2', value: '2' },
+            { label: 'Test3', value: '3' },
+            { label: 'Test4', value: '4' },
+            { label: 'Test5', value: '5' },
+            { label: 'Test6', value: '6' },
+            { label: 'Test7', value: '7' },
+          ]}
+          menuClassName="mt-24"
+          selectClassName="w-full"
+          breakPoint="md"
+          displayCount={3}
+          onChange={(item) => {
+            console.log('item', item);
+          }}
+        />
       </div>
 
       <div className="pt-16 md:pt-0 md:pb-24 lg:pb-32 xl:pb-48">
@@ -121,7 +57,10 @@ const Index = () => {
           {/* 列表 */}
           {articleList?.length
             ? articleList.map((item) => (
-                <div className="flex items-start py-12 md:py-16">
+                <div
+                  className="flex items-start py-12 md:py-16"
+                  key={item.title}
+                >
                   {/* 头像 */}
                   <div className="flex-none mr-24 md:mr-48 hidden sm:block">
                     <a
@@ -193,6 +132,7 @@ const Index = () => {
                               href={a.link}
                               className="avatar border-2 border-white -ml-12 relative z-3"
                               target="_blank"
+                              key={a.link}
                             >
                               <img
                                 src={a.avatar}

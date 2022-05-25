@@ -29,7 +29,7 @@ const TopContributors = () => {
       <ol className="list-reset -mb-8">
         {contributorList?.length
           ? contributorList.map((item) => (
-              <li className="py-8 flex items-center">
+              <li className="py-8 flex items-center" key={item.link}>
                 <div className="flex-none mr-16">
                   <div className="avatar">
                     <img

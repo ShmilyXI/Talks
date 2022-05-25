@@ -13,8 +13,8 @@ const Button: FC<ButtonProps> = ({ text, activeText, onClick, className }) => (
   <div
     onClick={onClick}
     className={classnames(
-      'flex items-center py-6 px-14 rounded-18 font-medium bg-grey-96  hover:text-black cursor-pointer button-wrap',
-      activeText === text ? 'text-black' : 'text-grey-53',
+      'flex items-center py-6 px-14 rounded-18 font-medium hover:text-black cursor-pointer button-wrap',
+      activeText === text ? 'text-black bg-grey-96' : 'text-grey-53',
       className,
     )}
   >

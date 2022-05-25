@@ -12,7 +12,7 @@ interface PageProps {
 const Index: ConnectRC<PageProps> = ({ index, dispatch }) => {
   const { name = '' } = index;
   return (
-    <div className="container max-w-1128 px-16">
+    <div className="container max-w-1128 px-16 bg-black/[0.15]">
       <div className="lg:flex lg:-mx-12">
         <div className="lg:px-12 lg:w-3/4">
           <TalkList />
