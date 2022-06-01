@@ -44,7 +44,7 @@ const getUnansweredTalkList = (data: CommonReq) => {
 const getGalleryPhotoList = (data: CommonReq) => {
   return request<CommonReq, CommonRes>({
     url: '/browse/gallery-photo-list',
-    method: 'GET',
+    method: 'POST',
     data,
   });
 };
@@ -53,7 +53,7 @@ const Api = {
   getArticleLatestList,
   getTopContributorList,
   getUnansweredTalkList,
-  getGalleryPhotoList,
+  getGalleryPhotoList
 };
 
 export default Api;

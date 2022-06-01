@@ -1,7 +1,11 @@
 module.exports = {
-  content: ['./src/**/*.{vue,js,ts,jsx,tsx}'],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+    purge: ["./pages/**/*.tsx", "./src/**/*.tsx"],
+    darkMode: false, // or 'media' or 'class'
+    theme: {
+        extend: {},
+    },
+    variants: {
+        extend: {},
+    },
+    plugins: [],
 };

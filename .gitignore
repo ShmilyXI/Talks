@@ -1,3 +1,8 @@
+# npm
 node_modules
-src/.umi
-.DS_Store
+# next.js build files
+.next
+# environment variables
+.env
+.env.*
+!.env.example
