@@ -5,6 +5,7 @@ import { Hydrate } from "react-query/hydration";
 import { Provider } from "react-redux";
 import store from "@redux/store";
 import Layouts from "@/layouts";
+import { Toaster } from "react-hot-toast";
 
 import "tailwindcss/tailwind.css";
 import "@styles/default.css";
@@ -22,6 +23,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                     </Layouts>
                 </Provider>
             </Hydrate>
+            <Toaster />
         </QueryClientProvider>
     );
 }

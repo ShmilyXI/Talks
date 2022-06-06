@@ -14,12 +14,13 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { useRouter } from "next/router";
 import PhotoAlbum from "react-photo-album";
 import classnames from "classnames";
 import { Icon } from "@components";
 import _ from "lodash";
 
-type GalleryItem = {
+type PhotoItem = {
     title: string;
     description: string;
     src: string;
@@ -33,6 +34,8 @@ type GalleryItem = {
     workCount: number;
     answerCount: number;
     subjectColor?: string; // 主题色
+    id: string;
+    userId: string;
 };
 
 const BreakPoints = {
@@ -48,8 +51,9 @@ const BreakPoints = {
 configResponsive(BreakPoints);
 
 const Browse = () => {
+    const router = useRouter();
     const { data, error, loading }: any = useRequest(Api.getGalleryPhotoList);
-    const [photoList, setPhotoList] = useState<GalleryItem[]>([]); // 文章列表
+    const [photoList, setPhotoList] = useState<PhotoItem[]>([]); // 文章列表
     const [isMobile, setIsMobile] = useState(false);
     const responsive = useResponsive();
     const [nowPointWidth, setNowPointWidth] = useState(800);
@@ -86,6 +90,11 @@ const Browse = () => {
         const offsetWidth = document.documentElement.offsetWidth;
         setNowPointWidth(offsetWidth);
     }, [responsive]);
+
+    // 路由跳转
+    const goRoute = (path: string) => {
+        router.push(path);
+    };
 
     return (
         <div>
@@ -162,8 +171,12 @@ const Browse = () => {
 
                                                 <div className="ml-16 min-w-0 truncate">
                                                     <a
-                                                        href="https://tookapic.com/lido"
-                                                        className="font-medium story-list__user block text-14 leading-md"
+                                                        className="font-medium story-list__user block text-14 leading-md cursor-pointer"
+                                                        onClick={() =>
+                                                            goRoute(
+                                                                `/user?pid=${item.userId}`,
+                                                            )
+                                                        }
                                                     >
                                                         <span className="block truncate">
                                                             {item.author}
@@ -171,7 +184,7 @@ const Browse = () => {
                                                     </a>
                                                 </div>
 
-                                                <div
+                                                {/* <div
                                                     className="flex-none leading-none ml-8"
                                                     data-tooltip=""
                                                     data-original-title="Paying member"
@@ -183,7 +196,7 @@ const Browse = () => {
                                                     >
                                                         <path d="M512 256c0-37.7-23.7-69.9-57.1-82.4 14.7-32.4 8.8-71.9-17.9-98.6-26.7-26.7-66.2-32.6-98.6-17.9C325.9 23.7 293.7 0 256 0s-69.9 23.7-82.4 57.1c-32.4-14.7-72-8.8-98.6 17.9-26.7 26.7-32.6 66.2-17.9 98.6C23.7 186.1 0 218.3 0 256s23.7 69.9 57.1 82.4c-14.7 32.4-8.8 72 17.9 98.6 26.6 26.6 66.1 32.7 98.6 17.9 12.5 33.3 44.7 57.1 82.4 57.1s69.9-23.7 82.4-57.1c32.6 14.8 72 8.7 98.6-17.9 26.7-26.7 32.6-66.2 17.9-98.6 33.4-12.5 57.1-44.7 57.1-82.4zm-144.8-44.25L236.16 341.74c-4.31 4.28-11.28 4.25-15.55-.06l-75.72-76.33c-4.28-4.31-4.25-11.28.06-15.56l26.03-25.82c4.31-4.28 11.28-4.25 15.56.06l42.15 42.49 97.2-96.42c4.31-4.28 11.28-4.25 15.55.06l25.82 26.03c4.28 4.32 4.26 11.29-.06 15.56z"></path>
                                                     </svg>
-                                                </div>
+                                                </div> */}
                                             </div>
 
                                             <div className="ml-16 flex items-center flex-none text-12 leading-sm">
@@ -204,9 +217,12 @@ const Browse = () => {
                                             }}
                                         >
                                             <a
-                                                href="/"
-                                                target="_blank"
-                                                className="block absolute pin z-3"
+                                                className="block absolute pin z-3 cursor-pointer"
+                                                onClick={() =>
+                                                    goRoute(
+                                                        `/photos/detail?pid=${item.id}`,
+                                                    )
+                                                }
                                             ></a>
                                             {/* 图片 */}
                                             <img
@@ -256,8 +272,12 @@ const Browse = () => {
                                                     <div>
                                                         <div className="font-medium">
                                                             <a
-                                                                href="/"
-                                                                className="pointer-events-auto text-inherit break-words"
+                                                                className="pointer-events-auto text-inherit break-words cursor-pointer"
+                                                                onClick={() =>
+                                                                    goRoute(
+                                                                        `/user?pid=${item.userId}`,
+                                                                    )
+                                                                }
                                                             >
                                                                 {item.author}
                                                             </a>
@@ -388,12 +408,12 @@ const Browse = () => {
                                                     data-controller="popovers--comments"
                                                 >
                                                     <a
-                                                        href="https://tookapic.com/photos/893165#comments"
-                                                        data-target="popovers--comments.trigger counters--comment.count"
-                                                        data-action="click-&gt;popovers--comments#toggle"
-                                                        data-story-id="893165"
-                                                        data-format="word"
-                                                        className="text-grey-53"
+                                                        className="text-grey-53 cursor-pointer"
+                                                        onClick={() =>
+                                                            goRoute(
+                                                                `/talks/detail?${item.id}`,
+                                                            )
+                                                        }
                                                     >
                                                         {item.answerCount}
                                                         comments

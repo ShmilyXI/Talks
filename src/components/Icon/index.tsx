@@ -4,10 +4,15 @@ import classnames from "classnames";
 type IconProps = {
     className: string;
     addClassName?: string;
+    [key: string]: any;
 };
 
-const Icon: FC<IconProps> = ({ className, addClassName }) => (
-    <svg className={classnames("icon", addClassName)} aria-hidden="true">
+const Icon: FC<IconProps> = ({ className, addClassName, ...otherProps }) => (
+    <svg
+        className={classnames("icon", addClassName)}
+        aria-hidden="true"
+        {...otherProps}
+    >
         <use xlinkHref={`#${className}`}></use>
     </svg>
 );

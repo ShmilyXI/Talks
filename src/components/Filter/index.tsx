@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 import { useClickAway, useToggle } from "ahooks";
-import { Button } from "@components";
+import { Button, Icon } from "@components";
 import styles from "./index.module.less";
 
 type IItem = {
@@ -15,6 +15,8 @@ type FilterProps = {
     onChange?: (item: IItem) => void;
     menuClassName?: string;
     selectClassName?: string;
+    isTextButton?: boolean;  // 是否是字体按钮
+    buttonClassName?: string; // 按钮className
 };
 
 const Filter: FC<FilterProps> = (props) => {
@@ -25,6 +27,8 @@ const Filter: FC<FilterProps> = (props) => {
         breakPoint,
         menuClassName = "",
         selectClassName = "",
+        buttonClassName = "",
+        isTextButton = false,
     } = props;
     const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] =
         useToggle();
@@ -117,6 +121,7 @@ const Filter: FC<FilterProps> = (props) => {
                                   index + 1 <= displayCount) ? (
                                   <div className="px-4" key={item.value}>
                                       <Button
+                                          className={buttonClassName}
                                           text={item.label}
                                           activeText={activeItem.label}
                                           onClick={() => setActiveItem(item)}
@@ -128,11 +133,13 @@ const Filter: FC<FilterProps> = (props) => {
 
                     {displayCount > 0 ? (
                         <div className="px-4 relative">
-                            <i
+                            <Icon
                                 onClick={toggleMenu}
                                 ref={moreRef}
-                                className="iconfont icon-more p-6 text-24 text-grey-53 hover:text-black "
+                                className="icon-more"
+                                addClassName="p-6 text-32 text-grey-53 hover:text-black"
                             />
+
                             {showMenu ? (
                                 <div
                                     className={classnames(

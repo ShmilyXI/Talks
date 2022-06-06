@@ -9,7 +9,12 @@ type ButtonProps = {
     className?: string;
 };
 
-const Button: FC<ButtonProps> = ({ text, activeText, onClick, className }) => (
+const Button: FC<ButtonProps> = ({
+    text,
+    activeText,
+    onClick,
+    className,
+}) => (
     <div
         onClick={onClick}
         className={classnames(
