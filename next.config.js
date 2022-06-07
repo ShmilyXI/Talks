@@ -16,6 +16,7 @@ const plugins = [
 ];
 
 module.exports = withPlugins(plugins, {
+    distDir: "build",
     webpack(config) {
         config.module.rules[3].oneOf.forEach((one) => {
             if (!`${one.issuer?.and}`.includes("_app")) return;
