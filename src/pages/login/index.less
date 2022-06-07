@@ -124,6 +124,29 @@
     .is-gx {
         animation: is-gx @transition;
     }
+    .is-m-left {
+        left: calc(100% - 40px);
+    }
+    .mobile-toggle {
+        width: 40px;
+        background-color: @neu-1;
+        transition: @transition;
+        box-shadow: 10px 0 10px @neu-2, -10px 0 10px @white;
+        .arrow-icon {
+            animation: arrow-icons @transition infinite;
+            // transform: translateX(5px);
+        }
+    }
+
+    @keyframes arrow-icons {
+        0%,
+        100% {
+            transform: translateX(3px);
+        }
+        50% {
+            transform: translateX(-3px);
+        }
+    }
     @keyframes is-gx {
         0%,
         10%,

@@ -12,22 +12,34 @@ interface State {
 
 const Login = () => {
     const router = useRouter();
+    console.log("router", router);
     const { signIn } = router.query;
 
-    const [showSignIn, { toggle: toggleSignIn }] = useToggle(signIn === "1");
+    const [
+        showSignIn,
+        {
+            toggle: toggleSignIn,
+            setLeft: setSignInLeft,
+            setRight: setSignInRight,
+        },
+    ] = useToggle(false);
     const [showSwitch, { setLeft: setSwitchLeft, setRight: setSwitchRight }] =
         useToggle(false);
 
     const [state, setState] = useSetState<State>({ formValue: {} });
     const timer = useRef<NodeJS.Timeout>();
 
-    useEffect(
-        () => () => {
+    useEffect(() => {
+        if (signIn === "1") {
+            setSignInRight();
+        } else {
+            setSignInLeft();
+        }
+        return () => {
             clearTimeout(timer.current);
             setState({});
-        },
-        [],
-    );
+        };
+    }, [signIn]);
 
     const onSubmit = () => {
         console.log("submit--->", state.formValue);
@@ -55,6 +67,7 @@ const Login = () => {
             },
         });
     };
+    console.log("showSignIn", showSignIn);
 
     return (
         <div className="login-wrap w-full h-screen flex justify-center items-center text-xs m-0 box-border select-none px-6">
@@ -253,7 +266,10 @@ const Login = () => {
                     className={classnames(
                         "container flex justify-center items-center absolute top-0 w-full h-full",
                         {
-                            "is-txl": showSignIn,
+                            // "is-txl": showSignIn,
+                            "left-full": showSignIn,
+                            "left-0": !showSignIn,
+                            "is-z200": !showSignIn,
                         },
                     )}
                 >
@@ -314,12 +330,13 @@ const Login = () => {
                     className={classnames(
                         "container flex justify-center items-center absolute top-0 w-full h-full",
                         {
-                            "is-txl": showSignIn,
+                            "right-full": !showSignIn,
+                            "right-0": showSignIn,
                             "is-z200": showSignIn,
                         },
                     )}
                 >
-                    <div className="form  flex justify-center items-center flex-col w-full h-full">
+                    <div className="form flex justify-center items-center flex-col w-full h-full">
                         <h2 className="form_title title text-2xl font-bold leading-[2]">
                             Sign in to Website
                         </h2>
@@ -366,6 +383,22 @@ const Login = () => {
                             SIGN IN
                         </button>
                     </div>
+                </div>
+                <div
+                    onClick={toggleSignIn}
+                    className={classnames(
+                        "mobile-toggle flex items-center justify-center absolute top-0 h-full z-[210] cursor-pointer",
+                        showSignIn ? "is-m-left" : "left-0",
+                    )}
+                >
+                    <Icon
+                        className={
+                            showSignIn
+                                ? "icon-double-arrow-left"
+                                : "icon-double-arro-right"
+                        }
+                        addClassName="text-xl arrow-icon"
+                    />
                 </div>
             </div>
         </div>

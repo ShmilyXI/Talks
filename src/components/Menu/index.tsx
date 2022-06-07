@@ -32,7 +32,7 @@ const Menu: FC<MenuProps> = (props) => {
         align = "left",
     } = props;
     const menuRef = useRef<HTMLDivElement>(null);
-    console.log("value", value);
+    
     useClickAway(() => {
         setLeft?.();
     }, menuRef);

@@ -12,7 +12,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
 
     useEffect(() => {
         setHideOther(router.asPath.includes("/login"));
-        console.log("router.asPath", router.asPath);
     }, [router.pathname]);
 
     return (
