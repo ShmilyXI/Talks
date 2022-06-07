@@ -5,6 +5,7 @@
 
 @white: #f9f9f9;
 @gray: #a0a5a8;
+@main: #666666;
 @black: #181818;
 
 @purple: #4b70e2;
@@ -25,7 +26,6 @@
         transition: @transition;
     }
     .form {
-
         &__icon {
             transition: 0.15s;
             cursor: pointer;
@@ -36,8 +36,8 @@
         &__input {
             background-color: @neu-1;
             transition: 0.25s ease;
-
             box-shadow: inset 2px 2px 4px @neu-2, inset -2px -2px 4px @white;
+            color: @main;
 
             &:focus {
                 box-shadow: inset 4px 4px 4px @neu-2, inset -4px -4px 4px @white;
@@ -82,7 +82,6 @@
         }
 
         &__container {
-
             transition: @transition;
         }
 

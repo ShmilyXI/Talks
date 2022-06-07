@@ -5,13 +5,10 @@ import classnames from "classnames";
 import { useRouter } from "next/router";
 import _ from "lodash";
 import toast from "react-hot-toast";
+import type { IItem } from "@/components/Menu";
+import Menu from "@/components/Menu/index";
 
-type IItem = {
-    label: string;
-    value: string;
-};
-
-const items = [
+const items: IItem[] = [
     {
         label: "Photos",
         value: "photos",
@@ -28,6 +25,7 @@ const items = [
 const Header = () => {
     const router = useRouter();
 
+    const [activeItem, setActiveItem] = useState<IItem>();
     const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] =
         useToggle();
     const [showWrap, { toggle: toggleWrap, setLeft: setWrapLeft }] =
@@ -42,8 +40,6 @@ const Header = () => {
     ] = useToggle();
 
     const [searchValue, setSearchValue] = useState("");
-
-    const [activeItem, setActiveItem] = useState<IItem>(items?.[0]);
 
     const moreRef = useRef<HTMLButtonElement>(null);
     const wrapRef = useRef<HTMLDivElement>(null);
@@ -72,7 +68,6 @@ const Header = () => {
 
     // 头部菜单item点击
     const onMenuItemClick = (item: IItem) => {
-        setActiveItem(item);
         toggleMenu();
         if (item.value) {
             goRoute(`/${item.value}`);
@@ -310,42 +305,25 @@ const Header = () => {
                 </div>
 
                 <div className="flex flex-none items-center -mx-16">
-                    <div className="ml-8 relative">
+                    <Menu
+                        items={items}
+                        className="ml-8"
+                        visible={showMenu}
+                        value={activeItem?.value}
+                        setLeft={setMenuLeft}
+                        onChange={(item) => {
+                            setActiveItem(item);
+                            setMenuLeft();
+                            onMenuItemClick(item);
+                        }}
+                    >
                         <a
                             className="block py-4 px-16 leading-sm font-medium text-black hover:no-underline "
                             onClick={toggleMenu}
                         >
                             Browse
                         </a>
-
-                        <div
-                            className={classnames(
-                                "absolute z-50 bg-black-95 rounded whitespace-no-wrap min-w-128 shadow-sm",
-                                { hidden: !showMenu },
-                            )}
-                            style={{
-                                transform: "translate3d(5px, 35px, 0px)",
-                                top: 0,
-                                left: 0,
-                                willChange: "transform",
-                            }}
-                        >
-                            <div className="flex flex-col text-left py-12 text-16 leading-lg">
-                                {items.map((item) => (
-                                    <a
-                                        className="px-28 lg:px-16 py-8 lg:py-1 hover:bg-white-15 text-white font-medium hover:no-underline"
-                                        key={item.value}
-                                        onClick={() => {
-                                            onMenuItemClick(item);
-                                        }}
-                                    >
-                                        {item.label}
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
+                    </Menu>
                     <a
                         onClick={() => {
                             goRoute("/");

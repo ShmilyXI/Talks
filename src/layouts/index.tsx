@@ -11,12 +11,10 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     const [hideOther, setHideOther] = useState(false); // 隐藏头部底部
 
     useEffect(() => {
-        setHideOther(router.pathname.includes("/login"));
-        console.log("router.pathname", router.pathname);
+        setHideOther(router.asPath.includes("/login"));
+        console.log("router.asPath", router.asPath);
     }, [router.pathname]);
-    if (!router.isReady) {
-        return null;
-    }
+
     return (
         <Fragment>
             {!hideOther ? <Header /> : null}

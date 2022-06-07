@@ -10,7 +10,6 @@ import { Toaster } from "react-hot-toast";
 import "tailwindcss/tailwind.css";
 import "@styles/default.css";
 import "@styles/global.less";
-// import "//at.alicdn.com/t/font_3238669_c3g8sudtxk4.js";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     const queryClient = new QueryClient();
@@ -20,10 +19,10 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                 <Provider store={store}>
                     <Layouts>
                         <Component {...pageProps} />
+                        <Toaster />
                     </Layouts>
                 </Provider>
             </Hydrate>
-            <Toaster />
         </QueryClientProvider>
     );
 }
