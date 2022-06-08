@@ -102,7 +102,7 @@ const Browse = () => {
                 <div className="container p-0 flex items-center justify-between">
                     <div className="min-w-0 flex-grow mr-8">
                         <Filter
-                            breakPoint="xl"
+                            breakPoint="md"
                             items={[
                                 { label: "Test1", value: "1" },
                                 { label: "Test2", value: "2" },
