@@ -17,7 +17,7 @@ import React, {
 import { useRouter } from "next/router";
 import PhotoAlbum from "react-photo-album";
 import classnames from "classnames";
-import { Icon } from "@components";
+import { Icon, PlaceholderSvg } from "@components";
 import _ from "lodash";
 
 type PhotoItem = {
@@ -230,7 +230,7 @@ const Browse = () => {
                                                     data.imageProps,
                                                     "src",
                                                 )}
-                                                src={`data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'100%' height%3D'100%'%2F%3E`}
+                                                src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'100%' height%3D'100%'%2F%3E"
                                                 data-src={data.imageProps.src}
                                                 style={{
                                                     ..._.omit(

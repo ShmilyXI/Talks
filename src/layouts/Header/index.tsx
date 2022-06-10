@@ -273,7 +273,7 @@ const Header = () => {
                 </a>
             </div>
 
-            <div className="hidden md:flex items-center py-16">
+            <div className="hidden md:flex items-center py-8">
                 <a
                     className="flex-none text-black cursor-pointer"
                     title='go home'

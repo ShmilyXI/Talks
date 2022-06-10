@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import "tailwindcss/tailwind.css";
 import "@styles/default.css";
 import "@styles/global.less";
+import "yet-another-react-lightbox/styles.css";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     const queryClient = new QueryClient();
