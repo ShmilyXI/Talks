@@ -1,20 +1,25 @@
 import { Icon } from "@components";
 import classnames from "classnames";
 import React, { FC } from "react";
-import { CommentItem } from "../index";
+import { CommentItem } from "../../pages/photos/detail/index";
 
 type Props = {
     list: CommentItem[];
+    className?: string;
+    addClassName?: string;
 };
 const Comments: FC<Props> = (props) => {
-    const { list } = props;
+    const { list, className, addClassName } = props;
     return (
         <div
-            className="flex flex-grow flex-col bg-grey-99 lg:overflow-y-scroll"
+            className={classnames(
+                "flex flex-grow flex-col lg:overflow-y-scroll",
+                className,
+            )}
             id="story-comments"
         >
             {/* 用户评论区 未登录用户不展示 */}
-            <div className="flex flex-none p-16 pb-8 md:py-24 md:px-32 lg:px-24">
+            <div className={classnames("flex flex-none pb-8", addClassName)}>
                 <div className="flex-none mr-16 mt-4">
                     <div className="avatar" id="comment-form-avatar-45265">
                         <img
@@ -74,9 +79,18 @@ const Comments: FC<Props> = (props) => {
             </div>
 
             <div className="bg-inherit flex w-full" id="comments">
-                <div className="bg-inherit w-full">
-                    <div className="bg-inherit p-16 md:p-24 md:px-32 lg:px-24 md:pt-0">
-                        <div className="bg-inherit -my-6">
+                <div
+                    className={classnames("bg-inherit w-full", {
+                        hidden: !list?.length,
+                    })}
+                >
+                    <div
+                        className={classnames(
+                            "bg-inherit md:pt-0",
+                            addClassName,
+                        )}
+                    >
+                        <div className="bg-inherit my-3">
                             {list?.map((item) => (
                                 <div
                                     className="bg-inherit thread thread--has-replies"

@@ -306,8 +306,8 @@ const Header = () => {
                         setLeft={setMenuLeft}
                         onChange={(item) => {
                             setActiveItem(item);
-                            setMenuLeft();
                             onMenuItemClick(item);
+                            setMenuLeft();
                         }}
                     >
                         <a

@@ -4,26 +4,33 @@ import { useRequest } from "ahooks";
 import Api from "@/service/index";
 import Filter from "../../../components/Filter";
 import Icon from "@components/Icon";
+import { useRouter } from "next/router";
 
 type articleItem = {
     avatar: string;
     avatarLink: string;
     tag: string;
     title: string;
-    link: string;
     author: string;
+    authorId: string;
     authorLink: string;
     date: string;
     answerCount: number;
-    answerList: { avatar: string; link: string }[];
+    answerList: { avatar: string; authorId: string }[];
 };
 
 const Index = () => {
+    const router = useRouter();
     const { data, error, loading }: any = useRequest(Api.getArticleLatestList);
     const [articleList, setArticleList] = useState<articleItem[]>(); // 文章列表
     useEffect(() => {
         setArticleList(data?.list || []);
     }, [data]);
+
+    // 路由跳转
+    const goRoute = (path: string) => {
+        router.push(path);
+    };
 
     return (
         <div className="lg:max-w-744 md:pl-16">
@@ -83,9 +90,13 @@ const Index = () => {
                                   <div className="flex-grow min-w-0 my-2 pl-16 md:pl-0">
                                       <div className="text-18 leading-sm relative">
                                           <a
-                                              href={item.link}
+                                              onClick={() =>
+                                                  goRoute(
+                                                      `/talks/detail?authorId=${item.authorId}`,
+                                                  )
+                                              }
                                               target="_blank"
-                                              className="block text-grey-53 hover:text-grey-53"
+                                              className="block text-grey-53 hover:text-grey-53 cursor-pointer"
                                           >
                                               {item.tag ? (
                                                   <span
@@ -126,7 +137,7 @@ const Index = () => {
                                           </time>
 
                                           <span className="mr-8">
-                                              {item.answerCount} replies{" "}
+                                              {item.answerCount} replies
                                           </span>
                                       </div>
                                   </div>
@@ -137,10 +148,14 @@ const Index = () => {
                                           {item.answerList?.length
                                               ? item.answerList.map((a) => (
                                                     <a
-                                                        href={a.link}
-                                                        className="avatar border-2 border-white -ml-12 relative z-3"
+                                                        onClick={() =>
+                                                            goRoute(
+                                                                `/talks/detail?authorId=${item.authorId}`,
+                                                            )
+                                                        }
+                                                        className="avatar border-2 border-white -ml-12 relative z-3 cursor-pointer"
                                                         target="_blank"
-                                                        key={a.link}
+                                                        key={a.authorId}
                                                     >
                                                         <img
                                                             src={a.avatar}

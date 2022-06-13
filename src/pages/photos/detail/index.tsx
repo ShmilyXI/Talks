@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Icon, Menu, PlaceholderSvg } from "@components";
+import { Icon, Menu, PlaceholderSvg, PhotoViews, Comments } from "@components";
 import classnames from "classnames";
 import dayjs from "dayjs";
-import PhotoViews from "./PhotoViews";
-import Comments from "./Comments";
+import { useToggle, useRequest } from "ahooks";
+import Api from "@/service";
 
 type Mood = Record<string, { text: string; icon: string }>;
 
@@ -19,7 +19,16 @@ export type CommentItem = {
     likes: number;
     commentList?: CommentItem[];
 };
-type ArticleDetail = {
+
+export type PhotoItem = {
+    src: string;
+    width: number;
+    height: number;
+    backgroundColor: string;
+    timeSpan: string;
+    date: string;
+};
+type DetailInfo = {
     id: string;
     authorName: string;
     authorId: number;
@@ -43,7 +52,7 @@ type ArticleDetail = {
         iso: string;
     };
     date: string;
-    commentList: CommentItem[];
+    photoList: PhotoItem[];
 };
 
 // Mood Location  View
@@ -55,222 +64,28 @@ const MoodEnum: Mood = {
     terrible: { text: "Terrible", icon: "icon-terrible" },
 };
 
-const articleDetail: ArticleDetail = {
-    id: "1",
-    authorName: "authorName",
-    authorId: 123,
-    avatarSrc: "https://via.placeholder.com/48x48",
-    title: "articleTitle",
-    descriptionBody:
-        "<div style='font-size: 20px'><p>asdadasdaqweqeqeqwqe</p><p>1231231312313123132</p></div>",
-    linkTags: [
-        {
-            name: "#111",
-            link: "/111",
-        },
-        {
-            name: "#222",
-            link: "/222",
-        },
-        {
-            name: "#333",
-            link: "/333",
-        },
-        {
-            name: "#444",
-            link: "/444",
-        },
-        {
-            name: "#555",
-            link: "/555",
-        },
-    ],
-    mood: "good",
-    location: {
-        name: "湖南长沙",
-        value: "hunan changsha",
-    },
-    view: 33,
-    galleries: [{}],
-    exifData: {
-        brand: "NIKON CORPORATION",
-        model: "NIKON D5200",
-        aperture: "ƒ/10.0",
-        focalLength: "55mm",
-        shutterSpeed: "1/400s",
-        iso: "100",
-    },
-    date: "2022-06-07T14:05:33+00:00",
-    commentList: [
-        {
-            avatarSrc: "https://via.placeholder.com/24x24",
-            authorName: "comment1",
-            authorId: 1,
-            content:
-                "12313131qeqweqe12313131qeqweqe12313131qeqweqe12313131qeqweqe12313131qeqweqe12313131qeqweqe12313131qeqweqe",
-            date: "2022-06-03T14:05:33+00:00",
-            likes: 5,
-            commentList: [
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-1",
-                    authorId: 1,
-                    content: "12313131qeqweqe",
-                    date: "2022-06-01T14:05:33+00:00",
-                    likes: 5,
-                },
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-2",
-                    authorId: 1,
-                    content:
-                        "qeqweqeqeasdasdasdasdcxzczxczzxcasd asda sdsad adas asd asdadsa sa",
-                    date: "2022-06-02T14:05:33+00:00",
-                    likes: 3,
-                },
-            ],
-        },
-        {
-            avatarSrc: "https://via.placeholder.com/24x24",
-            authorName: "comment2",
-            authorId: 1,
-            content: "ioppippopkpkopkppkokpok",
-            date: "2022-06-07T14:05:33+00:00",
-            likes: 5,
-            commentList: [
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-1",
-                    authorId: 1,
-                    content: "12313131qeqweqe",
-                    date: "2022-06-08T14:05:33+00:00",
-                    likes: 5,
-                },
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-2",
-                    authorId: 1,
-                    content:
-                        "qeqweqeqeasdasdasdasdcxzczxczzxcasd asda sdsad adas asd asdadsa sa",
-                    date: "2022-06-09T14:05:33+00:00",
-                    likes: 3,
-                },
-            ],
-        },
-        {
-            avatarSrc: "https://via.placeholder.com/24x24",
-            authorName: "comment2",
-            authorId: 1,
-            content: "ioppippopkpkopkppkokpok",
-            date: "2022-06-11T14:05:33+00:00",
-            likes: 5,
-            commentList: [
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-1",
-                    authorId: 1,
-                    content: "12313131qeqweqe",
-                    date: "2022-06-12T14:05:33+00:00",
-                    likes: 5,
-                },
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-2",
-                    authorId: 1,
-                    content:
-                        "qeqweqeqeasdasdasdasdcxzczxczzxcasd asda sdsad adas asd asdadsa sa",
-                    date: "2022-06-13T14:05:33+00:00",
-                    likes: 3,
-                },
-            ],
-        },
-        {
-            avatarSrc: "https://via.placeholder.com/24x24",
-            authorName: "comment2",
-            authorId: 1,
-            content: "ioppippopkpkopkppkokpok",
-            date: "2022-06-14T14:05:33+00:00",
-            likes: 5,
-            commentList: [
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-1",
-                    authorId: 1,
-                    content: "12313131qeqweqe",
-                    date: "2022-06-15T14:05:33+00:00",
-                    likes: 5,
-                },
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-2",
-                    authorId: 1,
-                    content:
-                        "qeqweqeqeasdasdasdasdcxzczxczzxcasd asda sdsad adas asd asdadsa sa",
-                    date: "2022-06-07T14:05:33+00:16",
-                    likes: 3,
-                },
-            ],
-        },
-        {
-            avatarSrc: "https://via.placeholder.com/24x24",
-            authorName: "comment2",
-            authorId: 1,
-            content: "ioppippopkpkopkppkokpok",
-            date: "2022-06-07T14:05:33+00:11",
-            likes: 5,
-            commentList: [
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-1",
-                    authorId: 1,
-                    content: "12313131qeqweqe",
-                    date: "2022-06-07T14:05:33+00:22",
-                    likes: 5,
-                },
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-2",
-                    authorId: 1,
-                    content:
-                        "qeqweqeqeasdasdasdasdcxzczxczzxcasd asda sdsad adas asd asdadsa sa",
-                    date: "2022-06-07T14:05:33+00:33",
-                    likes: 3,
-                },
-            ],
-        },
-        {
-            avatarSrc: "https://via.placeholder.com/24x24",
-            authorName: "comment2",
-            authorId: 1,
-            content: "ioppippopkpkopkppkokpok",
-            date: "2022-06-07T14:05:33+00:44",
-            likes: 5,
-            commentList: [
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-1",
-                    authorId: 1,
-                    content: "12313131qeqweqe",
-                    date: "2022-06-07T14:05:33+00:55",
-                    likes: 5,
-                },
-                {
-                    avatarSrc: "https://via.placeholder.com/24x24",
-                    authorName: "comment-child-2",
-                    authorId: 1,
-                    content:
-                        "qeqweqeqeasdasdasdasdcxzczxczzxcasd asda sdsad adas asd asdadsa sa",
-                    date: "2022-06-07T14:05:33+00:66",
-                    likes: 3,
-                },
-            ],
-        },
-    ],
-};
-
 const Index = () => {
     const router = useRouter();
     const { pid } = router.query;
+
+    const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] =
+        useToggle();
+    const [detailInfo, setDetailInfo] = useState<DetailInfo>();
+    const [commentList, setCommentList] = useState<CommentItem[]>([]);
+
+    const { data, error, loading }: any = useRequest(Api.getPhotoDetailInfo);
+    const {
+        data: commentData,
+        error: commentError,
+        loading: commentLoading,
+    }: any = useRequest(Api.getPhotoDetailComments);
+
+    useEffect(() => {
+        setDetailInfo(data.data);
+    }, [data]);
+    useEffect(() => {
+        setCommentList(commentData?.list || []);
+    }, [commentData]);
 
     return (
         <div>
@@ -281,7 +96,7 @@ const Index = () => {
                         <div className="flex-none">
                             <div className="avatar">
                                 <img
-                                    src={articleDetail.avatarSrc}
+                                    src={detailInfo?.avatarSrc}
                                     width="32"
                                     height="32"
                                     alt=""
@@ -318,13 +133,14 @@ const Index = () => {
                         </time>
                     </div>
                 </div>
-
                 {/* pc */}
                 <div
                     className="flex-grow lg:overflow-y-scroll"
                     id="story-details"
                 >
-                    <PhotoViews />
+                    {detailInfo?.photoList?.length ? (
+                        <PhotoViews list={detailInfo?.photoList || []} />
+                    ) : null}
 
                     <div className="container md:max-w-552 py-16 md:py-32 lg:py-48 relative shadow-footer md:shadow-none">
                         <div className="flex lg:hidden items-center justify-between mb-16 lg:mb-24">
@@ -333,17 +149,17 @@ const Index = () => {
 
                                 <time
                                     className="lg:hidden"
-                                    dateTime={articleDetail.date}
-                                    title={articleDetail.date}
+                                    dateTime={detailInfo?.date}
+                                    title={detailInfo?.date}
                                 >
                                     <span className="sm:hidden">
-                                        {dayjs(articleDetail?.date).format(
+                                        {dayjs(detailInfo?.date).format(
                                             "YYYY/MM/DD",
                                         )}
                                     </span>
 
                                     <span className="hidden sm:block">
-                                        {dayjs(articleDetail?.date).format(
+                                        {dayjs(detailInfo?.date).format(
                                             "YYYY/MM/DD",
                                         )}
                                     </span>
@@ -503,7 +319,7 @@ const Index = () => {
                                     </div>
 
                                     <div
-                                        className="pl-12 pr-8 leading-none lg:hidden"
+                                        className="pl-12 pr-8 leading-none lg:hidden relative"
                                         data-controller="dropdown"
                                         data-dropdown-placement="bottom-end"
                                     >
@@ -519,7 +335,7 @@ const Index = () => {
                                                 },
                                             ]}
                                             align="right"
-                                            visible={true}
+                                            visible={showMenu}
                                             value={"follow"}
                                             onChange={() => {
                                                 console.log("onChange");
@@ -528,6 +344,7 @@ const Index = () => {
                                             <button
                                                 type="button"
                                                 className="inline-flex button-reset align-top"
+                                                onClick={() => toggleMenu()}
                                             >
                                                 <svg
                                                     className="icon text-24 text-black"
@@ -548,7 +365,7 @@ const Index = () => {
                                 className="story__title text-14 md:text-16 lg:text-18 leading-normal"
                                 data-target="translations.title"
                             >
-                                {articleDetail.title}
+                                {detailInfo?.title}
                             </h1>
                         </div>
 
@@ -559,12 +376,12 @@ const Index = () => {
                         >
                             <div
                                 dangerouslySetInnerHTML={{
-                                    __html: articleDetail.descriptionBody,
+                                    __html: detailInfo?.descriptionBody || "",
                                 }}
                             />
                             <p>
-                                {articleDetail.linkTags?.length
-                                    ? articleDetail.linkTags.map((tag) => (
+                                {detailInfo?.linkTags?.length
+                                    ? detailInfo?.linkTags.map((tag) => (
                                           <a
                                               className="autolink notranslate autolink--tag mr-1"
                                               href={tag.link}
@@ -588,7 +405,8 @@ const Index = () => {
                                     <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 464c-119.1 0-216-96.9-216-216S128.9 40 248 40s216 96.9 216 216-96.9 216-216 216zm90.2-146.2C315.8 352.6 282.9 368 248 368s-67.8-15.4-90.2-42.2c-5.7-6.8-15.8-7.7-22.5-2-6.8 5.7-7.7 15.7-2 22.5C161.7 380.4 203.6 400 248 400s86.3-19.6 114.8-53.8c5.7-6.8 4.8-16.9-2-22.5-6.8-5.6-16.9-4.7-22.6 2.1zM168 240c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32z"></path>
                                 </svg>
                                 <span>
-                                    {MoodEnum?.[articleDetail?.mood]?.text}
+                                    {detailInfo?.mood &&
+                                        MoodEnum?.[detailInfo?.mood]?.text}
                                 </span>
                             </div>
 
@@ -605,12 +423,12 @@ const Index = () => {
                                     onClick={() =>
                                         console.log(
                                             "location-->",
-                                            articleDetail?.location?.value,
+                                            detailInfo?.location?.value,
                                         )
                                     }
                                 >
                                     <span className="block lg:truncate lg:max-w-200">
-                                        {articleDetail?.location?.name}
+                                        {detailInfo?.location?.name}
                                     </span>
                                 </a>
                             </div>
@@ -623,15 +441,13 @@ const Index = () => {
                                 >
                                     <path d="M569.354 231.631C512.969 135.948 407.808 72 288 72 168.14 72 63.004 135.994 6.646 231.63a47.999 47.999 0 0 0 0 48.739C63.032 376.053 168.192 440 288 440c119.86 0 224.996-63.994 281.354-159.631a48.002 48.002 0 0 0 0-48.738zM416 228c0 68.483-57.308 124-128 124s-128-55.517-128-124 57.308-124 128-124 128 55.517 128 124zm125.784 36.123C489.837 352.277 393.865 408 288 408c-106.291 0-202.061-56.105-253.784-143.876a16.006 16.006 0 0 1 0-16.247c29.072-49.333 73.341-90.435 127.66-115.887C140.845 158.191 128 191.568 128 228c0 85.818 71.221 156 160 156 88.77 0 160-70.178 160-156 0-36.411-12.833-69.794-33.875-96.01 53.76 25.189 98.274 66.021 127.66 115.887a16.006 16.006 0 0 1-.001 16.246zM224 224c0-10.897 2.727-21.156 7.53-30.137v.02c0 14.554 11.799 26.353 26.353 26.353 14.554 0 26.353-11.799 26.353-26.353s-11.799-26.353-26.353-26.353h-.02c8.981-4.803 19.24-7.53 30.137-7.53 35.346 0 64 28.654 64 64s-28.654 64-64 64-64-28.654-64-64z"></path>
                                 </svg>
-                                <span className="ml-8">
-                                    {articleDetail.view}
-                                </span>
+                                <span className="ml-8">{detailInfo?.view}</span>
                             </div>
                         </div>
 
                         {/* 画廊状态 */}
                         <div className="hidden lg:block">
-                            {articleDetail.galleries?.length ? (
+                            {detailInfo?.galleries?.length ? (
                                 <div className="mt-24 md:mt-48">
                                     <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 md:mb-24">
                                         Featured in
@@ -639,7 +455,7 @@ const Index = () => {
                                             href="https://tookapic.com/photos/661007/galleries"
                                             className="text-black underline hover:no-underline"
                                         >
-                                            {articleDetail.galleries?.length}
+                                            {detailInfo?.galleries?.length}
                                             gallery
                                         </a>
                                     </div>
@@ -840,7 +656,7 @@ const Index = () => {
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
-                                        {articleDetail?.exifData?.brand}
+                                        {detailInfo?.exifData?.brand}
                                     </div>
                                 </div>
 
@@ -850,7 +666,7 @@ const Index = () => {
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
-                                        {articleDetail?.exifData?.model}
+                                        {detailInfo?.exifData?.model}
                                     </div>
                                 </div>
 
@@ -860,7 +676,7 @@ const Index = () => {
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
-                                        {articleDetail?.exifData?.aperture}
+                                        {detailInfo?.exifData?.aperture}
                                     </div>
                                 </div>
 
@@ -870,7 +686,7 @@ const Index = () => {
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
-                                        {articleDetail?.exifData?.focalLength}
+                                        {detailInfo?.exifData?.focalLength}
                                     </div>
                                 </div>
 
@@ -880,7 +696,7 @@ const Index = () => {
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
-                                        {articleDetail?.exifData?.shutterSpeed}
+                                        {detailInfo?.exifData?.shutterSpeed}
                                     </div>
                                 </div>
 
@@ -890,7 +706,7 @@ const Index = () => {
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
-                                        {articleDetail?.exifData?.iso}
+                                        {detailInfo?.exifData?.iso}
                                     </div>
                                 </div>
                             </div>
@@ -908,7 +724,7 @@ const Index = () => {
                             <div className="flex-none">
                                 <div className="avatar">
                                     <img
-                                        src={articleDetail.avatarSrc}
+                                        src={detailInfo?.avatarSrc}
                                         width="48"
                                         height="48"
                                         alt=""
@@ -921,11 +737,11 @@ const Index = () => {
                                 <div className="flex items-center">
                                     <div className="text-16 min-w-0">
                                         <a
-                                            href={`/${articleDetail.authorId}`}
+                                            href={`/${detailInfo?.authorId}`}
                                             className="text-black font-medium block truncate"
                                         >
                                             <span className="block">
-                                                {articleDetail.authorName}
+                                                {detailInfo?.authorName}
                                             </span>
                                         </a>
                                     </div>
@@ -1151,7 +967,7 @@ const Index = () => {
                                         <path d="M569.354 231.631C512.969 135.948 407.808 72 288 72 168.14 72 63.004 135.994 6.646 231.63a47.999 47.999 0 0 0 0 48.739C63.032 376.053 168.192 440 288 440c119.86 0 224.996-63.994 281.354-159.631a48.002 48.002 0 0 0 0-48.738zM416 228c0 68.483-57.308 124-128 124s-128-55.517-128-124 57.308-124 128-124 128 55.517 128 124zm125.784 36.123C489.837 352.277 393.865 408 288 408c-106.291 0-202.061-56.105-253.784-143.876a16.006 16.006 0 0 1 0-16.247c29.072-49.333 73.341-90.435 127.66-115.887C140.845 158.191 128 191.568 128 228c0 85.818 71.221 156 160 156 88.77 0 160-70.178 160-156 0-36.411-12.833-69.794-33.875-96.01 53.76 25.189 98.274 66.021 127.66 115.887a16.006 16.006 0 0 1-.001 16.246zM224 224c0-10.897 2.727-21.156 7.53-30.137v.02c0 14.554 11.799 26.353 26.353 26.353 14.554 0 26.353-11.799 26.353-26.353s-11.799-26.353-26.353-26.353h-.02c8.981-4.803 19.24-7.53 30.137-7.53 35.346 0 64 28.654 64 64s-28.654 64-64 64-64-28.654-64-64z"></path>
                                     </svg>
                                     <span className="ml-8">
-                                        {articleDetail.view}
+                                        {detailInfo?.view}
                                     </span>
                                 </div>
                             </div>
@@ -1159,7 +975,11 @@ const Index = () => {
                     </div>
 
                     {/* 评论列表 */}
-                    <Comments list={articleDetail?.commentList || []} />
+                    <Comments
+                        className="bg-grey-99"
+                        addClassName="p-16 md:p-24 md:px-32 lg:px-24"
+                        list={commentList}
+                    />
 
                     {/* mobile 底部区域 */}
                     <div className="p-16 md:p-32 lg:hidden">
@@ -1185,7 +1005,7 @@ const Index = () => {
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
-                                    {articleDetail?.exifData?.brand}
+                                    {detailInfo?.exifData?.brand}
                                 </div>
                             </div>
 
@@ -1195,7 +1015,7 @@ const Index = () => {
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
-                                    {articleDetail?.exifData?.model}
+                                    {detailInfo?.exifData?.model}
                                 </div>
                             </div>
 
@@ -1205,7 +1025,7 @@ const Index = () => {
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
-                                    {articleDetail?.exifData?.aperture}
+                                    {detailInfo?.exifData?.aperture}
                                 </div>
                             </div>
 
@@ -1215,7 +1035,7 @@ const Index = () => {
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
-                                    {articleDetail?.exifData?.focalLength}
+                                    {detailInfo?.exifData?.focalLength}
                                 </div>
                             </div>
 
@@ -1225,7 +1045,7 @@ const Index = () => {
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
-                                    {articleDetail?.exifData?.shutterSpeed}
+                                    {detailInfo?.exifData?.shutterSpeed}
                                 </div>
                             </div>
 
@@ -1235,7 +1055,7 @@ const Index = () => {
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
-                                    {articleDetail?.exifData?.iso}
+                                    {detailInfo?.exifData?.iso}
                                 </div>
                             </div>
                         </div>

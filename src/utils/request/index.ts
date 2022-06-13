@@ -14,7 +14,7 @@ interface BaseRequestConfig<T, R> extends RequestConfig<BaseResponse<R>> {
   data?: T;
 }
 
-const baseURL = 'api/';
+const baseURL = '/api';
 
 const request = new Request({
   baseURL,

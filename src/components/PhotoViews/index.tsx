@@ -1,55 +1,16 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { Icon, PlaceholderSvg } from "@components";
 import classnames from "classnames";
 import Lightbox from "yet-another-react-lightbox";
 import { useToggle } from "ahooks";
 import dayjs from "dayjs";
-import Image from "next/image";
+import { PhotoItem } from "@/pages/photos/detail";
 
-const photoList = [
-    {
-        src: "https://via.placeholder.com/450x300?text=1",
-        width: 450,
-        height: 300,
-        backgroundColor: "#000000",
-        timeSpan: "Yesterday",
-        date: "2022-06-07T14:05:33+00:00",
-    },
-    {
-        src: "https://via.placeholder.com/450x300?text=2",
-        width: 450,
-        height: 300,
-        backgroundColor: "#000000",
-        timeSpan: "Week",
-        date: "2022-06-07T14:05:33+00:00",
-    },
-    {
-        src: "https://via.placeholder.com/450x300?text=3",
-        width: 450,
-        height: 300,
-        backgroundColor: "#000000",
-        timeSpan: "Month",
-        date: "2022-06-07T14:05:33+00:00",
-    },
-    {
-        src: "https://via.placeholder.com/450x300?text=4",
-        width: 450,
-        height: 300,
-        backgroundColor: "#000000",
-        timeSpan: "1 year",
-        date: "2022-06-07T14:05:33+00:00",
-    },
-    {
-        src: "https://via.placeholder.com/450x300?text=5",
-        width: 450,
-        height: 300,
-        backgroundColor: "#000000",
-        timeSpan: "2 year",
-        date: "2022-06-07T14:05:33+00:00",
-    },
-];
-
-const PhotoViews = () => {
+type Props = {
+    list: PhotoItem[];
+};
+const PhotoViews: FC<Props> = (props) => {
+    const { list } = props;
     const [
         showLightBox,
         { setRight: setLightBoxRight, setLeft: setLightBoxLeft },
@@ -59,19 +20,19 @@ const PhotoViews = () => {
     // 上一页
     const onPrev = () => {
         const index = showIndex - 1;
-        setShowIndex(index < 0 ? photoList.length - 1 : index);
+        setShowIndex(index < 0 ? list.length - 1 : index);
     };
     // 下一页
     const onNext = () => {
         const index = showIndex + 1;
-        setShowIndex(index > photoList.length - 1 ? 0 : index);
+        setShowIndex(index > list.length - 1 ? 0 : index);
     };
 
     // 切换图片
     const togglePhoto = (index: number) => {
         setShowIndex(index);
     };
-    const slides = photoList.map(({ src, width, height }) => ({
+    const slides = list.map(({ src, width, height }) => ({
         src,
         key: src,
         aspectRatio: width / height,
@@ -115,9 +76,9 @@ const PhotoViews = () => {
                             onClick={setLightBoxRight}
                         >
                             <img
-                                src={photoList?.[showIndex]?.src}
-                                width={photoList?.[showIndex]?.width}
-                                height={photoList?.[showIndex]?.height}
+                                src={list?.[showIndex]?.src}
+                                width={list?.[showIndex]?.width}
+                                height={list?.[showIndex]?.height}
                                 className="w-full lg:w-auto align-top cursor-zoom-in is-loaded"
                             />
                             <div className="absolute pin-t pin-r mt-16 mr-16 md:mt-32 md:mr-32 z-10 text-22 leading-none">
@@ -133,7 +94,7 @@ const PhotoViews = () => {
 
                     <div className="hidden lg:block mt-24 text-14 leading-md text-grey-27">
                         {`第 394 天， ${dayjs(
-                            photoList[showIndex]?.date,
+                            list[showIndex]?.date,
                         ).format("YYYY/MM/DD")}`}
                     </div>
                 </div>
@@ -152,17 +113,13 @@ const PhotoViews = () => {
             {/* 略缩图列表 */}
 
             <div className="lg:mt-48 overflow-x-auto hide-scrollbar">
-                <div className="flex md:justify-center -mx-4 md:-mx-12 py-16 lg:py-0 text-center">
-                    {photoList?.length
-                        ? photoList.map((item, index) => (
+                {/* <div className="flex md:justify-center -mx-4 md:-mx-12 py-16 lg:py-0 text-center"> */}
+                <div className="flex justify-center py-16 lg:py-0 text-center">
+                    {list?.length
+                        ? list.map((item, index) => (
                               <div
                                   className={classnames(
                                       "group flex-none content-box w-72 pr-4 md:px-12",
-                                      {
-                                          "pl-16": index === 0,
-                                          "pr-16":
-                                              index === photoList.length - 1,
-                                      },
                                   )}
                                   key={item.src}
                               >
