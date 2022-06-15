@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Lightbox from "yet-another-react-lightbox";
 import { useToggle } from "ahooks";
 import dayjs from "dayjs";
-import { PhotoItem } from "@/pages/photos/detail";
+import { PhotoItem } from "@/pages/photoDetail";
 
 type Props = {
     list: PhotoItem[];

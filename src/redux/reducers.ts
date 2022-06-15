@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 
-import counter from "@redux/slices/counter";
+import common from "@/redux/slices/common";
 
 import { store } from "./store";
 
-const rootReducer = combineReducers({ counter });
+const rootReducer = combineReducers({ common });
 
 export type RootState = ReturnType<typeof store.getState>;
 

@@ -1,7 +1,8 @@
 import request from "@/utils/request";
+import user from "./user";
 
-type CommonReq = any;
-type CommonRes = any;
+export type CommonReq = any;
+export type CommonRes = any;
 
 // 获取最新讨论列表
 const getArticleLatestList = (data: CommonReq) => {
@@ -93,7 +94,8 @@ const Api = {
     getGalleryPhotoList,
     getPhotoDetailInfo,
     getPhotoDetailComments,
-    getPhotoMilestoneList
+    getPhotoMilestoneList,
+    ...user,
 };
 
 export default Api;

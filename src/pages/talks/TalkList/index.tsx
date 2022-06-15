@@ -42,18 +42,17 @@ const Index = () => {
                 </div>
                 <Filter
                     items={[
-                        { label: "Test1", value: "1" },
-                        { label: "Test2", value: "2" },
-                        { label: "Test3", value: "3" },
-                        { label: "Test4", value: "4" },
-                        { label: "Test5", value: "5" },
-                        { label: "Test6", value: "6" },
-                        { label: "Test7", value: "7" },
+                        { label: "Active", value: "1" },
+                        { label: "Recent", value: "2" },
+                        { label: "Unanswered", value: "3" },
+                        { label: "Popular", value: "4" },
+                        { label: "Featured", value: "5" },
+                        { label: "Muted", value: "6" },
                     ]}
                     menuClassName="mt-24"
                     selectClassName="w-full"
                     breakPoint="md"
-                    displayCount={3}
+                    displayCount={4}
                     onChange={(item) => {
                         console.log("item", item);
                     }}

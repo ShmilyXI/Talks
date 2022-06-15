@@ -1,1 +1,1 @@
-export { increase, decrease } from "@redux/slices/counter";
+export { setToken, clearToken } from "@/redux/slices/common";

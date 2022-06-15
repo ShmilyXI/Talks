@@ -81,7 +81,7 @@ const Index = () => {
     }: any = useRequest(Api.getPhotoDetailComments);
 
     useEffect(() => {
-        setDetailInfo(data.data);
+        setDetailInfo(data?.data || {});
     }, [data]);
     useEffect(() => {
         setCommentList(commentData?.list || []);
@@ -450,7 +450,7 @@ const Index = () => {
                             {detailInfo?.galleries?.length ? (
                                 <div className="mt-24 md:mt-48">
                                     <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 md:mb-24">
-                                        Featured in
+                                        Featured in&nbsp;
                                         <a
                                             href="https://tookapic.com/photos/661007/galleries"
                                             className="text-black underline hover:no-underline"

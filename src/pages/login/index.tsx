@@ -1,10 +1,13 @@
 import Icon from "@components/Icon";
-import { useToggle, useSetState } from "ahooks";
+import { useToggle, useSetState, useRequest } from "ahooks";
 import classnames from "classnames";
 import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
+import { Storage } from "@/utils/storage";
 import toast from "react-hot-toast";
 import "./index.less";
+import Api from "@/service";
+import _ from "lodash";
 
 interface State {
     [key: string]: any;
@@ -12,7 +15,6 @@ interface State {
 
 const Login = () => {
     const router = useRouter();
-    console.log("router", router);
     const { signIn } = router.query;
 
     const [
@@ -27,6 +29,44 @@ const Login = () => {
         useToggle(false);
 
     const [state, setState] = useSetState<State>({ formValue: {} });
+
+    const {
+        data,
+        loading: loginLoading,
+        run: loginRun,
+    } = useRequest(Api.userLogin, {
+        manual: true,
+        onSuccess: (result: any, params) => {
+            if (result.code === "0") {
+                const storage = new Storage(sessionStorage, "Talks");
+                storage.setItem("token", result.token);
+                toast.success(result.message);
+                router.push("/");
+            }
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
+    const { loading: registerLoading, run: registerRun } = useRequest(
+        Api.userRegister,
+        {
+            manual: true,
+            onSuccess: (result: any, params) => {
+                console.log("params", params);
+                if (result.code === "0") {
+                    toast.success(result.message);
+                    transformForm(
+                        _.pick(params?.[0], ["telephone", "password"]),
+                    );
+                }
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            },
+        },
+    );
+
     const timer = useRef<NodeJS.Timeout>();
 
     useEffect(() => {
@@ -41,14 +81,18 @@ const Login = () => {
         };
     }, [signIn]);
 
-    const onSubmit = () => {
-        console.log("submit--->", state.formValue);
-        toast.success(`success login! ${JSON.stringify(state.formValue)}`);
-        router.push("/photos");
+    const onRegister = async () => {
+        console.log("onRegister submit--->", state.formValue);
+        await registerRun(state.formValue);
+        // router.push("/");
+    };
+    const onLogin = async () => {
+        console.log("onLogin submit--->", state.formValue);
+        await loginRun(state.formValue);
     };
 
-    const transformForm = () => {
-        setState({ formValue: {} });
+    const transformForm = (formValue = {}) => {
+        setState({ formValue });
         toggleSignIn();
         setSwitchRight();
         timer.current = setTimeout(() => {
@@ -60,14 +104,15 @@ const Login = () => {
         const name = data.target?.name || "";
         if (!name) return;
         const value = data.target?.value;
+        const formValue = {
+            ...state.formValue,
+            [name]: value,
+        };
+        console.log("formValue", formValue);
         setState({
-            formValue: {
-                ...state.formValue,
-                [name]: value,
-            },
+            formValue,
         });
     };
-    console.log("showSignIn", showSignIn);
 
     return (
         <div className="login-wrap w-full h-screen flex justify-center items-center text-xs m-0 box-border select-none px-6">
@@ -82,7 +127,8 @@ const Login = () => {
                 >
                     <div className="form flex justify-center items-center flex-col w-full h-full">
                         <h2 className="form_title title text-4xl font-bold leading-[2]">
-                            Create Account
+                            {/* Create Account */}
+                            创建账户
                         </h2>
                         <div className="flex justify-center items-center">
                             <Icon
@@ -99,12 +145,14 @@ const Login = () => {
                             />
                         </div>
                         <span className="mt-8 mb-3">
-                            or use email for registration
+                            {/* or use telephone for registration */}
+                            或使用手机号码进行注册
                         </span>
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="text"
-                            placeholder="Name"
+                            // // placeholder="Name"
+                            placeholder="用户名"
                             name="name"
                             value={state.formValue?.name || ""}
                             onChange={onInputChange}
@@ -112,24 +160,27 @@ const Login = () => {
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="text"
-                            placeholder="Email"
-                            name="email"
-                            value={state.formValue?.email || ""}
+                            // // placeholder="Telephone"
+                            placeholder="手机号码"
+                            name="telephone"
+                            value={state.formValue?.telephone || ""}
                             onChange={onInputChange}
                         />
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="password"
-                            placeholder="Password"
+                            // // placeholder="Password"
+                            placeholder="密码"
                             name="password"
                             value={state.formValue?.password || ""}
                             onChange={onInputChange}
                         />
                         <button
                             className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
-                            onClick={onSubmit}
+                            onClick={onRegister}
                         >
-                            SIGN UP
+                            {/* SIGN UP */}
+                            注册
                         </button>
                     </div>
                 </div>
@@ -144,7 +195,8 @@ const Login = () => {
                 >
                     <div className="form  flex justify-center items-center flex-col w-full h-full">
                         <h2 className="form_title title text-4xl font-bold leading-[2]">
-                            Sign in to Website
+                            {/* Sign in to Website */}
+                            登录网站
                         </h2>
                         <div className="flex justify-center items-center">
                             <Icon
@@ -161,32 +213,37 @@ const Login = () => {
                             />
                         </div>
                         <span className="mt-8 mb-3">
-                            or use your email account
+                            {/* or use your telephone account */}
+                            或使用您的手机号码帐户
                         </span>
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="text"
-                            placeholder="Email"
-                            name="email"
-                            value={state.formValue?.email || ""}
+                            // // placeholder="Telephone"
+                            placeholder="手机号码"
+                            name="telephone"
+                            value={state.formValue?.telephone || ""}
                             onChange={onInputChange}
                         />
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="password"
-                            placeholder="Password"
+                            // // placeholder="Password"
+                            placeholder="密码"
                             name="password"
                             value={state.formValue?.password || ""}
                             onChange={onInputChange}
                         />
                         <a className="form__link text-base mt-6 hover:no-underline cursor-pointer">
-                            Forgot your password?
+                            {/* Forgot your password? */}
+                            忘记你的密码?
                         </a>
                         <button
                             className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
-                            onClick={onSubmit}
+                            onClick={onLogin}
                         >
-                            SIGN IN
+                            {/* SIGN IN */}
+                            登录
                         </button>
                     </div>
                 </div>
@@ -224,17 +281,20 @@ const Login = () => {
                         )}
                     >
                         <h2 className="title text-4xl font-bold leading-[2]">
-                            Welcome Back !
+                            {/* Welcome Back ! */}
+                            欢迎回来!
                         </h2>
                         <p className="switch__description text-sm tracking-wider text-center leading-relaxed">
-                            To keep connected with us please login with your
-                            personal info
+                            {/* To keep connected with us please login with your
+                            personal info */}
+                            要与我们保持联系，请登录您的个人信息
                         </p>
                         <button
                             className="switch__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
-                            onClick={transformForm}
+                            onClick={() => transformForm()}
                         >
-                            SIGN IN
+                            {/* SIGN IN */}
+                            登录
                         </button>
                     </div>
                     <div
@@ -246,17 +306,20 @@ const Login = () => {
                         )}
                     >
                         <h2 className="title text-4xl font-bold leading-[2]">
-                            Hello Friend !
+                            {/* Hello Friend ! */}
+                            你好朋友!
                         </h2>
                         <p className="switch__description text-sm tracking-wider text-center leading-relaxed">
-                            Enter your personal details and start journey with
-                            us
+                            {/* Enter your personal details and start journey with
+                            us */}
+                            输入您的个人详细信息并与我们一起开始旅程
                         </p>
                         <button
                             className="switch__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
-                            onClick={transformForm}
+                            onClick={() => transformForm()}
                         >
-                            SIGN UP
+                            {/* SIGN UP */}
+                            注册
                         </button>
                     </div>
                 </div>
@@ -292,12 +355,14 @@ const Login = () => {
                             />
                         </div>
                         <span className="mt-8 mb-3">
-                            or use email for registration
+                            {/* or use telephone for registration */}
+                            或使用手机号码进行注册
                         </span>
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="text"
-                            placeholder="Name"
+                            // // placeholder="Name"
+                            placeholder="用户名"
                             name="name"
                             value={state.formValue?.name || ""}
                             onChange={onInputChange}
@@ -305,24 +370,27 @@ const Login = () => {
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="text"
-                            placeholder="Email"
-                            name="email"
-                            value={state.formValue?.email || ""}
+                            // placeholder="Telephone"
+                            placeholder="手机号码"
+                            name="telephone"
+                            value={state.formValue?.telephone || ""}
                             onChange={onInputChange}
                         />
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="password"
-                            placeholder="Password"
+                            // placeholder="Password"
+                            placeholder="密码"
                             name="password"
                             value={state.formValue?.password || ""}
                             onChange={onInputChange}
                         />
                         <button
                             className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
-                            onClick={onSubmit}
+                            onClick={onRegister}
                         >
-                            SIGN UP
+                            {/* SIGN UP */}
+                            注册
                         </button>
                     </div>
                 </div>
@@ -338,7 +406,8 @@ const Login = () => {
                 >
                     <div className="form flex justify-center items-center flex-col w-full h-full">
                         <h2 className="form_title title text-2xl font-bold leading-[2]">
-                            Sign in to Website
+                            {/* Sign in to Website */}
+                            登录网站
                         </h2>
                         <div className="flex justify-center items-center">
                             <Icon
@@ -355,32 +424,37 @@ const Login = () => {
                             />
                         </div>
                         <span className="mt-8 mb-3">
-                            or use your email account
+                            {/* or use your telephone account */}
+                            或使用您的手机号码帐户
                         </span>
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="text"
-                            placeholder="Email"
-                            name="email"
-                            value={state.formValue?.email || ""}
+                            // placeholder="Telephone"
+                            placeholder="手机号码"
+                            name="telephone"
+                            value={state.formValue?.telephone || ""}
                             onChange={onInputChange}
                         />
                         <input
                             className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
                             type="password"
-                            placeholder="Password"
+                            // placeholder="Password"
+                            placeholder="密码"
                             name="password"
                             value={state.formValue?.password || ""}
                             onChange={onInputChange}
                         />
                         <a className="form__link text-base mt-6 hover:no-underline cursor-pointer">
-                            Forgot your password?
+                            {/* Forgot your password? */}
+                            忘记你的密码?
                         </a>
                         <button
                             className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
-                            onClick={onSubmit}
+                            onClick={onLogin}
                         >
-                            SIGN IN
+                            {/* SIGN IN */}
+                            登录
                         </button>
                     </div>
                 </div>

@@ -212,7 +212,7 @@ const Header = () => {
                         onClick={() => {
                             setWrapLeft();
                             setSearchValue("");
-                            goRoute("/photos");
+                            goRoute("/");
                         }}
                     >
                         Browse photos

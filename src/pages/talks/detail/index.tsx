@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { Comments } from "@components";
 import UnansweredTalks from "../UnansweredTalks";
 import TopContributors from "../TopContributors";
-import { CommentItem } from "@/pages/photos/detail";
+import { CommentItem } from "@/pages/photoDetail";
 import Api from "@/service";
 
 type DetailInfo = {

@@ -1,32 +1,46 @@
-import Request from './request';
-import { AxiosResponse } from 'axios';
+import Request from "./request";
+import { AxiosResponse } from "axios";
+import toast from "react-hot-toast";
+import { Storage } from "@/utils/storage";
 
-import type { RequestConfig } from './types';
+import type { RequestConfig } from "./types";
 
 export interface BaseResponse<T> {
-  statusCode: number;
-  desc: string;
-  result: T;
+    statusCode: number;
+    desc: string;
+    result: T;
 }
 
 // 重写返回类型
 interface BaseRequestConfig<T, R> extends RequestConfig<BaseResponse<R>> {
-  data?: T;
+    data?: T;
 }
 
-const baseURL = '/api';
+const baseURL = "/api";
 
 const request = new Request({
-  baseURL,
-  timeout: 1000 * 60 * 5,
-  interceptors: {
-    // 请求拦截器
-    requestInterceptors: (config) => config,
-    // 响应拦截器
-    responseInterceptors: (result: AxiosResponse) => {
-      return result;
+    baseURL,
+    timeout: 1000 * 60 * 5,
+    interceptors: {
+        // 请求拦截器
+        requestInterceptors: (config) => {
+            const storage = new Storage(sessionStorage, "Talks");
+            console.log("storage1231231", storage.getItem("token"));
+            console.log("config", config);
+            if (config.headers)
+                config.headers.Authorization = `Bearer ${storage.getItem(
+                    "token",
+                )}`;
+            return config;
+        },
+        // 响应拦截器
+        responseInterceptors: (result: AxiosResponse) => {
+            if (result.data?.code !== "0") {
+                toast.error(result.data.message);
+            }
+            return result;
+        },
     },
-  },
 });
 
 /**
@@ -37,19 +51,19 @@ const request = new Request({
  * @returns {Promise}
  */
 const BaseRequest = <D = any, T = any>(config: BaseRequestConfig<D, T>) => {
-  const { method = 'GET' } = config;
-  if (method?.toUpperCase() === 'GET') {
-    config.params = config.data;
-  }
-  return request.request<BaseResponse<T>>(config);
+    const { method = "GET" } = config;
+    if (method?.toUpperCase() === "GET") {
+        config.params = config.data;
+    }
+    return request.request<BaseResponse<T>>(config);
 };
 // 取消请求
 export const cancelRequest = (url: string | string[]) => {
-  return request.cancelRequest(url);
+    return request.cancelRequest(url);
 };
 // 取消全部请求
 export const cancelAllRequest = () => {
-  return request.cancelAllRequest();
+    return request.cancelAllRequest();
 };
 
 export default BaseRequest;

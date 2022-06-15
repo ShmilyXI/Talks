@@ -1,7 +1,7 @@
 import { Icon } from "@components";
 import classnames from "classnames";
 import React, { FC } from "react";
-import { CommentItem } from "../../pages/photos/detail/index";
+import { CommentItem } from "../../pages/photoDetail/index";
 
 type Props = {
     list: CommentItem[];
