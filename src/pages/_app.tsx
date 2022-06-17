@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import store from "@redux/store";
 import Layouts from "@/layouts";
 import { Toaster } from "react-hot-toast";
+import "@/utils/i18n";
 
 import "tailwindcss/tailwind.css";
 import "@styles/default.css";
@@ -14,6 +15,7 @@ import "yet-another-react-lightbox/styles.css";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     const queryClient = new QueryClient();
+
     return (
         <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>

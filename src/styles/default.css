@@ -1347,7 +1347,7 @@ input[type="radio"]:disabled ~ .radio__icon {
 }
 @media (min-width: 992px) {
     .story {
-        height: calc(100vh - 68px);
+        height: calc(100vh - 64px);
     }
 }
 @media (min-width: 992px) {

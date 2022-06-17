@@ -78,7 +78,7 @@ const Detail = () => {
                                                     className="text-black block truncate cursor-pointer"
                                                     onClick={() =>
                                                         goRoute(
-                                                            `/user?pid=${detailInfo?.authorId}`,
+                                                            `/userDetail?pid=${detailInfo?.authorId}`,
                                                         )
                                                     }
                                                 >

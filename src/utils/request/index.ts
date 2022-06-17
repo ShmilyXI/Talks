@@ -25,8 +25,6 @@ const request = new Request({
         // 请求拦截器
         requestInterceptors: (config) => {
             const storage = new Storage(sessionStorage, "Talks");
-            console.log("storage1231231", storage.getItem("token"));
-            console.log("config", config);
             if (config.headers)
                 config.headers.Authorization = `Bearer ${storage.getItem(
                     "token",
@@ -36,9 +34,20 @@ const request = new Request({
         // 响应拦截器
         responseInterceptors: (result: AxiosResponse) => {
             if (result.data?.code !== "0") {
-                toast.error(result.data.message);
+                toast.error(result.data.message, { id: "error" });
             }
             return result;
+        },
+        responseInterceptorsCatch: (error) => {
+            const data = error.response?.data;
+            toast.error(data?.message || "系统繁忙，请稍后再试", {
+                id: "error",
+            });
+            if (data?.code === "-3") {
+                const storage = new Storage(sessionStorage, "Talks");
+                storage.removeItem("token");
+                window.location.href = "/login?signIn=1";
+            }
         },
     },
 });

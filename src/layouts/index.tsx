@@ -8,19 +8,23 @@ type LayoutProps = {
 };
 const Layout: FC<LayoutProps> = ({ children }) => {
     const router = useRouter();
-    const [hideOther, setHideOther] = useState(false); // 隐藏头部底部
+    const [hideHeader, setHideHeader] = useState(false); // 隐藏头部
+    const [hideFooter, setHideFooter] = useState(false); // 隐藏底部
 
     useEffect(() => {
-        setHideOther(router.asPath.includes("/login"));
+        const loginFlag = !!router.asPath.includes("/login");
+        const detailFlag = !!router.asPath.includes("/photoDetail");
+        setHideHeader(loginFlag);
+        setHideFooter(loginFlag || detailFlag);
     }, [router.pathname]);
 
     return (
         <Fragment>
-            {!hideOther ? <Header /> : null}
+            {!hideHeader ? <Header /> : null}
             <div className="bg-white text-grey-53 font-sans text-16 leading-normal antialiased box-border">
                 {children}
             </div>
-            {!hideOther ? <Footer /> : null}
+            {!hideFooter ? <Footer /> : null}
         </Fragment>
     );
 };

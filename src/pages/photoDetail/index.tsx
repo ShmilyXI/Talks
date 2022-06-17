@@ -4,6 +4,7 @@ import { Icon, Menu, PlaceholderSvg, PhotoViews, Comments } from "@components";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import { useToggle, useRequest } from "ahooks";
+import { useTranslation } from "react-i18next";
 import Api from "@/service";
 
 type Mood = Record<string, { text: string; icon: string }>;
@@ -67,7 +68,7 @@ const MoodEnum: Mood = {
 const Index = () => {
     const router = useRouter();
     const { pid } = router.query;
-
+    const { t } = useTranslation();
     const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] =
         useToggle();
     const [detailInfo, setDetailInfo] = useState<DetailInfo>();
@@ -108,7 +109,7 @@ const Index = () => {
                         <div className="ml-16 min-w-0 truncate">
                             <a className="font-medium text-black block text-14 leading-md cursor-pointer">
                                 <span className="block truncate">
-                                    12344444444
+                                    {detailInfo?.authorName}
                                 </span>
                             </a>
                         </div>
@@ -326,12 +327,8 @@ const Index = () => {
                                         <Menu
                                             items={[
                                                 {
-                                                    label: "Follow",
+                                                    label: t("common.follow"),
                                                     value: "follow",
-                                                },
-                                                {
-                                                    label: "Following",
-                                                    value: "following",
                                                 },
                                             ]}
                                             align="right"
@@ -450,13 +447,13 @@ const Index = () => {
                             {detailInfo?.galleries?.length ? (
                                 <div className="mt-24 md:mt-48">
                                     <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 md:mb-24">
-                                        Featured in&nbsp;
+                                        {t("common.featuredIn")}&nbsp;
                                         <a
                                             href="https://tookapic.com/photos/661007/galleries"
                                             className="text-black underline hover:no-underline"
                                         >
                                             {detailInfo?.galleries?.length}
-                                            gallery
+                                            {t("common.gallery")}
                                         </a>
                                     </div>
 
@@ -633,11 +630,11 @@ const Index = () => {
                             ) : (
                                 <div className="mt-24 md:mt-48">
                                     <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-8">
-                                        这张照片还没有在画廊中出现过
+                                        {t("common.noFeatured")}
                                     </div>
 
                                     <a className="text-14 lg:text-16 cursor-pointer">
-                                        将此照片保存在图库中
+                                        {t("common.savePhoto")}
                                     </a>
                                 </div>
                             )}
@@ -646,13 +643,13 @@ const Index = () => {
                         {/* 相机信息 */}
                         <div className="hidden lg:block mt-48">
                             <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
-                                EXIF data
+                                {t("common.exif")}
                             </div>
 
                             <div className="flex flex-wrap -mx-8 -my-8 lg:-my-12 break-words">
                                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                     <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                        Brand
+                                        {t("common.brand")}
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
@@ -662,7 +659,7 @@ const Index = () => {
 
                                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                     <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                        Model
+                                        {t("common.model")}
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
@@ -672,7 +669,7 @@ const Index = () => {
 
                                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                     <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                        Aperture
+                                        {t("common.aperture")}
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
@@ -682,7 +679,7 @@ const Index = () => {
 
                                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                     <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                        Focal length
+                                        {t("common.focalLength")}
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
@@ -692,7 +689,7 @@ const Index = () => {
 
                                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                     <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                        Shutter speed
+                                        {t("common.shutterSpeed")}
                                     </div>
 
                                     <div className="text-14 lg:text-16 text-black">
@@ -766,7 +763,7 @@ const Index = () => {
                                         dateTime="2022-06-07T13:46:45+00:00"
                                         title="2022-06-07T13:46:45+00:00"
                                     >
-                                        发表于 16 小时前
+                                        {t("common.published")} 16 小时前
                                     </time>
                                 </div>
                             </div>
@@ -984,24 +981,24 @@ const Index = () => {
                     {/* mobile 底部区域 */}
                     <div className="p-16 md:p-32 lg:hidden">
                         <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-8">
-                            This photo hasn’t been featured in galleries yet
+                            {t("common.noFeatured")}
                         </div>
 
                         <a className="text-14 lg:text-16 cursor-pointer">
-                            Save this photo in gallery
+                            {t("common.savePhoto")}
                         </a>
                     </div>
 
                     {/* mobile 设备参数 */}
                     <div className="p-16 md:p-32 lg:hidden">
                         <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
-                            EXIF data
+                            {t("common.exif")}
                         </div>
 
                         <div className="flex flex-wrap -mx-8 -my-8 lg:-my-12 break-words">
                             <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                 <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                    Brand
+                                    {t("common.brand")}
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
@@ -1011,7 +1008,7 @@ const Index = () => {
 
                             <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                 <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                    Model
+                                    {t("common.model")}
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
@@ -1021,7 +1018,7 @@ const Index = () => {
 
                             <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                 <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                    Aperture
+                                    {t("common.aperture")}
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
@@ -1031,7 +1028,7 @@ const Index = () => {
 
                             <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                 <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                    Focal length
+                                    {t("common.focalLength")}
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">
@@ -1041,7 +1038,7 @@ const Index = () => {
 
                             <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                                 <div className="text-12 lg:text-14 leading-md lg:mb-8">
-                                    Shutter speed
+                                    {t("common.shutterSpeed")}
                                 </div>
 
                                 <div className="text-14 lg:text-16 text-black">

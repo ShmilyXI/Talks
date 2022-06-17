@@ -7,24 +7,11 @@ import _ from "lodash";
 import toast from "react-hot-toast";
 import type { IItem } from "@/components/Menu";
 import Menu from "@/components/Menu/index";
+import { useTranslation } from "react-i18next";
 
-const items: IItem[] = [
-    {
-        label: "Photos",
-        value: "photos",
-    },
-    {
-        label: "Galleries",
-        value: "galleries",
-    },
-    {
-        label: "Community",
-        value: "talks",
-    },
-];
 const Header = () => {
     const router = useRouter();
-
+    const { t } = useTranslation();
     const [activeItem, setActiveItem] = useState<IItem>();
     const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] =
         useToggle();
@@ -54,6 +41,21 @@ const Header = () => {
         setSearchValue("");
         setInputTypeMenuLeft();
     }, [wrapRef, buttonRef]);
+
+    const items: IItem[] = [
+        {
+            label: t("common.photos"),
+            value: "index",
+        },
+        {
+            label: t("common.galleries"),
+            value: "galleries",
+        },
+        {
+            label: t("common.community"),
+            value: "talks",
+        },
+    ];
 
     // 路由跳转
     const goRoute = (path: string) => {
@@ -135,7 +137,7 @@ const Header = () => {
                                             className="icon-pic"
                                             addClassName="text-14 w-16 mr-8 text-black"
                                         />
-                                        Search Photos
+                                        {t("common.searchPhotos")}
                                     </a>
                                 </div>
 
@@ -150,7 +152,7 @@ const Header = () => {
                                             className="icon-people"
                                             addClassName="text-14 w-16 mr-8 text-black"
                                         />
-                                        Search People
+                                        {t("common.searchPeople")}
                                     </a>
                                 </div>
 
@@ -165,7 +167,7 @@ const Header = () => {
                                             className="icon-file"
                                             addClassName="text-14 w-16 mr-8 text-black"
                                         />
-                                        Search Galleries
+                                        {t("common.searchGalleries")}
                                     </a>
                                 </div>
 
@@ -180,7 +182,7 @@ const Header = () => {
                                             className="icon-community"
                                             addClassName="text-14 w-16 mr-8 text-black"
                                         />
-                                        Search Talks
+                                        {t("common.searchTalks")}
                                     </a>
                                 </div>
                             </div>
@@ -204,7 +206,8 @@ const Header = () => {
                             )
                         }
                     >
-                        What is Tookapic?
+                        {/* What is Tookapic? */}
+                        2233333
                     </a>
 
                     <a
@@ -215,7 +218,7 @@ const Header = () => {
                             goRoute("/");
                         }}
                     >
-                        Browse photos
+                        {t("common.browsePhotos")}
                     </a>
 
                     <a
@@ -226,7 +229,7 @@ const Header = () => {
                             goRoute("/galleries");
                         }}
                     >
-                        Browse galleries
+                        {t("common.browseGalleries")}
                     </a>
 
                     <a
@@ -237,7 +240,7 @@ const Header = () => {
                             goRoute("/talks");
                         }}
                     >
-                        Community
+                        {t("common.community")}
                     </a>
                 </div>
             </div>
@@ -260,7 +263,7 @@ const Header = () => {
                         goRoute("/login?signIn=1");
                     }}
                 >
-                    Log in
+                    {t("common.login")}
                 </a>
 
                 <a
@@ -269,14 +272,14 @@ const Header = () => {
                         goRoute("/login");
                     }}
                 >
-                    Sign up
+                    {t("common.signUp")}
                 </a>
             </div>
 
             <div className="hidden md:flex items-center py-8">
                 <a
                     className="flex-none text-black cursor-pointer"
-                    title='go home'
+                    title="go home"
                     onClick={() => {
                         goRoute("/");
                     }}
@@ -314,7 +317,7 @@ const Header = () => {
                             className="block py-4 px-16 leading-sm font-medium text-black hover:no-underline "
                             onClick={toggleMenu}
                         >
-                            Browse
+                            {t("common.browse")}
                         </a>
                     </Menu>
                     <a
@@ -323,7 +326,7 @@ const Header = () => {
                         }}
                         className="block py-4 px-16 ml-8 leading-sm font-medium text-grey-53 hover:text-black hover:no-underline"
                     >
-                        Learn more
+                        {t("common.learnMore")}
                     </a>
                 </div>
 
@@ -334,7 +337,7 @@ const Header = () => {
                             goRoute("/login?signIn=1");
                         }}
                     >
-                        Log in
+                        {t("common.login")}
                     </a>
 
                     <a
@@ -355,7 +358,7 @@ const Header = () => {
                             goRoute("/login");
                         }}
                     >
-                        Sign up
+                        {t("common.signUp")}
                     </a>
                 </div>
             </div>
