@@ -30,17 +30,33 @@ const Login = () => {
 
     const [state, setState] = useSetState<State>({ formValue: {} });
 
+    const { loading: getUserInfoLoading, run: getUserInfoRun } = useRequest(
+        Api.getUserInfo,
+        {
+            manual: true,
+            onSuccess: async (result: any, params) => {
+                if (result.code === "0") {
+                    const storage = new Storage(sessionStorage, "Talks");
+                    storage.setItem("userInfo", result.data);
+                }
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            },
+        },
+    );
     const {
         data,
         loading: loginLoading,
         run: loginRun,
     } = useRequest(Api.userLogin, {
         manual: true,
-        onSuccess: (result: any, params) => {
+        onSuccess: async (result: any, params) => {
             if (result.code === "0") {
                 const storage = new Storage(sessionStorage, "Talks");
                 storage.setItem("token", result.token);
                 toast.success(result.message);
+                await getUserInfoRun({ id: result?.data?.id });
                 router.push("/");
             }
         },
