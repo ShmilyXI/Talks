@@ -30,7 +30,7 @@ export type PhotoItem = {
     date: string;
 };
 type DetailInfo = {
-    id: string;
+    id: number;
     authorName: string;
     authorId: number;
     avatarSrc: string;

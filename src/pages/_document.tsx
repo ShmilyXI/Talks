@@ -4,6 +4,7 @@ export default function Document() {
     return (
         <Html>
             <Head>
+                <title>XIAO 521</title>
                 <script type="text/javascript" src="/iconfont.js" />
             </Head>
             <body>

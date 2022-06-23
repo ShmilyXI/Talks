@@ -26,7 +26,7 @@ type PhotoItem = {
     workCount: number;
     answerCount: number;
     subjectColor?: string; // 主题色
-    id: string;
+    id: number;
     userId: string;
 };
 type PhotoListProps = { list: PhotoItem[] };
