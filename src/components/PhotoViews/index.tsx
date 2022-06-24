@@ -68,7 +68,7 @@ const PhotoViews: FC<Props> = (props) => {
                 </div>
 
                 {/* 主图 */}
-                <div className="container w-full p-0 text-center">
+                <div className="d-container w-full p-0 text-center">
                     <div className="story__photo text-center">
                         <div
                             className="lg:inline-block align-top md:rounded overflow-hidden relative "

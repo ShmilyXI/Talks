@@ -33,7 +33,7 @@ const Detail = () => {
     };
 
     return (
-        <div className="container max-w-1128 px-16">
+        <div className="d-container max-w-1128 px-16">
             <div className="lg:flex lg:-mx-12">
                 <div className="lg:px-12 lg:w-3/4">
                     <div className="lg:max-w-744 md:pl-16">

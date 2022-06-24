@@ -5,8 +5,9 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import styles from "./index.module.less";
 
 export type IItem = {
-    label: string;
+    label: string | JSX.Element;
     value: string;
+    className?: string;
 };
 
 type MenuProps = {
@@ -18,6 +19,8 @@ type MenuProps = {
     children: JSX.Element;
     className?: string;
     align?: "left" | "right";
+    modalClassName?: string;
+    wrapClassName?: string;
 };
 
 const Menu: FC<MenuProps> = (props) => {
@@ -30,9 +33,11 @@ const Menu: FC<MenuProps> = (props) => {
         className,
         setLeft,
         align = "left",
+        modalClassName,
+        wrapClassName,
     } = props;
     const menuRef = useRef<HTMLDivElement>(null);
-    
+
     useClickAway(() => {
         setLeft?.();
     }, menuRef);
@@ -43,6 +48,7 @@ const Menu: FC<MenuProps> = (props) => {
             {visible ? (
                 <div
                     className={classnames(
+                        modalClassName,
                         styles["menu-wrap"],
                         {
                             "left-0": align === "left",
@@ -51,7 +57,12 @@ const Menu: FC<MenuProps> = (props) => {
                         "absolute z-50 bg-black-95 rounded whitespace-no-wrap min-w-128 shadow-sm",
                     )}
                 >
-                    <div className="flex flex-col text-left py-12 text-16 leading-lg">
+                    <div
+                        className={classnames(
+                            "flex flex-col text-left py-12 text-16 leading-lg",
+                            wrapClassName,
+                        )}
+                    >
                         {items?.length
                             ? items.map((item) => (
                                   <div
@@ -61,6 +72,7 @@ const Menu: FC<MenuProps> = (props) => {
                                               "font-semibold":
                                                   value === item.value,
                                           },
+                                          item.className,
                                       )}
                                       onClick={() => {
                                           onChange?.(item);

@@ -135,7 +135,7 @@ const Login = () => {
             <div className="main hidden md:flex justify-center relative w-[1000px] min-w-[1000px] h-[600px] min-h-[600px] rounded-xl overflow-hidden scale-[0.6] md:scale-[0.7] lg:scale-[0.8] xl:scale-100">
                 <div
                     className={classnames(
-                        "container flex justify-center items-center absolute top-0 w-[600px] h-full a-container",
+                        "d-container flex justify-center items-center absolute top-0 w-[600px] h-full a-container",
                         {
                             "is-txl": showSignIn,
                         },
@@ -202,7 +202,7 @@ const Login = () => {
                 </div>
                 <div
                     className={classnames(
-                        "container flex justify-center items-center absolute top-0 w-[600px] h-full b-container",
+                        "d-container flex justify-center items-center absolute top-0 w-[600px] h-full b-container",
                         {
                             "is-txl": showSignIn,
                             "is-z200": showSignIn,
@@ -343,7 +343,7 @@ const Login = () => {
             <div className="main flex md:hidden justify-center  relative w-10/12 h-2/5 rounded-xl overflow-hidden">
                 <div
                     className={classnames(
-                        "container flex justify-center items-center absolute top-0 w-full h-full",
+                        "d-container flex justify-center items-center absolute top-0 w-full h-full",
                         {
                             // "is-txl": showSignIn,
                             "left-full": showSignIn,
@@ -412,7 +412,7 @@ const Login = () => {
                 </div>
                 <div
                     className={classnames(
-                        "container flex justify-center items-center absolute top-0 w-full h-full",
+                        "d-container flex justify-center items-center absolute top-0 w-full h-full",
                         {
                             "right-full": !showSignIn,
                             "right-0": showSignIn,

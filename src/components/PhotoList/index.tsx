@@ -91,7 +91,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
     };
 
     return (
-        <div className="container p-16 md:pt-0 md:px-32 md:pb-24 lg:pb-32 xl:pb-48">
+        <div className="d-container p-16 md:pt-0 md:px-32 md:pb-24 lg:pb-32 xl:pb-48">
             <div className="-m-16 grid:-mb-8 grid:-mx-0 grid:-mt-0">
                 <PhotoAlbum
                     layout="rows"

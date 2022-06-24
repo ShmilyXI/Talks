@@ -54,7 +54,7 @@ const getTalkDetailInfo = (data: CommonReq) => {
 // 获取画廊图片列表
 const getGalleryPhotoList = (data: CommonReq) => {
     return request<CommonReq, CommonRes>({
-        url: "/browse/gallery-photo-list",
+        url: "/photo/gallery-photo-list",
         method: "POST",
         data,
     });
@@ -63,7 +63,7 @@ const getGalleryPhotoList = (data: CommonReq) => {
 // 获取画廊图片详情
 const getPhotoDetailInfo = (data: CommonReq) => {
     return request<CommonReq, CommonRes>({
-        url: "/browse/photo-detail-info",
+        url: "/photo/photo-detail-info",
         method: "GET",
         data,
     });
@@ -72,7 +72,7 @@ const getPhotoDetailInfo = (data: CommonReq) => {
 // 获取画廊图片评论列表
 const getPhotoDetailComments = (data: CommonReq) => {
     return request<CommonReq, CommonRes>({
-        url: "/browse/photo-detail-comments",
+        url: "/photo/photo-detail-comments",
         method: "GET",
         data,
     });
@@ -80,7 +80,7 @@ const getPhotoDetailComments = (data: CommonReq) => {
 // 获取画廊里程碑成员列表
 const getPhotoMilestoneList = (data: CommonReq) => {
     return request<CommonReq, CommonRes>({
-        url: "/browse/photo-milestone-list",
+        url: "/photo/photo-milestone-list",
         method: "GET",
         data,
     });

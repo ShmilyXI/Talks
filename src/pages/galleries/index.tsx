@@ -4,7 +4,7 @@ import { Filter, Icon } from "@components";
 const Index = () => {
     return (
         <div>
-            <div className="container max-w-1128 px-16 pt-16 md:px-32 md:py-32 lg:py-48">
+            <div className="d-container max-w-1128 px-16 pt-16 md:px-32 md:py-32 lg:py-48">
                 <div className="flex items-center">
                     <h1 className="hidden md:block text-16 leading-normal md:text-24 md:text-28 lg:text-32 md:leading-xs">
                         Galleries
@@ -33,7 +33,7 @@ const Index = () => {
                 />
             </div>
 
-            <div className="container max-w-1128 p-16 md:pt-0 md:px-32 md:pb-24 lg:pb-32 xl:pb-48">
+            <div className="d-container max-w-1128 p-16 md:pt-0 md:px-32 md:pb-24 lg:pb-32 xl:pb-48">
                 <div>
                     <div className="gallery-list flex flex-wrap items-start -mx-16 sm:-mx-12 -mb-16 sm:-mb-24">
                         <div className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-16 sm:px-12 mb-16 sm:mb-24">

@@ -31,7 +31,7 @@ const UserDetail = () => {
         <div>
             {/* milestoneList */}
             <div
-                className="container max-w-744 xl:min-w-744 xl:max-w-full pt-16 pb-24 grid:py-48 xl:py-80 flex justify-center"
+                className="d-container max-w-744 xl:min-w-744 xl:max-w-full pt-16 pb-24 grid:py-48 xl:py-80 flex justify-center"
                 data-controller="profile"
             >
                 <div className="grid:flex items-start relative w-full grid:w-auto">
@@ -299,8 +299,8 @@ const UserDetail = () => {
                     </div>
                 </div>
             </div>
-            <div className="container p-16 md:px-32 md:py-24">
-                <div className="container p-0 flex items-center justify-between">
+            <div className="d-container p-16 md:px-32 md:py-24">
+                <div className="d-container p-0 flex items-center justify-between">
                     <div className="min-w-0 flex-grow mr-8">
                         <Filter
                             breakPoint="md"

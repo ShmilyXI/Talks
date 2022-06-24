@@ -53,7 +53,7 @@ const Browse = () => {
     return (
         <div>
             {/* milestoneList */}
-            <div className="container pt-16 md:pt-24 px-0">
+            <div className="d-container pt-16 md:pt-24 px-0">
                 <div className="user-suggestion lg:py-24">
                     <div className="user-suggestion__list flex overflow-x-auto">
                         {milestoneList?.length
@@ -127,8 +127,8 @@ const Browse = () => {
                     </div>
                 </div>
             </div>
-            <div className="container p-16 md:px-32 md:py-24">
-                <div className="container p-0 flex items-center justify-between">
+            <div className="d-container p-16 md:px-32 md:py-24">
+                <div className="d-container p-0 flex items-center justify-between">
                     <div className="min-w-0 flex-grow mr-8">
                         <Filter
                             breakPoint="md"

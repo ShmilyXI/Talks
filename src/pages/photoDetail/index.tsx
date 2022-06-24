@@ -133,7 +133,7 @@ const Index = () => {
                         <PhotoViews list={detailInfo?.photoList || []} />
                     ) : null}
 
-                    <div className="container md:max-w-552 py-16 md:py-32 lg:py-48 relative shadow-footer md:shadow-none">
+                    <div className="d-container md:max-w-552 py-16 md:py-32 lg:py-48 relative shadow-footer md:shadow-none">
                         <div className="flex lg:hidden items-center justify-between mb-16 lg:mb-24">
                             <div className="flex items-center text-12 leading-sm lg:text-14 lg:leading-md">
                                 <div className="mr-8 text-grey-53">Day 23</div>
