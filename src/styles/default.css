@@ -1973,7 +1973,7 @@ input[type="radio"]:disabled ~ .radio__icon {
     display: none;
     line-height: 1.5;
     opacity: 0;
-    padding: 1rem 0.75rem;
+    padding: 1rem 0.75rem 0.5rem;
     position: absolute;
     text-align: left;
     touch-action: manipulation;
@@ -1984,6 +1984,12 @@ input[type="radio"]:disabled ~ .radio__icon {
     visibility: hidden;
     width: 15.5rem;
     z-index: 999;
+}
+.flatpickr-time{
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    margin-top: 5px;
 }
 .modal-open .flatpickr-calendar {
     z-index: 1050;
@@ -2020,8 +2026,8 @@ input[type="radio"]:disabled ~ .radio__icon {
 .flatpickr-next-month,
 .flatpickr-prev-month {
     cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
+    font-size: 20px;
+    line-height: 20px;
     padding: 0 0.25rem;
 }
 .flatpickr-next-month.disabled,
@@ -2037,19 +2043,20 @@ input[type="radio"]:disabled ~ .radio__icon {
 .flatpickr-current-month {
     display: flex;
     align-items: center;
+    justify-content:center;
 }
 .flatpickr-current-month .cur-month {
     margin-right: 0.1875rem;
 }
 .flatpickr-current-month .cur-year {
-    background: transparent;
-    border: 0;
+    /* background: transparent; */
+    /* border: 0; */
     font: inherit;
     line-height: inherit;
-    margin: 0;
+    margin-left: 5px;
     padding: 0;
-    pointer-events: none;
-    width: 4ch;
+    /* pointer-events: none; */
+    width: 7ch;
 }
 .flatpickr-current-month .cur-year:focus {
     outline: 0;

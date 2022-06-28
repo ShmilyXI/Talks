@@ -34,5 +34,25 @@
         "focalLength": "焦距",
         "shutterSpeed": "快门速度",
         "published": "发布于"
+    },
+    "photoModal": {
+        "drop": "将照片放在此处，或单击浏览驱动器",
+        "browse": "浏览...",
+        "edit": "编辑照片",
+        "change": "您可以在下面更改照片详细信息",
+        "uploading": "正在上传",
+        "cancel": "取消上传",
+        "uploaded": "上传完成",
+        "remove": "删除照片",
+        "title_is_required": "请输入标题",
+        "description_is_required": "请输入描述",
+        "date_is_required": "请选择日期",
+        "add_title": "添加标题",
+        "description": "描述你的一天...",
+        "no_date": "无日期",
+        "publish_photo": "发布照片",
+        "save_change": "保存更改",
+        "comments_off": "关闭评论",
+        "comments_on": "打开评论"
     }
 }

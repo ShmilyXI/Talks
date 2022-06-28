@@ -15,14 +15,10 @@ const Index = () => {
     const router = useRouter();
     const { t } = useTranslation();
     const [activeMenuItem, setActiveMenuItem] = useState<IItem>();
-    const [
-        showMenu,
-        { toggle: toggleMenu, setLeft: setMenuLeft, },
-    ] = useToggle();
-    const [
-        showMMenu,
-        { toggle: toggleMMenu, setLeft: setMMenuLeft, },
-    ] = useToggle();
+    const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] =
+        useToggle();
+    const [showMMenu, { toggle: toggleMMenu, setLeft: setMMenuLeft }] =
+        useToggle();
     const [showUserMenu, { toggle: toggleUserMenu, setLeft: setUserMenuLeft }] =
         useToggle();
     const [showWrap, { toggle: toggleWrap, setLeft: setWrapLeft }] =
@@ -43,6 +39,11 @@ const Index = () => {
             setRight: setPCInputTypeMenuRight,
         },
     ] = useToggle();
+
+    const [
+        showAddPhotoModal,
+        { toggle: toggleAddPhotoModal, setLeft: setAddPhotoModalLeft },
+    ] = useToggle(false); // 是否展示添加照片弹窗
 
     const [searchValue, setSearchValue] = useState("");
     const [isLogin, setIsLogin] = useState(false); // 是否是登录状态
@@ -804,6 +805,7 @@ const Index = () => {
                     <button
                         type="button"
                         className="button button--secondary ml-16 lg:ml-24 text-16"
+                        onClick={toggleAddPhotoModal}
                     >
                         <span className="xl:hidden"> Upload </span>
 
@@ -854,7 +856,10 @@ const Index = () => {
                     </div>
                 </div>
             </div>
-            <AddPhotoModal />
+            <AddPhotoModal
+                visible={showAddPhotoModal}
+                setModalLeft={setAddPhotoModalLeft}
+            />
         </div>
     );
 };
