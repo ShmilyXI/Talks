@@ -37,7 +37,7 @@ const Login = () => {
             onSuccess: async (result: any, params) => {
                 if (result.code === "0") {
                     const storage = new Storage(sessionStorage, "Talks");
-                    storage.setItem("userInfo", result.data);
+                    storage.setItem("userInfo", result?.data);
                 }
             },
             onError: (error) => {
