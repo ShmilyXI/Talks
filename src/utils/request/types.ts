@@ -14,3 +14,14 @@ export interface RequestConfig<T = AxiosResponse> extends AxiosRequestConfig {
 export interface CancelRequestSource {
   [index: string]: () => void;
 }
+
+export interface HttpJson<T = any> {
+  code: string;
+  message: string;
+  data: T;
+}
+
+export type RequestType<T extends RequestConfig> = Omit<RequestConfig, keyof T> & T;
+
+export type RequestGetType<T = Record<string, any>> = RequestType<{ params: T }>;
+export type RequestPostType<T = Record<string, any>> = RequestType<{ data: T }>;

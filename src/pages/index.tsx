@@ -1,12 +1,13 @@
 import Filter from "@/components/Filter";
 import Api from "@/service/index";
-import { useRequest } from "ahooks";
+import { useRequest, usePagination } from "ahooks";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import classnames from "classnames";
 import { PhotoList } from "@components";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
+import toast from "react-hot-toast";
 import { formatPrice } from "@/utils/common";
 import { IItem } from "@components/Menu";
 
@@ -22,12 +23,27 @@ type MilestoneItem = {
 const Browse = () => {
     const router = useRouter();
     const { t } = useTranslation();
-    const { data, error, loading }: any = useRequest(Api.getGalleryPhotoList);
     const {
         data: milestoneData,
         error: milestoneError,
         loading: milestoneLoading,
     }: any = useRequest(Api.getPhotoMilestoneList);
+
+    const {
+        data: photoData,
+        loading: getGalleryPhotoListLoading,
+        pagination,
+    } = usePagination(
+        ({ current, pageSize }) =>
+            new Promise(async (resolve) => {
+                const { data } = await Api.getGalleryPhotoList({
+                    pageIndex: current,
+                    pageSize,
+                });
+                resolve(data);
+            }) as any,
+    );
+
     const [milestoneList, setMilestoneList] = useState<MilestoneItem[]>(); // 里程碑列表
 
     const items: IItem[] = [
@@ -107,7 +123,6 @@ const Browse = () => {
                                                       {formatPrice(
                                                           item.picCount || 0,
                                                       )}
-                                                      {/* TODO: 这里需要加个千分位切割 */}
                                                   </span>
                                               ) : null}
                                               {item.type === "level" ? (
@@ -140,7 +155,7 @@ const Browse = () => {
                     </div>
                 </div>
             </div>
-            <PhotoList list={data?.list || []} />
+            <PhotoList list={photoData?.list || []} total={photoData?.total} />
         </div>
     );
 };

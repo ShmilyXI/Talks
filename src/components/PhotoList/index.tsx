@@ -11,25 +11,10 @@ import {
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
+import { GalleryPhotoItem } from "@/types/PhotoTypes";
+import dayjs from "dayjs";
 
-type PhotoItem = {
-    title: string;
-    description: string;
-    src: string;
-    width: number;
-    height: number;
-    placeholderSrc: string;
-    avatar: string;
-    author: string;
-    date: string;
-    dateStr: string;
-    workCount: number;
-    answerCount: number;
-    subjectColor?: string; // 主题色
-    id: number;
-    userId: string;
-};
-type PhotoListProps = { list: PhotoItem[] };
+type PhotoListProps = { list: GalleryPhotoItem[]; total?: number };
 
 const BreakPoints = {
     xs: 352,
@@ -44,10 +29,11 @@ const BreakPoints = {
 configResponsive(BreakPoints);
 
 const PhotoList: FC<PhotoListProps> = (props) => {
-    const { list } = props;
+    const { list, total } = props;
+    console.log("list", list);
     const router = useRouter();
     const { t } = useTranslation();
-    const [photoList, setPhotoList] = useState<PhotoItem[]>([]); // 图片列表
+    const [photoList, setPhotoList] = useState<GalleryPhotoItem[]>([]); // 图片列表
     const [isMobile, setIsMobile] = useState(false);
     const [nowPointWidth, setNowPointWidth] = useState(800);
     const responsive = useResponsive();
@@ -108,13 +94,12 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             React.ImgHTMLAttributes<HTMLImageElement>;
                     }) => {
                         const item = data.photo;
+                        console.log("data.imageProps", data.imageProps);
                         return (
                             <div
                                 style={{
                                     ...data.imageProps.style,
-                                    aspectRatio: isMobile
-                                        ? "unset"
-                                        : data.imageProps.style?.aspectRatio,
+                                    aspectRatio: "unset",
                                 }}
                                 className={classnames(
                                     "story-list__item group",
@@ -129,7 +114,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                             <div className="flex-none">
                                                 <div className="avatar">
                                                     <img
-                                                        src={item.avatar}
+                                                        src={item.avatarUrl}
                                                         width="32"
                                                         height="32"
                                                         alt=""
@@ -148,7 +133,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                     }
                                                 >
                                                     <span className="block truncate">
-                                                        {item.author}
+                                                        {item.authorName}
                                                     </span>
                                                 </a>
                                             </div>
@@ -181,7 +166,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                     <div
                                         className="overflow-hidden w-full h-full relative story-list__photo grid:rounded-3"
                                         style={{
-                                            backgroundColor: item.subjectColor,
+                                            backgroundColor: item.themeColor,
                                         }}
                                     >
                                         <a
@@ -224,7 +209,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                 <div className="flex-none mr-8">
                                                     <div className="avatar bg-black">
                                                         <img
-                                                            src={item.avatar}
+                                                            src={item.avatarUrl}
                                                             width="32"
                                                             height="32"
                                                             className="avatar__photo is-loaded"
@@ -242,12 +227,13 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                                 )
                                                             }
                                                         >
-                                                            {item.author}
+                                                            {item.authorName}
                                                         </a>
                                                     </div>
 
                                                     <div className="opacity-75">
-                                                        {item.workCount}
+                                                        #&nbsp;
+                                                        {item.workCount || 0}
                                                     </div>
                                                 </div>
                                             </div>
@@ -259,9 +245,12 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                 <div className="mr-4 ml-4 leading-none">
                                                     <div className="pointer-events-auto">
                                                         <a
-                                                            href="/"
-                                                            target="_blank"
                                                             className="inline-flex align-top"
+                                                            onClick={() =>
+                                                                console.log(
+                                                                    "like",
+                                                                )
+                                                            }
                                                         >
                                                             <Icon
                                                                 className="icon-like"
@@ -273,9 +262,10 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                                                 <div className="mr-4 leading-none">
                                                     <a
-                                                        href="/"
-                                                        target="_blank"
                                                         className="inline-flex align-top pointer-events-auto"
+                                                        onClick={() =>
+                                                            console.log("favor")
+                                                        }
                                                     >
                                                         <Icon
                                                             className="icon-favor"
@@ -284,14 +274,14 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                     </a>
                                                 </div>
 
-                                                <div
-                                                    className="mr-4 leading-none flex items-center"
-                                                    data-controller="popovers--comments"
-                                                >
+                                                <div className="mr-4 leading-none flex items-center">
                                                     <a
-                                                        href="/#comments"
-                                                        target="_blank"
                                                         className="pointer-events-auto leading-none"
+                                                        onClick={() =>
+                                                            goRoute(
+                                                                `/photoDetail?pid=${item.id}#comment`,
+                                                            )
+                                                        }
                                                     >
                                                         <Icon
                                                             className="icon-message"
@@ -300,7 +290,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                     </a>
 
                                                     <span className="font-medium text-12 ml-3 leading-none text-white">
-                                                        {item.answerCount}
+                                                        {item.answerCount || 0}
                                                     </span>
                                                 </div>
                                             </div>
@@ -312,15 +302,20 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                         <div className="flex items-center justify-between mb-16">
                                             <div className="flex items-center text-12 leading-sm grid:text-14 grid:leading-md">
                                                 <span className="flex-none mr-8">
-                                                    Day 1,916
+                                                    #&nbsp;
+                                                    {item.workCount || 0}
                                                 </span>
 
                                                 <time
                                                     className="flex-none"
-                                                    dateTime={item.date}
-                                                    title={item.date}
+                                                    dateTime={item.createDate}
+                                                    title={item.createDate}
                                                 >
-                                                    {item.dateStr}
+                                                    {dayjs(
+                                                        item.createDate,
+                                                    ).format(
+                                                        "YYYY-MM-DD HH:mm:ss",
+                                                    )}
                                                 </time>
                                             </div>
 
@@ -328,10 +323,12 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                 <div className="px-8 leading-none text-14">
                                                     <div className="px-8 leading-none text-14">
                                                         <a
-                                                            href="/"
                                                             className="inline-flex align-top"
-                                                            data-tooltip=""
-                                                            data-original-title="Like"
+                                                            onClick={() =>
+                                                                console.log(
+                                                                    "like",
+                                                                )
+                                                            }
                                                         >
                                                             <Icon
                                                                 className="icon-like"
@@ -343,10 +340,10 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                                                 <div className="px-8 leading-none text-14">
                                                     <a
-                                                        href="/"
                                                         className="inline-flex align-top"
-                                                        data-tooltip=""
-                                                        data-original-title="Favorite"
+                                                        onClick={() =>
+                                                            console.log("favor")
+                                                        }
                                                     >
                                                         <Icon
                                                             className="icon-favor"
@@ -374,11 +371,12 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                     className="text-grey-53 cursor-pointer"
                                                     onClick={() =>
                                                         goRoute(
-                                                            `/talks/detail?${item.id}`,
+                                                            `/photoDetail?pid=${item.id}#comment`,
                                                         )
                                                     }
                                                 >
-                                                    {item.answerCount}
+                                                    {item.answerCount || 0}
+                                                    &nbsp;
                                                     {t("common.comments")}
                                                 </a>
                                             </div>

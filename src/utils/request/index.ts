@@ -6,9 +6,10 @@ import { Storage } from "@/utils/storage";
 import type { RequestConfig } from "./types";
 
 export interface BaseResponse<T> {
-    statusCode: number;
-    desc: string;
+    code: number;
+    message: string;
     result: T;
+    [key: string]: any;
 }
 
 // 重写返回类型

@@ -1,9 +1,15 @@
+import {
+    GetGalleryPhotoListRequest,
+    GetGalleryPhotoListResponse,
+    PhotoDetailInfoRequest,
+    PhotoDetailInfoResponse,
+} from "@/types/PhotoTypes";
 import request from "@/utils/request";
 import { CommonReq, CommonRes } from ".";
 
 // 获取画廊图片列表
-const getGalleryPhotoList = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
+const getGalleryPhotoList = (data: GetGalleryPhotoListRequest) => {
+    return request<GetGalleryPhotoListRequest, GetGalleryPhotoListResponse>({
         url: "/photo/gallery-photo-list",
         method: "POST",
         data,
