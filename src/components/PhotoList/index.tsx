@@ -173,7 +173,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                             className="block absolute pin z-3 cursor-pointer"
                                             onClick={() =>
                                                 goRoute(
-                                                    `/photoDetail?pid=${item.id}`,
+                                                    `/photoDetail?id=${item.id}`,
                                                 )
                                             }
                                         ></a>
@@ -279,7 +279,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                         className="pointer-events-auto leading-none"
                                                         onClick={() =>
                                                             goRoute(
-                                                                `/photoDetail?pid=${item.id}#comment`,
+                                                                `/photoDetail?id=${item.id}#comment`,
                                                             )
                                                         }
                                                     >
@@ -371,7 +371,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                                     className="text-grey-53 cursor-pointer"
                                                     onClick={() =>
                                                         goRoute(
-                                                            `/photoDetail?pid=${item.id}#comment`,
+                                                            `/photoDetail?id=${item.id}#comment`,
                                                         )
                                                     }
                                                 >

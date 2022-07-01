@@ -7,11 +7,18 @@ import store from "@redux/store";
 import Layouts from "@/layouts";
 import { Toaster } from "react-hot-toast";
 import "@/utils/i18n";
+import relativeTime from "dayjs/plugin/relativeTime";
+import dayjsLocalZh from "dayjs/locale/zh-cn";
+
+import dayjs from "dayjs";
 
 import "tailwindcss/tailwind.css";
 import "@styles/default.css";
 import "@styles/global.less";
 import "yet-another-react-lightbox/styles.css";
+
+dayjs.extend(relativeTime); // dayjs 相对时间插件
+dayjs.locale(dayjsLocalZh); // dayjs 国际化
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     const queryClient = new QueryClient();
