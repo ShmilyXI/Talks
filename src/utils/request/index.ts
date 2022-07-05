@@ -1,79 +1,77 @@
-import Request from "./request";
-import { AxiosResponse } from "axios";
+import { AxiosRequestConfig } from "axios";
 import toast from "react-hot-toast";
 import { Storage } from "@/utils/storage";
+import {
+  createRequest,
+  loadingMiddleware,
+  axiosFormDataMiddleware,
+  LoadingOption,
+  SerializedError,
+  serializedErrorMiddleware,
+  serializedResponseMiddleware,
+  showErrorMiddleware,
+  ShowErrorOption,
+  AxiosFormDataOption,
+  axiosCreateRequest,
+} from "../baseRequest";
 
-import type { RequestConfig } from "./types";
-
-export interface BaseResponse<T> {
-    code: number;
-    message: string;
-    result: T;
-    [key: string]: any;
+export interface HttpJson<T = any> {
+  retCode: string;
+  message: string;
+  data: T;
 }
 
-// 重写返回类型
-interface BaseRequestConfig<T, R> extends RequestConfig<BaseResponse<R>> {
-    data?: T;
-}
+export type RequestType<T extends Partial<RequestConfig>> = Omit<
+  Partial<RequestConfig>,
+  keyof T
+> &
+  T;
 
-const baseURL = "/api";
+export type RequestConfig = AxiosRequestConfig &
+  LoadingOption &
+  ShowErrorOption &
+  AxiosFormDataOption & { baseUrl?: string } & {
+    params?: Record<string, any>;
+  };
 
-const request = new Request({
-    baseURL,
-    timeout: 1000 * 60 * 5,
-    interceptors: {
-        // 请求拦截器
-        requestInterceptors: (config) => {
-            const storage = new Storage(sessionStorage, "Talks");
-            if (config.headers)
-                config.headers.Authorization = `Bearer ${storage.getItem(
-                    "token",
-                )}`;
-            return config;
-        },
-        // 响应拦截器
-        responseInterceptors: (result: AxiosResponse) => {
-            if (result.data?.code !== "0") {
-                toast.error(result.data.message, { id: "error" });
-            }
-            return result;
-        },
-        responseInterceptorsCatch: (error) => {
-            const data = error.response?.data;
-            toast.error(data?.message || "系统繁忙，请稍后再试", {
-                id: "error",
-            });
-            if (data?.code === "-3") {
-                const storage = new Storage(sessionStorage, "Talks");
-                storage.removeItem("token");
-                window.location.href = "/login?signIn=1";
-            }
-        },
-    },
+export type RequestGetType<T extends Record<string, any>> = RequestType<{
+  params: T;
+}>;
+
+export type RequestPostType<T extends Record<string, any>> = RequestType<{
+  data: T;
+}>;
+
+const request = axiosCreateRequest<RequestConfig, HttpJson>({
+  timeout: 60000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
-
-/**
- * @description: 函数的描述
- * @generic D 请求参数
- * @generic T 响应结构
- * @param {BaseRequestConfig} config 不管是GET还是POST请求都使用data
- * @returns {Promise}
- */
-const BaseRequest = <D = any, T = any>(config: BaseRequestConfig<D, T>) => {
-    const { method = "GET" } = config;
-    if (method?.toUpperCase() === "GET") {
-        config.params = config.data;
-    }
-    return request.request<BaseResponse<T>>(config);
-};
-// 取消请求
-export const cancelRequest = (url: string | string[]) => {
-    return request.cancelRequest(url);
-};
-// 取消全部请求
-export const cancelAllRequest = () => {
-    return request.cancelAllRequest();
-};
-
-export default BaseRequest;
+// php 部分旧的接口需使用 formdata 方式提交数据
+// request.middlewares.request.use(
+//   loadingMiddleware({
+//     showLoading: () => void YkLoading.start(),
+//     hideLoading: () => void YkLoading.end(),
+//     hideLoadingNextTick: true,
+//   }),
+// );
+request.middlewares.request.use(
+  showErrorMiddleware({
+    showError: (err: SerializedError<"retCode", "message">) =>
+      void toast.error(err.message || "系统繁忙，请稍后再试"),
+  }),
+);
+request.middlewares.request.use(axiosFormDataMiddleware());
+request.middlewares.response.use(serializedResponseMiddleware());
+request.middlewares.request.use(async (ctx, next) => {
+  const { config } = ctx;
+  console.log('config', config)
+  config.params = { ...config.data, ...config.params };
+  console.log('config.params', config.params)
+  const storage = new Storage(sessionStorage, "Talks");
+  if (config.headers)
+    config.headers.Authorization = `Bearer ${storage.getItem("token")}`;
+  await next();
+});
+export default request;

@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from "@/utils/request1";
 import { CommonReq, CommonRes } from "./";
 
 // 获取最新讨论列表

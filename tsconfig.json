@@ -8,7 +8,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    // "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -50,13 +50,15 @@
         "./i18n.json"
       ]
     },
-    "incremental": true
+    "incremental": true,
+    "strict": false
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/utils/i18n.js"  ],
+    "**/*.tsx",
+    "src/utils/i18n.js"
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from "@/utils/request1";
 import user from "./user";
 import photo from "./photo";
 import community from "./community";

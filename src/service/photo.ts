@@ -1,50 +1,46 @@
 import {
-    GetGalleryPhotoListRequest,
-    GetGalleryPhotoListResponse,
-    PhotoDetailInfoRequest,
-    PhotoDetailInfoResponse,
+  GetGalleryPhotoListRequest,
+  GetGalleryPhotoListResponse,
+  PhotoDetailInfoRequest,
+  PhotoDetailInfoResponse,
 } from "@/types/PhotoTypes";
-import request from "@/utils/request";
+import request, { RequestGetType, RequestPostType } from "@/utils/request";
 import { CommonReq, CommonRes } from ".";
 
-// 获取画廊图片列表
-const getGalleryPhotoList = (data: GetGalleryPhotoListRequest) => {
-    return request<GetGalleryPhotoListRequest, GetGalleryPhotoListResponse>({
-        url: "/photo/gallery-photo-list",
-        method: "POST",
-        data,
-    });
+const createApi = request.createApi({ baseURL: "/api" });
+
+const photoApi = {
+  /** 获取画廊图片列表 **/
+  getGalleryPhotoList: createApi<
+    GetGalleryPhotoListResponse,
+    RequestPostType<GetGalleryPhotoListRequest>
+  >({
+    url: "/photo/gallery-photo-list",
+    method: "POST",
+  }),
+  /** 获取画廊图片详情 **/
+  getPhotoDetailInfo: createApi<
+    PhotoDetailInfoResponse,
+    RequestGetType<PhotoDetailInfoRequest>
+  >({
+    url: "/photo/photo-detail-info",
+    method: "GET",
+  }),
+  /** 上传图片 **/
+  uploadPhoto: createApi<CommonRes, RequestPostType<CommonReq>>({
+    url: "/photo/upload-photo",
+    method: "POST",
+  }),
+  /** 获取画廊图片评论列表 **/
+  getPhotoDetailComments: createApi<CommonRes, RequestGetType<CommonReq>>({
+    url: "/photo/photo-detail-comments",
+    method: "GET",
+  }),
+  /** 获取画廊里程碑成员列表 **/
+  getPhotoMilestoneList: createApi<CommonRes, RequestGetType<CommonReq>>({
+    url: "/photo/photo-milestone-list",
+    method: "GET",
+  }),
 };
 
-// 获取画廊图片详情
-const getPhotoDetailInfo = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/photo/photo-detail-info",
-        method: "GET",
-        data,
-    });
-};
-
-// 获取画廊图片评论列表
-const getPhotoDetailComments = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/photo/photo-detail-comments",
-        method: "GET",
-        data,
-    });
-};
-// 获取画廊里程碑成员列表
-const getPhotoMilestoneList = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/photo/photo-milestone-list",
-        method: "GET",
-        data,
-    });
-};
-
-export default {
-    getGalleryPhotoList,
-    getPhotoDetailInfo,
-    getPhotoDetailComments,
-    getPhotoMilestoneList,
-};
+export default photoApi;
