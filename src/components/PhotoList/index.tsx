@@ -30,7 +30,6 @@ configResponsive(BreakPoints);
 
 const PhotoList: FC<PhotoListProps> = (props) => {
   const { list, total } = props;
-  console.log("list", list);
   const router = useRouter();
   const { t } = useTranslation();
   const [photoList, setPhotoList] = useState<GalleryPhotoItem[]>([]); // 图片列表

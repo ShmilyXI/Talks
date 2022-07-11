@@ -26,9 +26,14 @@ const photoApi = {
     url: "/photo/photo-detail-info",
     method: "GET",
   }),
-  /** 上传图片 **/
+  /** 上传照片 **/
   uploadPhoto: createApi<CommonRes, RequestPostType<CommonReq>>({
     url: "/photo/upload-photo",
+    method: "POST",
+  }),
+  /** 发布照片 **/
+  publishPhoto: createApi<CommonRes, RequestPostType<CommonReq>>({
+    url: "/photo/publish-photo",
     method: "POST",
   }),
   /** 获取画廊图片评论列表 **/

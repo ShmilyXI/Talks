@@ -12,6 +12,7 @@ import Api from "@/service";
 import toast from "react-hot-toast";
 import Form, { Field } from "rc-field-form";
 import { Checked } from "@/components";
+import { useRouter } from "next/router";
 
 type Props = {
   visible: boolean;
@@ -26,23 +27,24 @@ const Index: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const { run: uploadPhoto } = useRequest(Api.uploadPhoto, {
-    manual: true,
-    onSuccess: async (result: any, params) => {
-      console.log("result :>> ", result);
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
   // 提交表单
   const onSubmit = async (values) => {
-    console.log("values :>> ", values);
-    const data = await Api.uploadPhoto({
+    const { data: photoData } = await Api.uploadPhoto({
       data: tempFile,
     });
-    console.log("data", data);
+    const { data } = await Api.publishPhoto({
+      data: {
+        ...values,
+        url: photoData?.imgUrl,
+        width: photoData?.width,
+        height: photoData?.height,
+        themeColor: photoData?.themeColor,
+      },
+    });
+    if (data?.id) {
+      toast.success("发布成功!");
+      setModalLeft();
+    }
   };
 
   // 图片组件变更
@@ -214,7 +216,7 @@ const Index: FC<Props> = (props) => {
                           <div className="flex flex-wrap -mb-8">
                             <div className="mr-8 mb-8">
                               <Field
-                                name="date"
+                                name="shootingDate"
                                 rules={[
                                   {
                                     required: true,
