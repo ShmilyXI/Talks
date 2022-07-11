@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { useToggle, useRequest } from "ahooks";
 import { useTranslation } from "react-i18next";
 import Api from "@/service";
-import { BasePhotoInfo } from "@/types/PhotoTypes";
+import { BasePhotoInfo, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
 import classNames from "classnames";
 import _ from "lodash";
 
@@ -24,44 +24,44 @@ export type CommentItem = {
 
 // Mood Location  View
 const MoodEnum: Mood = {
-  awesome: { text: "Awesome", icon: "icon-emoji" },
-  good: { text: "Good", icon: "icon-emoji" },
-  meh: { text: "Meh", icon: "icon-emoji" },
-  bad: { text: "Bad", icon: "icon-emoji" },
-  terrible: { text: "Terrible", icon: "icon-emoji" },
+  Awesome: { text: "Awesome", icon: "icon-emoji" },
+  Good: { text: "Good", icon: "icon-emoji" },
+  Meh: { text: "Meh", icon: "icon-emoji" },
+  Bad: { text: "Bad", icon: "icon-emoji" },
+  Terrible: { text: "Terrible", icon: "icon-emoji" },
 };
 
 const Index = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = router.query as { id: string };
   const { t } = useTranslation();
   const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] = useToggle();
   const [curPhotoInfo, setCurPhotoInfo] = useState<BasePhotoInfo>(); // 当前图片信息
   const [photoList, setPhotoList] = useState<BasePhotoInfo[]>(); // 图片列表
   const [commentList, setCommentList] = useState<CommentItem[]>([]); // 评论列表
+  const [photoDetailInfo, setPhotoDetailInfo] =
+    useState<PhotoDetailInfoResponse["data"]>(); // 图片详情信息
 
-  const {
-    data: detailInfoData,
-    error,
-    loading,
-    run: runGetPhotoInfo,
-  }: any = useRequest(Api.getPhotoDetailInfo, {
-    manual: true,
-    onSuccess: ({ data }) => {
-      setCurPhotoInfo((data?.list || [])?.[data.index]);
-      setPhotoList(data?.list || []);
-    },
-  });
   const {
     data: commentData,
     error: commentError,
     loading: commentLoading,
   }: any = useRequest(Api.getPhotoDetailComments);
 
+  // 获取图片详情信息
+  const getPhotoInfo = async (id: string) => {
+    const { data } = await Api.getPhotoDetailInfo({ params: { id } });
+    const list = data?.list || [];
+    setCurPhotoInfo(data?.photoInfo);
+    setPhotoList(list);
+    setPhotoDetailInfo(data);
+  };
+
   useEffect(() => {
     if (!id) return;
-    runGetPhotoInfo({ id: id });
+    getPhotoInfo(id);
   }, [id]);
+
   useEffect(() => {
     setCommentList(commentData?.list || []);
   }, [commentData]);
@@ -106,7 +106,7 @@ const Index = () => {
         <div className="flex-grow lg:overflow-y-scroll" id="story-details">
           <PhotoViews
             list={photoList || []}
-            index={detailInfoData?.data?.index}
+            index={photoDetailInfo?.index}
             onChange={(index) => {
               const item = photoList?.[index];
               item && setCurPhotoInfo(item);
@@ -281,11 +281,12 @@ const Index = () => {
             </div>
 
             {/* 图片扩展信息 */}
-            <div className="flex  flex-wrap -mx-8 text-12 leading-sm lg:text-14 lg:leading-md">
+            <div className="flex flex-wrap -mx-8 text-12 leading-sm lg:text-14 lg:leading-md">
               <div
-                className={classnames("flex items-center px-8", {
-                  hidden: !curPhotoInfo?.mood,
-                })}
+                className={classnames(
+                  "items-center px-8",
+                  curPhotoInfo?.mood ? "flex" : "hidden",
+                )}
               >
                 <Icon
                   className={MoodEnum?.[curPhotoInfo?.mood!]?.icon}
@@ -295,9 +296,10 @@ const Index = () => {
               </div>
 
               <div
-                className={classNames("flex items-center px-8", {
-                  hidden: !curPhotoInfo?.mood,
-                })}
+                className={classNames(
+                  "items-center px-8",
+                  curPhotoInfo?.place ? "flex" : "hidden",
+                )}
               >
                 <Icon className="icon-map" addClassName="text-14 lg:text-16" />
                 <a
@@ -313,9 +315,10 @@ const Index = () => {
               </div>
 
               <div
-                className={classNames("flex items-center px-8", {
-                  hidden: !curPhotoInfo?.mood,
-                })}
+                className={classNames(
+                  "items-center px-8",
+                  curPhotoInfo?.viewCount ? "flex" : "hidden",
+                )}
               >
                 <Icon
                   className="icon-browse"
@@ -326,7 +329,7 @@ const Index = () => {
             </div>
 
             {/* 画廊状态 */}
-            <div className="hidden lg:block">
+            {/* <div className="hidden lg:block">
               {curPhotoInfo?.galleries?.length ? (
                 <div className="mt-24 md:mt-48">
                   <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 md:mb-24">
@@ -482,7 +485,7 @@ const Index = () => {
                   </a>
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* 相机信息 */}
             <div className="hidden lg:block mt-48">
@@ -728,7 +731,12 @@ const Index = () => {
               </div>
 
               <div className="text-14 leading-none flex -mr-8 cursor-default">
-                <div className="flex items-center px-8">
+                <div
+                  className={classNames(
+                    "items-center px-8",
+                    curPhotoInfo?.viewCount ? "flex" : "hidden",
+                  )}
+                >
                   <Icon
                     className="icon-browse"
                     addClassName="text-22 text-black"

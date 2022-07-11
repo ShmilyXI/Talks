@@ -3,9 +3,12 @@ import {
   GetGalleryPhotoListResponse,
   PhotoDetailInfoRequest,
   PhotoDetailInfoResponse,
+  PublishPhotoRequest,
+  PublishPhotoResponse,
+  UploadPhotoResponse,
 } from "@/types/PhotoTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
-import { CommonReq, CommonRes } from ".";
+import { CommonReq, CommonRes } from "./";
 
 const createApi = request.createApi({ baseURL: "/api" });
 
@@ -27,12 +30,15 @@ const photoApi = {
     method: "GET",
   }),
   /** 上传照片 **/
-  uploadPhoto: createApi<CommonRes, RequestPostType<CommonReq>>({
+  uploadPhoto: createApi<CommonRes, RequestPostType<UploadPhotoResponse>>({
     url: "/photo/upload-photo",
     method: "POST",
   }),
   /** 发布照片 **/
-  publishPhoto: createApi<CommonRes, RequestPostType<CommonReq>>({
+  publishPhoto: createApi<
+    PublishPhotoResponse,
+    RequestPostType<PublishPhotoRequest>
+  >({
     url: "/photo/publish-photo",
     method: "POST",
   }),

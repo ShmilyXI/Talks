@@ -21,26 +21,15 @@ export interface HttpJson<T = any> {
   data: T;
 }
 
-export type RequestType<T extends Partial<RequestConfig>> = Omit<
-  Partial<RequestConfig>,
-  keyof T
-> &
-  T;
+export type RequestType<T extends RequestConfig> = Omit<RequestConfig, keyof T> & T;
+
+export type RequestGetType<T = Record<string, any>> = RequestType<{ params: T }>;
+export type RequestPostType<T = Record<string, any>> = RequestType<{ data: T }>;
 
 export type RequestConfig = AxiosRequestConfig &
   LoadingOption &
   ShowErrorOption &
-  AxiosFormDataOption & { baseUrl?: string } & {
-    params?: Record<string, any>;
-  };
-
-export type RequestGetType<T extends Record<string, any>> = RequestType<{
-  params: T;
-}>;
-
-export type RequestPostType<T extends Record<string, any>> = RequestType<{
-  data: T;
-}>;
+  AxiosFormDataOption;
 
 const request = axiosCreateRequest<RequestConfig, HttpJson>({
   timeout: 60000,
@@ -66,9 +55,7 @@ request.middlewares.request.use(axiosFormDataMiddleware());
 request.middlewares.response.use(serializedResponseMiddleware());
 request.middlewares.request.use(async (ctx, next) => {
   const { config } = ctx;
-  console.log('config', config)
   config.params = { ...config.data, ...config.params };
-  console.log('config.params', config.params)
   const storage = new Storage(sessionStorage, "Talks");
   if (config.headers)
     config.headers.Authorization = `Bearer ${storage.getItem("token")}`;

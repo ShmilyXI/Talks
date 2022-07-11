@@ -44,6 +44,9 @@ const Index: FC<Props> = (props) => {
     if (data?.id) {
       toast.success("发布成功!");
       setModalLeft();
+      form.resetFields();
+      setTempFile(undefined);
+      setTempImage(undefined);
     }
   };
 
@@ -63,9 +66,10 @@ const Index: FC<Props> = (props) => {
     formData.set("size", `${file.size}`);
     formData.set("type", file.type);
     setTempFile(formData);
-    const reader = new FileReader(); //创建文件读取对象
+    const reader = new FileReader();
+    // 创建文件读取对象
     reader.readAsDataURL(file);
-    //监听文件读取结束后事件
+    // 监听文件读取结束后事件
     reader.onloadend = (e) => {
       setTempImage(e?.target?.result);
     };

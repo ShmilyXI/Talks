@@ -1,31 +1,41 @@
-import request from "@/utils/request1";
-import { CommonReq, CommonRes } from "./";
+import {
+  UserLoginResponse,
+  UserLoginRequest,
+  UserRegisterResponse,
+  UserRegisterRequest,
+  GetUserInfoResponse,
+  GetUserInfoRequest,
+} from "@/types/UserTypes";
+import request, {
+  HttpJson,
+  RequestGetType,
+  RequestPostType,
+} from "@/utils/request";
 
-// 登录
-const userLogin = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/user/login",
-        method: "POST",
-        data,
-    });
+const createApi = request.createApi({ baseURL: "/api" });
+
+const userApi = {
+  /** 登录 **/
+  userLogin: createApi<UserLoginResponse, RequestPostType<UserLoginRequest>>({
+    url: "/user/login",
+    method: "POST",
+  }),
+  /** 注册 **/
+  userRegister: createApi<
+    UserRegisterResponse,
+    RequestPostType<UserRegisterRequest>
+  >({
+    url: "/user/register",
+    method: "POST",
+  }),
+  /** 获取用户信息 **/
+  getUserInfo: createApi<
+    GetUserInfoResponse,
+    RequestGetType<GetUserInfoRequest>
+  >({
+    url: "/user/get-user-info",
+    method: "GET",
+  }),
 };
 
-// 注册
-const userRegister = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/user/register",
-        method: "POST",
-        data,
-    });
-};
-
-// 获取用户信息
-const getUserInfo = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/user/user-info",
-        method: "GET",
-        data,
-    });
-};
-
-export default { userLogin, userRegister, getUserInfo };
+export default userApi;

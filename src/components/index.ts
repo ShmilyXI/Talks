@@ -9,12 +9,13 @@ import Comments from "./Comments";
 import Checked from "./Checked";
 
 export {
-    Button,
-    Filter,
-    Icon,
-    Menu,
-    PlaceholderSvg,
-    PhotoViews,
-    PhotoList,
-    Checked,
+  Button,
+  Filter,
+  Icon,
+  Menu,
+  PlaceholderSvg,
+  PhotoViews,
+  PhotoList,
+  Checked,
+  Comments,
 };

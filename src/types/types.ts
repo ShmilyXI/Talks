@@ -11,7 +11,7 @@ export namespace common {
   export interface Request {}
 
   export interface Response {
-    code?: string;
+    retCode?: string;
     message?: string;
   }
 }

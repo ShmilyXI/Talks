@@ -1,6 +1,6 @@
 import { common } from './types';
 export interface BaseUserInfo {
-  id: number;
+  id: string;
   name: string;
   telephone: string;
   avatar_url: string;
@@ -10,25 +10,25 @@ export interface BaseUserInfo {
 }
 
 export interface GetUserInfoRequest {
-  id: number;
+  id?: string;
 }
 export interface GetUserInfoResponse extends common.Response {
   data?: BaseUserInfo;
 }
-export interface RegisterRequest {
+export interface UserRegisterRequest {
   name: string;
   telephone: string;
   password: string;
 }
-export interface RegisterResponse extends common.Response {}
+export interface UserRegisterResponse extends common.Response {}
 
-export interface LoginRequest {
+export interface UserLoginRequest {
   telephone: string;
   password: string;
 }
-export interface LoginResponse extends common.Response {
+export interface UserLoginResponse extends common.Response {
   token?: string;
   data?: {
-    id: number;
+    id: string;
   };
 }
