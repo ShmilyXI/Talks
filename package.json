@@ -29,6 +29,7 @@
     "next-translate": "^1.0.1",
     "next-with-less": "^2.0.5",
     "prettier": "^2.2.1",
+    "rc-field-form": "^1.27.0",
     "rc-form": "^2.4.12",
     "react": "18.1.0",
     "react-dom": "18.1.0",

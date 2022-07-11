@@ -50,15 +50,15 @@ const PhotoViews: FC<Props> = (props) => {
     onChange(index);
   };
 
-  const slides = list.map(({ src, width, height, title, description }) => ({
-    src,
-    key: `${src}-${_.random(1, 99)}`,
+  const slides = list.map(({ url, width, height, title, description }) => ({
+    src: url,
+    key: `${url}-${_.random(1, 99)}`,
     // aspectRatio: width / height,
     title,
     description,
     srcSet: [
       {
-        src,
+        src: url,
         width,
         height,
       },
@@ -103,7 +103,7 @@ const PhotoViews: FC<Props> = (props) => {
               onClick={setLightBoxRight}
             >
               <img
-                src={list?.[showIndex]?.src}
+                src={list?.[showIndex]?.url}
                 width={list?.[showIndex]?.width}
                 height={list?.[showIndex]?.height}
                 className="w-full lg:w-auto align-top cursor-zoom-in is-loaded"
@@ -148,7 +148,7 @@ const PhotoViews: FC<Props> = (props) => {
                   className={classnames(
                     "group flex-none content-box w-72 pr-4 md:px-12",
                   )}
-                  key={item.src}
+                  key={item.url}
                 >
                   <div
                     className="overflow-hidden rounded-2"
@@ -167,7 +167,7 @@ const PhotoViews: FC<Props> = (props) => {
                     >
                       <a className="block relative overflow-hidden cursor-pointer">
                         <img
-                          src={item.src}
+                          src={item.url}
                           width={item.width}
                           height={item.height}
                           className={classnames(

@@ -15,7 +15,7 @@ export interface BasePhotoInfo {
   avatarUrl: string;
   commentId: number;
   galleryId: number;
-  src: string;
+  url: string;
   width: number;
   height: number;
   title: string;
@@ -28,12 +28,10 @@ export interface BasePhotoInfo {
   exifData: ExifData;
   createDate: string;
   updateDate: string;
-  index: number;
-  photoList:BasePhotoInfo[],
 }
 
 export interface PhotoDetailInfoResponse extends common.Response {
-  data?: BasePhotoInfo;
+  data?: { index: number; list: BasePhotoInfo[] };
 }
 export interface PhotoDetailInfoRequest {
   id: string | number;
@@ -44,7 +42,7 @@ export interface GalleryPhotoItem {
   userId: string;
   commentId: number;
   galleryId: number;
-  src: string;
+  url: string;
   width: number;
   height: number;
   title: string;

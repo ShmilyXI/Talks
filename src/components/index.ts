@@ -6,6 +6,7 @@ import PlaceholderSvg from "./PlaceholderSvg";
 import PhotoViews from "./PhotoViews";
 import PhotoList from "./PhotoList";
 import Comments from "./Comments";
+import Checked from "./Checked";
 
 export {
     Button,
@@ -15,5 +16,5 @@ export {
     PlaceholderSvg,
     PhotoViews,
     PhotoList,
-    Comments,
+    Checked,
 };

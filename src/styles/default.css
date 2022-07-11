@@ -2107,7 +2107,7 @@ input[type="radio"]:disabled ~ .radio__icon {
 }
 .flatpickr-day {
     background: none;
-    color: #888;
+    color: #333;
     cursor: pointer;
     display: inline-flex;
     flex-basis: 14.2857143%;
@@ -2120,6 +2120,9 @@ input[type="radio"]:disabled ~ .radio__icon {
 }
 .flatpickr-day:focus {
     outline: 0;
+}
+.flatpickr-disabled{
+    color: #999;
 }
 .flatpickr-day.disabled,
 .flatpickr-day.disabled:hover,
@@ -2222,6 +2225,10 @@ input[type="radio"]:disabled ~ .radio__icon {
 .flatpickr-day.uploaded:hover.nextMonthDay,
 .flatpickr-day.uploaded:hover.prevMonthDay {
     opacity: 0.25;
+}
+.flatpickr-day.selected{
+    font-weight: 600;
+    font-size: 16px;
 }
 .flatpickr-day.selected .flatpickr-day-inner {
     background: #5a44ff;
