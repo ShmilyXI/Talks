@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from "react";
 type CheckedProps = {
   value?: boolean;
   onChange?: (value?: boolean) => void;
-  disabled: boolean;
+  disabled?: boolean;
   children: JSX.Element | JSX.Element[];
 };
 

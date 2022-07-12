@@ -87,23 +87,23 @@ const Index = () => {
       value: "community",
       className: "xl:hidden",
     },
-    {
-      label: "Prints",
-      value: "prints",
-      className: "xl:hidden",
-    },
+    // {
+    //   label: "Prints",
+    //   value: "prints",
+    //   className: "xl:hidden",
+    // },
     {
       label: t("common.galleries"),
       value: "galleries",
     },
-    {
-      label: "Places",
-      value: "places",
-    },
-    {
-      label: "Tags",
-      value: "tags",
-    },
+    // {
+    //   label: "Places",
+    //   value: "places",
+    // },
+    // {
+    //   label: "Tags",
+    //   value: "tags",
+    // },
   ];
 
   // 路由跳转
@@ -124,6 +124,15 @@ const Index = () => {
       goRoute(`/${item.value}`);
     }
   };
+
+  // 退出登录
+  const onLogout = () => {
+    const storage = new Storage(sessionStorage, "Talks");
+    storage.removeItem("token");
+    storage.removeItem("userInfo");
+    goRoute("/login?signIn=1");
+  };
+
   return (
     <div
       className="d-container navbar bg-white px-0 md:px-32 z-60 shadow-navbar sticky pin-t md:relative md:shadow-none"
@@ -137,7 +146,7 @@ const Index = () => {
         )}
         ref={wrapRef}
       >
-        <div className="d-d-container px-0 flex items-center shadow-navbar-inner">
+        <div className="d-container px-0 flex items-center shadow-navbar-inner">
           <button
             type="button"
             className="button-reset py-20 text-white text-24 leading-none lg:hidden text-center w-64"
@@ -244,8 +253,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-
-        <div className="d-d-container px-24 py-12 flex flex-col">
+        <div className="d-container px-24 py-12 flex flex-col">
           <div className="-mx-24 -my-12 relative">
             <div className="navbar__popup overflow-y-auto">
               <div className="px-24 py-12 flex flex-col">
@@ -286,21 +294,21 @@ const Index = () => {
                   </span>
                 </a>
 
-                <a
+                {/* <a
                   className={classnames("py-4 text-white font-medium", {
                     hidden: !isLogin,
                   })}
                 >
                   Weekly themes
-                </a>
+                </a> */}
 
-                <a
+                {/* <a
                   className={classnames("py-4 text-white font-medium", {
                     hidden: !isLogin,
                   })}
                 >
                   Prints
-                </a>
+                </a> */}
 
                 <a
                   className={classnames("mt-16 py-4 text-grey-53", {
@@ -334,29 +342,29 @@ const Index = () => {
                   My Galleries
                 </a>
 
-                <a
+                {/* <a
                   className={classnames("py-4 text-grey-53", {
                     hidden: !isLogin,
                   })}
                 >
                   My Badges
-                </a>
+                </a> */}
 
-                <a
+                {/* <a
                   className={classnames("mt-16 py-4 text-grey-53", {
                     hidden: !isLogin,
                   })}
                 >
                   Membership
-                </a>
+                </a> */}
 
-                <a
+                {/* <a
                   className={classnames("py-4 text-grey-53", {
                     hidden: !isLogin,
                   })}
                 >
                   Orders
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -367,9 +375,12 @@ const Index = () => {
               )}
             >
               <a
-                className={classnames("text-grey-53 hover:text-grey-80 mr-24", {
-                  hidden: !isLogin,
-                })}
+                className={classnames(
+                  "text-grey-53 hover:text-grey-80 mr-24 cursor-pointer",
+                )}
+                onClick={() => {
+                  goRoute("/settings");
+                }}
               >
                 <svg
                   className="icon"
@@ -379,12 +390,13 @@ const Index = () => {
                   <path d="M482.696 299.276l-32.61-18.827a195.168 195.168 0 0 0 0-48.899l32.61-18.827c9.576-5.528 14.195-16.902 11.046-27.501-11.214-37.749-31.175-71.728-57.535-99.595-7.634-8.07-19.817-9.836-29.437-4.282l-32.562 18.798a194.125 194.125 0 0 0-42.339-24.48V38.049c0-11.13-7.652-20.804-18.484-23.367-37.644-8.909-77.118-8.91-114.77 0-10.831 2.563-18.484 12.236-18.484 23.367v37.614a194.101 194.101 0 0 0-42.339 24.48L105.23 81.345c-9.621-5.554-21.804-3.788-29.437 4.282-26.36 27.867-46.321 61.847-57.535 99.595-3.149 10.599 1.47 21.972 11.046 27.501l32.61 18.827a195.168 195.168 0 0 0 0 48.899l-32.61 18.827c-9.576 5.528-14.195 16.902-11.046 27.501 11.214 37.748 31.175 71.728 57.535 99.595 7.634 8.07 19.817 9.836 29.437 4.283l32.562-18.798a194.08 194.08 0 0 0 42.339 24.479v37.614c0 11.13 7.652 20.804 18.484 23.367 37.645 8.909 77.118 8.91 114.77 0 10.831-2.563 18.484-12.236 18.484-23.367v-37.614a194.138 194.138 0 0 0 42.339-24.479l32.562 18.798c9.62 5.554 21.803 3.788 29.437-4.283 26.36-27.867 46.321-61.847 57.535-99.595 3.149-10.599-1.47-21.972-11.046-27.501zm-65.479 100.461l-46.309-26.74c-26.988 23.071-36.559 28.876-71.039 41.059v53.479a217.145 217.145 0 0 1-87.738 0v-53.479c-33.621-11.879-43.355-17.395-71.039-41.059l-46.309 26.74c-19.71-22.09-34.689-47.989-43.929-75.958l46.329-26.74c-6.535-35.417-6.538-46.644 0-82.079l-46.329-26.74c9.24-27.969 24.22-53.869 43.929-75.969l46.309 26.76c27.377-23.434 37.063-29.065 71.039-41.069V44.464a216.79 216.79 0 0 1 87.738 0v53.479c33.978 12.005 43.665 17.637 71.039 41.069l46.309-26.76c19.709 22.099 34.689 47.999 43.929 75.969l-46.329 26.74c6.536 35.426 6.538 46.644 0 82.079l46.329 26.74c-9.24 27.968-24.219 53.868-43.929 75.957zM256 160c-52.935 0-96 43.065-96 96s43.065 96 96 96 96-43.065 96-96-43.065-96-96-96zm0 160c-35.29 0-64-28.71-64-64s28.71-64 64-64 64 28.71 64 64-28.71 64-64 64z" />
                 </svg>
               </a>
-
               <button
                 className={classnames(
-                  "button-reset text-grey-53 hover:text-grey-80",
-                  { hidden: !isLogin },
+                  "button-reset text-grey-53 hover:text-grey-80 cursor-pointer",
                 )}
+                onClick={() => {
+                  onLogout();
+                }}
               >
                 <svg
                   className="icon"
@@ -417,7 +429,7 @@ const Index = () => {
         </button>
 
         <a
-          href="https://tookapic.com"
+          href="/"
           className={classnames(
             "py-20 text-black text-24 leading-none text-center flex-1",
             { hidden: !isLogin },
@@ -433,7 +445,7 @@ const Index = () => {
         </a>
 
         <a
-          href="https://tookapic.com/messages"
+          href="/messages"
           className={classnames(
             "py-20 text-black text-24 leading-none text-center flex-1 relative",
             { hidden: !isLogin },
@@ -449,7 +461,7 @@ const Index = () => {
         </a>
 
         <a
-          href="https://tookapic.com/notifications"
+          href="/notifications"
           className={classnames(
             "py-20 text-black text-24 leading-none text-center flex-1 relative",
             { hidden: !isLogin },
@@ -472,6 +484,7 @@ const Index = () => {
           <button
             type="button"
             className="button button--secondary text-accent text-24 leading-none px-10 py-6"
+            onClick={toggleAddPhotoModal}
           >
             <svg
               className="icon"
@@ -482,9 +495,8 @@ const Index = () => {
             </svg>
           </button>
         </div>
-
         <a
-          href="https://tookapic.com/977197585"
+          href="/userDetail/977197585"
           className={classnames("w-64 p-16 text-center", {
             hidden: !isLogin,
           })}
@@ -594,7 +606,7 @@ const Index = () => {
         </div>
         {/* <div className="hidden lg:block ml-20 truncate">
                         <a
-                            href="https://tookapic.com/auth/register"
+                            href="/login"
                             className="text-inherit"
                         >
                             Start your own 365 Project
@@ -706,28 +718,30 @@ const Index = () => {
             className="hidden lg:block py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black hover:no-underline cursor-pointer"
             onClick={() => goRoute("/")}
           >
-            Home
+            {/* Home */}主页
           </a>
 
           <a
             className="block py-4 px-16 leading-sm font-medium text-black hover:no-underline cursor-pointer"
             onClick={() => goRoute("/")}
           >
-            Photos
+            {/* Photos */}照片
           </a>
 
-          <a
+          {/* <a
             className="block py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black hover:no-underline cursor-pointer"
             onClick={() => goRoute("/themes")}
           >
             Themes
-          </a>
+          </a> */}
 
           <a
             className="group hover:no-underline hidden xl:flex items-center py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black cursor-pointer"
             onClick={() => goRoute("/community")}
           >
-            <span className="group-hover:text-black">Community</span>
+            <span className="group-hover:text-black">
+              {/* Community */}社区
+            </span>
           </a>
 
           <Menu
@@ -802,8 +816,8 @@ const Index = () => {
                 { label: "My Likes", value: "likes" },
                 { label: "My Favorites", value: "favorites" },
                 { label: "My Galleries", value: "galleries" },
-                { label: "My Badges", value: "badges" },
-                { label: "Orders", value: "orders" },
+                // { label: "My Badges", value: "badges" },
+                // { label: "Orders", value: "orders" },
                 {
                   label: "Settings",
                   value: "settings",
@@ -823,10 +837,7 @@ const Index = () => {
                 setUserMenuLeft();
                 if (item.value) {
                   if (item.value === "logout") {
-                    const storage = new Storage(sessionStorage, "Talks");
-                    storage.removeItem("token");
-                    storage.removeItem("userInfo");
-                    goRoute("/login?signIn=1");
+                    onLogout();
                     return;
                   }
                   goRoute(`/${item.value}`);

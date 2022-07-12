@@ -5,7 +5,7 @@ import React, { FC, useEffect, useRef, useState } from "react";
 
 type GalleryProps = {
   onChange?: (value?: number[]) => void;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 type GalleryItem = {

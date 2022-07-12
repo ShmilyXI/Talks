@@ -7,7 +7,7 @@ import React, { FC, useEffect, useState } from "react";
 type PlaceProps = {
   value?: IItem;
   onChange?: (value?: IItem) => void;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 const Place: FC<PlaceProps> = (props) => {

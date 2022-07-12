@@ -1,56 +1,51 @@
-import request from "@/utils/request1";
+import {
+  GetArticleLatestListResponse,
+  GetArticleLatestListRequest,
+  GetTopContributorListResponse,
+  GetTopContributorListRequest,
+  GetUnansweredTalkListResponse,
+  GetUnansweredTalkListRequest,
+  GetTalkDetailInfoResponse,
+  GetTalkDetailInfoRequest,
+} from "@/types/CommunityTypes";
+import request, { RequestGetType, RequestPostType } from "@/utils/request";
 import { CommonReq, CommonRes } from "./";
 
-// 获取最新讨论列表
-const getArticleLatestList = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/community/latest-list",
-        method: "GET",
-        data,
-        // interceptors: {
-        //   requestInterceptors(res) {
-        //     console.log('接口请求拦截');
+const createApi = request.createApi({ baseURL: "/api" });
 
-        //     return res;
-        //   },
-        //   responseInterceptors(result) {
-        //     console.log('接口响应拦截');
-        //     return result;
-        //   },
-        // },
-    });
+const communityApi = {
+  /** 获取最新讨论列表 **/
+  getArticleLatestList: createApi<
+    GetArticleLatestListResponse,
+    RequestGetType<GetArticleLatestListRequest>
+  >({
+    url: "/community/latest-list",
+    method: "GET",
+  }),
+  /** 获取最高贡献成员列表 **/
+  getTopContributorList: createApi<
+    GetTopContributorListResponse,
+    RequestGetType<GetTopContributorListRequest>
+  >({
+    url: "/community/top-contributor-list",
+    method: "GET",
+  }),
+  /** 获取未被回复的讨论列表 **/
+  getUnansweredTalkList: createApi<
+    GetUnansweredTalkListResponse,
+    RequestGetType<GetUnansweredTalkListRequest>
+  >({
+    url: "/community/unanswered-talk-list",
+    method: "GET",
+  }),
+  /** 获取讨论详情 **/
+  getTalkDetailInfo: createApi<
+    GetTalkDetailInfoResponse,
+    RequestGetType<GetTalkDetailInfoRequest>
+  >({
+    url: "/community/detail-info",
+    method: "GET",
+  }),
 };
 
-// 获取最高贡献成员列表
-const getTopContributorList = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/community/top-contributor-list",
-        method: "GET",
-        data,
-    });
-};
-
-// 获取未被回复的讨论列表
-const getUnansweredTalkList = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/community/unanswered-talk-list",
-        method: "GET",
-        data,
-    });
-};
-
-// 获取讨论详情
-const getTalkDetailInfo = (data: CommonReq) => {
-    return request<CommonReq, CommonRes>({
-        url: "/community/detail-info",
-        method: "GET",
-        data,
-    });
-};
-
-export default {
-    getTalkDetailInfo,
-    getArticleLatestList,
-    getTopContributorList,
-    getUnansweredTalkList,
-};
+export default communityApi;

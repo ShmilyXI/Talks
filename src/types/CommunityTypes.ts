@@ -1,31 +1,13 @@
-import { common } from './types';
-export interface BaseUserInfo {
-  id: number;
-  name: string;
-  telephone: string;
-  avatar_url: string;
-  create_date: string;
-  update_date: string;
-  last_login_date: string;
-}
+import { common } from "./types";
 
-export interface GetUserInfoRequest {
-  id: number;
-}
-export interface GetUserInfoResponse extends common.Response {
-  data?: BaseUserInfo;
-}
-export interface RegisterRequest {
-  name: string;
-  telephone: string;
-  password: string;
-}
-export interface RegisterResponse extends common.Response {}
+export interface GetArticleLatestListResponse extends common.Response {}
+export interface GetArticleLatestListRequest {}
 
-export interface LoginRequest {
-  telephone: string;
-  password: string;
-}
-export interface LoginResponse extends common.Response {
-  token?: string;
-}
+export interface GetTopContributorListResponse extends common.Response {}
+export interface GetTopContributorListRequest {}
+
+export interface GetUnansweredTalkListResponse extends common.Response {}
+export interface GetUnansweredTalkListRequest {}
+
+export interface GetTalkDetailInfoResponse extends common.Response {}
+export interface GetTalkDetailInfoRequest {}

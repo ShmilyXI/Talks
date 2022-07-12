@@ -6,7 +6,7 @@ import { useClickAway, useToggle } from "ahooks";
 
 type CalendarProps = {
   value?: string;
-  disabled: boolean;
+  disabled?: boolean;
   onChange?: (value?: string) => void;
 };
 const Calendar: FC<CalendarProps> = (props) => {

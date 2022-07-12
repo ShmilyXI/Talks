@@ -55,7 +55,7 @@ const MoodEnum: { [name: string]: JSX.Element } = {
 type MoodProps = {
   value?: string;
   onChange?: (value?: string) => void;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 const Mood: FC<MoodProps> = (props) => {

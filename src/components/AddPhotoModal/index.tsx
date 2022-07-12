@@ -12,23 +12,31 @@ import Api from "@/service";
 import toast from "react-hot-toast";
 import Form, { Field } from "rc-field-form";
 import { Checked } from "@/components";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 
 type Props = {
   visible: boolean;
   setModalLeft: () => void;
 };
+
+const Input = ({ value = "", ...props }) => <input value={value} {...props} />;
+const Textarea = ({ value = "", ...props }) => (
+  <textarea value={value} {...props} />
+);
+
 const Index: FC<Props> = (props) => {
   const { visible, setModalLeft } = props;
   const [tempFile, setTempFile] = useState<any>(); // 暂存上传的图片文件
   const [tempImage, setTempImage] = useState<any>(); // 暂存上传的图片展示
-  const [isUploadDone, setIsUploadDone] = useState(true); // 是否上传完成
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-
+  const router = useRouter();
   const { t } = useTranslation();
 
   // 提交表单
   const onSubmit = async (values) => {
+    setLoading(true);
+    toast.loading("Loading...");
     const { data: photoData } = await Api.uploadPhoto({
       data: tempFile,
     });
@@ -42,16 +50,19 @@ const Index: FC<Props> = (props) => {
       },
     });
     if (data?.id) {
-      toast.success("发布成功!");
-      setModalLeft();
+      setLoading(false);
+      toast.dismiss();
       form.resetFields();
       setTempFile(undefined);
       setTempImage(undefined);
+      await toast.success("发布成功!");
+      setModalLeft();
+      router.push("/");
     }
   };
 
   // 图片组件变更
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
       return;
@@ -84,10 +95,10 @@ const Index: FC<Props> = (props) => {
               type="button"
               className="modal__close z-30"
               onClick={() => {
-                setModalLeft();
                 form.resetFields();
                 setTempFile(undefined);
                 setTempImage(undefined);
+                setModalLeft();
               }}
             >
               <svg
@@ -181,12 +192,11 @@ const Index: FC<Props> = (props) => {
                                   { required: true, message: "请输入标题" },
                                 ]}
                               >
-                                <input
+                                <Input
                                   className="input story-form__input story-form__input--title"
                                   placeholder={t("photoModal.add_title")}
                                   maxLength={255}
-                                  disabled={!isUploadDone}
-                                  type="text"
+                                  disabled={loading}
                                 />
                               </Field>
 
@@ -203,13 +213,13 @@ const Index: FC<Props> = (props) => {
 
                               <div className="mt-16">
                                 <Field name="description">
-                                  <textarea
+                                  <Textarea
                                     className="input story-form__input"
                                     maxLength={20480}
                                     rows={3}
                                     placeholder={t("photoModal.description")}
                                     spellCheck="true"
-                                    disabled={!isUploadDone}
+                                    disabled={loading}
                                     cols={50}
                                   />
                                 </Field>
@@ -228,25 +238,25 @@ const Index: FC<Props> = (props) => {
                                   },
                                 ]}
                               >
-                                <Calendar disabled={!isUploadDone} />
+                                <Calendar disabled={loading} />
                               </Field>
                             </div>
 
                             <div className="mr-8 mb-8">
                               <Field name="mood">
-                                <Mood disabled={!isUploadDone} />
+                                <Mood disabled={loading} />
                               </Field>
                             </div>
 
                             <div className="mr-8 mb-8">
                               <Field name="galleryList">
-                                <Gallery disabled={!isUploadDone} />
+                                <Gallery disabled={loading} />
                               </Field>
                             </div>
 
                             <div className="mr-8 mb-8">
                               <Field name="showComments">
-                                <Checked disabled={!isUploadDone}>
+                                <Checked disabled={loading}>
                                   <label className="button button--pill is-off">
                                     <span
                                       className="button--pill__icon"
@@ -282,7 +292,7 @@ const Index: FC<Props> = (props) => {
 
                             <div className="mr-8 mb-8">
                               <Field name="place">
-                                <Place disabled={!isUploadDone} />
+                                <Place disabled={loading} />
                               </Field>
                             </div>
                           </div>
@@ -291,17 +301,17 @@ const Index: FC<Props> = (props) => {
                             className={classnames(
                               "text-red text-12 leading-sm mt-8",
                               {
-                                hidden: !_form.getFieldError("date"),
+                                hidden: !_form.getFieldError("shootingDate"),
                               },
                             )}
                           >
-                            {_form.getFieldError("date")}
+                            {_form.getFieldError("shootingDate")}
                           </div>
 
                           <button
                             className="button button--primary w-full mt-4"
                             type="submit"
-                            disabled={!isUploadDone}
+                            disabled={loading}
                           >
                             {t("photoModal.publish_photo")}
                             {/* {t("photoModal.save_change")} */}

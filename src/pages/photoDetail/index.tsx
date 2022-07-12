@@ -488,7 +488,7 @@ const Index = () => {
             </div> */}
 
             {/* 相机信息 */}
-            <div className="hidden lg:block mt-48">
+            {/* <div className="hidden lg:block mt-48">
               <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
                 {t("common.exif")}
               </div>
@@ -554,7 +554,7 @@ const Index = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -755,7 +755,7 @@ const Index = () => {
           />
 
           {/* mobile 底部区域 */}
-          <div className="p-16 md:p-32 lg:hidden">
+          {/* <div className="p-16 md:p-32 lg:hidden">
             <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-8">
               {t("common.noFeatured")}
             </div>
@@ -763,10 +763,10 @@ const Index = () => {
             <a className="text-14 lg:text-16 cursor-pointer">
               {t("common.savePhoto")}
             </a>
-          </div>
+          </div> */}
 
           {/* mobile 设备参数 */}
-          <div className="p-16 md:p-32 lg:hidden">
+          {/* <div className="p-16 md:p-32 lg:hidden">
             <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
               {t("common.exif")}
             </div>
@@ -830,7 +830,7 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

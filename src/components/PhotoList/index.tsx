@@ -92,7 +92,6 @@ const PhotoList: FC<PhotoListProps> = (props) => {
               React.ImgHTMLAttributes<HTMLImageElement>;
           }) => {
             const item = data.photo;
-            console.log("data.imageProps", data.imageProps);
             return (
               <div
                 style={{
