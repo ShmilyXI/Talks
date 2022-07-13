@@ -115,7 +115,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             width="32"
                             height="32"
                             alt=""
-                            className="avatar__photo"
+                            className="avatar__photo w-[32px] h-[32px] object-cover rounded-full"
                           />
                         </div>
                       </div>
@@ -200,7 +200,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               src={item.avatarUrl}
                               width="32"
                               height="32"
-                              className="avatar__photo is-loaded"
+                              className="avatar__photo is-loaded w-[32px] h-[32px] object-cover rounded-full"
                             />
                           </div>
                         </div>
@@ -229,17 +229,17 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     <div className="story-list__overlay-item absolute pin-b pin-x z-5 px-8 pb-8 text-white text-12 leading-sm pointer-events-none flex justify-between">
                       <div className="flex items-center -mx-6">
                         <div className="mr-4 ml-4 leading-none">
-                            <a
-                              className="pointer-events-auto inline-flex align-top cursor-pointer"
-                              onClick={() => {
-                                console.log("like");
-                              }}
-                            >
-                              <Icon
-                                className="icon-like"
-                                addClassName="text-white text-16"
-                              />
-                            </a>
+                          <a
+                            className="pointer-events-auto inline-flex align-top cursor-pointer"
+                            onClick={() => {
+                              console.log("like");
+                            }}
+                          >
+                            <Icon
+                              className="icon-like"
+                              addClassName="text-white text-16"
+                            />
+                          </a>
                         </div>
 
                         <div className="mr-4 leading-none">

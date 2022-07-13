@@ -67,7 +67,7 @@ const Detail = () => {
                                                     width="48"
                                                     height="48"
                                                     alt=""
-                                                    className="avatar__photo is-loaded"
+                                                    className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full"
                                                 />
                                             </div>
                                         </div>

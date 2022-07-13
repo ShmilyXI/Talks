@@ -44,7 +44,7 @@ const TopContributors = () => {
                                               width="24"
                                               height="24"
                                               alt=""
-                                              className="avatar__photo is-loaded"
+                                              className="avatar__photo is-loaded w-[24px] h-[24px] object-cover rounded-full"
                                           />
                                       </div>
                                   </div>

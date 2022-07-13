@@ -134,7 +134,7 @@ const Index = () => {
               />
               <div className="flex flex-col sm:flex-row items-center mb-24">
                 <div className="flex-none">
-                  <div className="avatar">
+                  <label className="avatar" htmlFor='avatar'>
                     <img
                       src={
                         tempImage ||
@@ -143,10 +143,10 @@ const Index = () => {
                       }
                       width={96}
                       height={96}
-                      alt="重新上传头像"
+                      title="重新上传头像"
                       className="avatar__photo object-cover w-[96px] h-[96px]"
                     />
-                  </div>
+                  </label>
                 </div>
 
                 <div className="mt-24 sm:mt-0 sm:ml-32 text-center sm:text-left">

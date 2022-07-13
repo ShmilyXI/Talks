@@ -80,7 +80,7 @@ const Index = () => {
                                               width="48"
                                               height="48"
                                               alt=""
-                                              className="avatar__photo is-loaded"
+                                              className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full"
                                           />
                                       </a>
                                   </div>
@@ -161,7 +161,7 @@ const Index = () => {
                                                             width="28"
                                                             height="28"
                                                             alt=""
-                                                            className="avatar__photo is-loaded"
+                                                            className="avatar__photo is-loaded w-[28px] h-[28px] object-cover rounded-full"
                                                         />
                                                     </a>
                                                 ))
