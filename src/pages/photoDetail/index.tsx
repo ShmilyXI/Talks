@@ -52,7 +52,8 @@ const Index = () => {
   const getPhotoInfo = async (id: string) => {
     const { data } = await Api.getPhotoDetailInfo({ params: { id } });
     const list = data?.list || [];
-    setCurPhotoInfo(data?.photoInfo);
+    const index = data?.index || 0;
+    setCurPhotoInfo(list?.[index]);
     setPhotoList(list);
     setPhotoDetailInfo(data);
   };
@@ -79,7 +80,7 @@ const Index = () => {
                   width="32"
                   height="32"
                   alt=""
-                  className="avatar__photo"
+                  className="avatar__photo w-[32px] h-[32px] object-cover rounded-full"
                 />
               </div>
             </div>
@@ -273,7 +274,7 @@ const Index = () => {
                         href={tag}
                         key={`${tag}-${_.random(1, 99)}`}
                       >
-                        #{tag}
+                        # {tag}
                       </a>
                     ))
                   : null}

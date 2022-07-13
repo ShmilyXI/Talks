@@ -1,8 +1,6 @@
-import { useClickAway, useRafInterval, useRequest, useToggle } from "ahooks";
 import classnames from "classnames";
 import _ from "lodash";
-import React, { FC, useEffect, useRef, useState } from "react";
-import { Menu } from "../";
+import React, { FC, useState } from "react";
 import Gallery from "./gallery";
 import Calendar from "./calendar";
 import Mood from "./mood";
@@ -12,7 +10,7 @@ import Api from "@/service";
 import toast from "react-hot-toast";
 import Form, { Field } from "rc-field-form";
 import { Checked } from "@/components";
-import Router, { useRouter } from "next/router";
+import  { useRouter } from "next/router";
 
 type Props = {
   visible: boolean;
@@ -36,26 +34,31 @@ const Index: FC<Props> = (props) => {
   // 提交表单
   const onSubmit = async (values) => {
     setLoading(true);
-    const { data: photoData } = await Api.uploadPhoto({
-      data: tempFile,
-    });
-    const { data } = await Api.publishPhoto({
-      data: {
-        ...values,
-        url: photoData?.imgUrl,
-        width: photoData?.width,
-        height: photoData?.height,
-        themeColor: photoData?.themeColor,
-      },
-    });
-    if (data?.id) {
+    try {
+      const { data: photoData } = await Api.uploadPhoto({
+        data: tempFile,
+      });
+      const { data } = await Api.publishPhoto({
+        data: {
+          ...values,
+          url: photoData?.imgUrl,
+          width: photoData?.width,
+          height: photoData?.height,
+          themeColor: photoData?.themeColor,
+          place: photoData?.place?.value, // 地点信息暂时mock 直接使用value展示
+        },
+      });
+      if (data?.id) {
+        setLoading(false);
+        form.setFieldsValue({});
+        setTempFile(undefined);
+        setTempImage(undefined);
+        await toast.success("发布成功!");
+        setModalLeft();
+        router.push("/");
+      }
+    } catch (error) {
       setLoading(false);
-      form.resetFields();
-      setTempFile(undefined);
-      setTempImage(undefined);
-      await toast.success("发布成功!");
-      setModalLeft();
-      router.push("/");
     }
   };
 
@@ -93,9 +96,10 @@ const Index: FC<Props> = (props) => {
               type="button"
               className="modal__close z-30"
               onClick={() => {
-                form.resetFields();
+                form.setFieldsValue({});
                 setTempFile(undefined);
                 setTempImage(undefined);
+                setLoading(false);
                 setModalLeft();
               }}
             >

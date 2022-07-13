@@ -46,28 +46,32 @@ const Index = () => {
     }
     console.log("values", values);
     setLoading(true);
-    // 如果已经存在头像,且没有上传新的头像,则不需要上传
-    let avatarUrl = userInfo?.avatar_url;
-    if (tempFile) {
-      const { data: _avatarUrl } = await Api.uploadAvatar({
-        data: tempFile,
+    try {
+      // 如果已经存在头像,且没有上传新的头像,则不需要上传
+      let avatarUrl = userInfo?.avatar_url;
+      if (tempFile) {
+        const { data: _avatarUrl } = await Api.uploadAvatar({
+          data: tempFile,
+        });
+        avatarUrl = _avatarUrl;
+      }
+      const { data } = await Api.updateUserInfo({
+        data: {
+          ...values,
+          avatarUrl,
+        },
       });
-      avatarUrl = _avatarUrl;
+      form.resetFields();
+      setTempFile(undefined);
+      setTempImage(undefined);
+      const storage = new Storage(sessionStorage, "Talks");
+      storage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      await toast.success("提交成功!");
+      router.reload();
+    } catch (error) {
+      setLoading(false);
     }
-    const { data } = await Api.updateUserInfo({
-      data: {
-        ...values,
-        avatarUrl,
-      },
-    });
-    form.resetFields();
-    setTempFile(undefined);
-    setTempImage(undefined);
-    const storage = new Storage(sessionStorage, "Talks");
-    storage.setItem("userInfo", JSON.stringify(data));
-    setLoading(false);
-    await toast.success("提交成功!");
-    router.reload();
   };
 
   // 图片组件变更
@@ -134,7 +138,7 @@ const Index = () => {
               />
               <div className="flex flex-col sm:flex-row items-center mb-24">
                 <div className="flex-none">
-                  <label className="avatar" htmlFor='avatar'>
+                  <label className="avatar" htmlFor="avatar">
                     <img
                       src={
                         tempImage ||

@@ -91,7 +91,7 @@ export interface PublishPhotoRequest {
   shootingDate: string;
   themeColor: string;
   mood: string;
-  place: IItem;
+  place: string;
   tags: string[];
 }
 export interface PublishPhotoResponse extends common.Response {

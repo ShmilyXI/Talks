@@ -507,7 +507,7 @@ const Index = () => {
               width="32"
               height="32"
               alt={userInfo?.username}
-              className="avatar__photo"
+              className="avatar__photo w-[32px] h-[32px] object-cover rounded-full"
             />
           </span>
         </a>

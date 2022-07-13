@@ -217,7 +217,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             </a>
                           </div>
 
-                          <div className="opacity-75">
+                          <div
+                            className={classnames("opacity-75", {
+                              hidden: !item.workCount,
+                            })}
+                          >
                             #&nbsp;
                             {item.workCount || 0}
                           </div>
@@ -283,9 +287,13 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                   <div className="p-16 story-list__footer grid:hidden">
                     <div className="flex items-center justify-between mb-16">
                       <div className="flex items-center text-12 leading-sm grid:text-14 grid:leading-md">
-                        <span className="flex-none mr-8">
+                        <span
+                          className={classnames("flex-none mr-8", {
+                            hidden: !item.workCount,
+                          })}
+                        >
                           #&nbsp;
-                          {item.workCount || 0}
+                          {item.workCount}
                         </span>
 
                         <time

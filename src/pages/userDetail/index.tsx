@@ -42,7 +42,7 @@ const UserDetail = () => {
                                 width="128"
                                 height="128"
                                 alt=""
-                                className="avatar__photo"
+                                className="avatar__photo w-[128px] h-[128px] object-cover rounded-full"
                                 data-src="https://cdn.tookapic.com/avatars/2019/280/n/h/nhuOzlIWHNOIWCh16vaBXsFcaYXVvZUDs6GRfh2z.jpeg?fit=crop-center&amp;h=128&amp;q=85&amp;sharp=3&amp;w=128&amp;s=ed2ee5467a7079aa856048f1fd11c23e|https://cdn.tookapic.com/avatars/2019/280/n/h/nhuOzlIWHNOIWCh16vaBXsFcaYXVvZUDs6GRfh2z.jpeg?fit=crop-center&amp;h=144&amp;q=85&amp;sharp=3&amp;w=144&amp;s=d2dced7f92af9cff5481dd01a09e69ee"
                                 data-target="lazyload.image"
                                 data-default-src="https://tookapic.com/img/avatars/default.svg"
