@@ -56,10 +56,10 @@ const Login = () => {
       const storage = new Storage(sessionStorage, "Talks");
       storage.setItem("token", token);
       toast.success("登录成功");
-      const { data: userInfo } = await Api.getUserInfo({
+      const { data: userInfo = {} } = await Api.getUserInfo({
         params: { id: data?.id },
       });
-      storage.setItem("userInfo", userInfo);
+      storage.setItem("userInfo", JSON.stringify(userInfo));
       router.push("/");
     }
   };

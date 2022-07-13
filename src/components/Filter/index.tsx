@@ -47,7 +47,7 @@ const Filter: FC<FilterProps> = (props) => {
                     items={items.slice(displayCount)}
                     className="px-4"
                     visible={showSelect}
-                    value={activeItem.value}
+                    value={activeItem?.value}
                     setLeft={setSelectLeft}
                     align='right'
                     onChange={(item) => {
@@ -60,7 +60,7 @@ const Filter: FC<FilterProps> = (props) => {
                         onClick={toggleSelect}
                         className="select truncate relative"
                     >
-                        {activeItem.label}
+                        {activeItem?.label}
                     </button>
                 </Menu>
             </div>

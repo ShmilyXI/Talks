@@ -1,12 +1,16 @@
 import { common } from './types';
 export interface BaseUserInfo {
   id: string;
-  name: string;
+  username: string;
   telephone: string;
   avatar_url: string;
   create_date: string;
   update_date: string;
   last_login_date: string;
+  display_name: string;
+  email: string;
+  individual_resume?: string;
+  location?: string;
 }
 
 export interface GetUserInfoRequest {
@@ -31,4 +35,19 @@ export interface UserLoginResponse extends common.Response {
   data?: {
     id: string;
   };
+}
+export interface UploadAvatarResponse extends common.Response {
+  data?: string;
+}
+
+export interface UpdateUserInfoRequest {
+  avatarUrl: string;
+  displayName: string;
+  email: string;
+  individualResume?: string;
+  location?: string;
+  userName: string;
+}
+export interface UpdateUserInfoResponse extends common.Response {
+  data?: BaseUserInfo;
 }

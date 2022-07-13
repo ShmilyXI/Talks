@@ -56,7 +56,7 @@ const Index = () => {
     if (sessionStorage) {
       const storage = new Storage(sessionStorage, "Talks");
       const _isLogin = storage?.getItem("token");
-      const _userInfo = storage?.getItem("userInfo") || {};
+      const _userInfo = JSON.parse(storage?.getItem("userInfo") || "{}");
       setIsLogin(_isLogin);
       setUserInfo(_userInfo);
     }
@@ -506,7 +506,7 @@ const Index = () => {
               src={userInfo?.avatar_url}
               width="32"
               height="32"
-              alt={userInfo?.name}
+              alt={userInfo?.username}
               className="avatar__photo"
             />
           </span>
@@ -852,7 +852,7 @@ const Index = () => {
                   src={userInfo?.avatar_url}
                   width="32"
                   height="32"
-                  alt={userInfo?.name}
+                  alt={userInfo?.username}
                   className="avatar__photo"
                 />
               </a>
