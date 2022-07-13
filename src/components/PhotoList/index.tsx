@@ -229,23 +229,26 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     <div className="story-list__overlay-item absolute pin-b pin-x z-5 px-8 pb-8 text-white text-12 leading-sm pointer-events-none flex justify-between">
                       <div className="flex items-center -mx-6">
                         <div className="mr-4 ml-4 leading-none">
-                          <div className="pointer-events-auto">
                             <a
-                              className="inline-flex align-top"
-                              onClick={() => console.log("like")}
+                              className="pointer-events-auto inline-flex align-top cursor-pointer"
+                              onClick={() => {
+                                console.log("like");
+                              }}
                             >
                               <Icon
                                 className="icon-like"
                                 addClassName="text-white text-16"
                               />
                             </a>
-                          </div>
                         </div>
 
                         <div className="mr-4 leading-none">
                           <a
-                            className="inline-flex align-top pointer-events-auto"
-                            onClick={() => console.log("favor")}
+                            className="pointer-events-auto inline-flex align-top cursor-pointer"
+                            onClick={() => {
+                              console.log("favor");
+                            }}
+                            title="favorite"
                           >
                             <Icon
                               className="icon-favor"
@@ -256,10 +259,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                         <div className="mr-4 leading-none flex items-center">
                           <a
-                            className="pointer-events-auto leading-none"
-                            onClick={() =>
-                              goRoute(`/photoDetail?id=${item.id}#comment`)
-                            }
+                            className="pointer-events-auto cursor-pointer leading-none"
+                            onClick={() => {
+                              goRoute(`/photoDetail?id=${item.id}#comment`);
+                            }}
+                            title="comment"
                           >
                             <Icon
                               className="icon-message"
@@ -297,7 +301,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                         <div className="px-8 leading-none text-14">
                           <div className="px-8 leading-none text-14">
                             <a
-                              className="inline-flex align-top"
+                              className="inline-flex align-top cursor-pointer"
                               onClick={() => console.log("like")}
                             >
                               <Icon
@@ -310,7 +314,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                         <div className="px-8 leading-none text-14">
                           <a
-                            className="inline-flex align-top"
+                            className="inline-flex align-top cursor-pointer"
                             onClick={() => console.log("favor")}
                           >
                             <Icon

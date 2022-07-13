@@ -853,7 +853,7 @@ const Index = () => {
                   width="32"
                   height="32"
                   alt={userInfo?.username}
-                  className="avatar__photo"
+                  className="avatar__photo object-cover w-[32px] h-[32px]"
                 />
               </a>
             </Menu>

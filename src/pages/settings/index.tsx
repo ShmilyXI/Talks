@@ -40,15 +40,20 @@ const Index = () => {
 
   // 提交
   const onSubmit = async (values: any) => {
-    if (!tempFile) {
+    if (!tempFile && !userInfo?.avatar_url) {
       toast.error("请上传头像!");
       return;
     }
     console.log("values", values);
     setLoading(true);
-    const { data: avatarUrl } = await Api.uploadAvatar({
-      data: tempFile,
-    });
+    // 如果已经存在头像,且没有上传新的头像,则不需要上传
+    let avatarUrl = userInfo?.avatar_url;
+    if (tempFile) {
+      const { data: _avatarUrl } = await Api.uploadAvatar({
+        data: tempFile,
+      });
+      avatarUrl = _avatarUrl;
+    }
     const { data } = await Api.updateUserInfo({
       data: {
         ...values,
@@ -101,7 +106,8 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="d-container max-w-744 py-16 md:py-0">
+        {/* 暂时只有个人信息更新选项,其他的先隐藏 */}
+        <div className="d-container max-w-744 py-16 md:py-0 hidden">
           <div className="md:mt-24">
             <Filter
               breakPoint="md"
@@ -128,7 +134,7 @@ const Index = () => {
               />
               <div className="flex flex-col sm:flex-row items-center mb-24">
                 <div className="flex-none">
-                  <div className="avatar overflow-hidden rounded-full w-[96px] h-[96px]">
+                  <div className="avatar">
                     <img
                       src={
                         tempImage ||
@@ -138,7 +144,7 @@ const Index = () => {
                       width={96}
                       height={96}
                       alt="重新上传头像"
-                      className="avatar__photo object-cover"
+                      className="avatar__photo object-cover w-[96px] h-[96px]"
                     />
                   </div>
                 </div>
@@ -166,7 +172,12 @@ const Index = () => {
                     name="displayName"
                     rules={[{ required: true, message: "请输入显示名称" }]}
                   >
-                    <input className="input" disabled={loading} maxLength={64} type="text" />
+                    <input
+                      className="input"
+                      disabled={loading}
+                      maxLength={64}
+                      type="text"
+                    />
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -180,7 +191,12 @@ const Index = () => {
                 <div className="mb-16 px-12 w-full sm:w-1/2">
                   <div className="text-14 leading-md mb-8">位置</div>
                   <Field name="location">
-                    <input className="input" disabled={loading} maxLength={64} type="text" />
+                    <input
+                      className="input"
+                      disabled={loading}
+                      maxLength={64}
+                      type="text"
+                    />
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -197,7 +213,12 @@ const Index = () => {
                     name="userName"
                     rules={[{ required: true, message: "请输入用户名" }]}
                   >
-                    <input className="input" disabled={loading} maxLength={32} type="text" />
+                    <input
+                      className="input"
+                      disabled={loading}
+                      maxLength={32}
+                      type="text"
+                    />
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -230,7 +251,12 @@ const Index = () => {
                       },
                     ]}
                   >
-                    <input className="input" disabled={loading} maxLength={80} type="text" />
+                    <input
+                      className="input"
+                      disabled={loading}
+                      maxLength={80}
+                      type="text"
+                    />
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -252,7 +278,8 @@ const Index = () => {
                   </div>
                   <Field name="individualResume">
                     <textarea
-                      className="input" disabled={loading}
+                      className="input"
+                      disabled={loading}
                       maxLength={200}
                       rows={3}
                       cols={50}
@@ -271,7 +298,9 @@ const Index = () => {
               <div className="md:flex items-center justify-between flex-row-reverse text-center">
                 <div className="text-14 break-words">
                   您的个人资料 :&nbsp;
-                  <a href="/userDetail/977197585">userDetail/977197585</a>
+                  <a href={`/userDetail/${userInfo?.username}`}>
+                    userDetail/{userInfo?.username}
+                  </a>
                 </div>
 
                 <div className="mt-16 md:mt-0">
