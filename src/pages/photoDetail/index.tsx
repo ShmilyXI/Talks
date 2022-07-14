@@ -178,7 +178,8 @@ const Index = () => {
                     </button>
                   </div>
 
-                  <div className="px-8 leading-none">
+                  {/* 画廊icon */}
+                  {/* <div className="px-8 leading-none">
                     <button
                       type="button"
                       className="button-reset inline-flex align-top is-active"
@@ -197,9 +198,10 @@ const Index = () => {
                         />
                       </span>
                     </button>
-                  </div>
+                  </div> */}
 
-                  <div className="px-8 leading-none">
+                  {/* 翻译icon */}
+                  {/* <div className="px-8 leading-none">
                     <button
                       type="button"
                       className="button-reset inline-flex align-top"
@@ -218,13 +220,13 @@ const Index = () => {
                         />
                       </span>
                     </button>
-                  </div>
+                  </div> */}
 
-                  <div className="pl-12 pr-8 leading-none lg:hidden relative">
+                  {/* <div className="pl-12 pr-8 leading-none lg:hidden relative">
                     <Menu
                       items={[
                         {
-                          label: t("common.follow"),
+                          label: "关注",
                           value: "follow",
                         },
                       ]}
@@ -246,7 +248,7 @@ const Index = () => {
                         />
                       </button>
                     </Menu>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -647,7 +649,8 @@ const Index = () => {
                   </button>
                 </div>
 
-                <div className="px-8 leading-none">
+                {/* 画廊icon */}
+                {/* <div className="px-8 leading-none">
                   <button
                     type="button"
                     className="button-reset inline-flex align-top is-active"
@@ -666,9 +669,10 @@ const Index = () => {
                       />
                     </span>
                   </button>
-                </div>
+                </div> */}
 
-                <div className="px-8 leading-none">
+                {/* 翻译icon */}
+                {/* <div className="px-8 leading-none">
                   <button
                     type="button"
                     className="button-reset inline-flex align-top"
@@ -687,7 +691,7 @@ const Index = () => {
                       />
                     </span>
                   </button>
-                </div>
+                </div> */}
 
                 <div className="pl-12 pr-8 leading-none lg:hidden">
                   <button

@@ -721,12 +721,12 @@ const Index = () => {
             {/* Home */}主页
           </a>
 
-          <a
+          {/* <a
             className="block py-4 px-16 leading-sm font-medium text-black hover:no-underline cursor-pointer"
             onClick={() => goRoute("/")}
           >
-            {/* Photos */}照片
-          </a>
+            照片
+          </a> */}
 
           {/* <a
             className="block py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black hover:no-underline cursor-pointer"
