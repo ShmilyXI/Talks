@@ -503,7 +503,10 @@ const Index = () => {
         >
           <span className="avatar">
             <img
-              src={userInfo?.avatar_url}
+              src={
+                userInfo?.avatar_url ||
+                "https://tookapic.com/img/avatars/default.svg"
+              }
               width="32"
               height="32"
               alt={userInfo?.username}

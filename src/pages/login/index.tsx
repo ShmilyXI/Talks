@@ -125,8 +125,8 @@ const Login = () => {
               type="text"
               // // placeholder="Name"
               placeholder="用户名"
-              name="name"
-              value={state.formValue?.name || ""}
+              name="username"
+              value={state.formValue?.username || ""}
               onChange={onInputChange}
             />
             <input
@@ -335,8 +335,8 @@ const Login = () => {
               type="text"
               // // placeholder="Name"
               placeholder="用户名"
-              name="name"
-              value={state.formValue?.name || ""}
+              name="username"
+              value={state.formValue?.username || ""}
               onChange={onInputChange}
             />
             <input

@@ -9,18 +9,11 @@ import Api from "@/service";
 import { BasePhotoInfo, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
 import classNames from "classnames";
 import _ from "lodash";
+import toast from "react-hot-toast";
+import { Storage } from "@/utils/storage";
+import { CommentData, CommentItem } from "@/types/CommunityTypes";
 
 type Mood = Record<string, { text: string; icon: string }>;
-
-export type CommentItem = {
-  avatarSrc: string;
-  authorName: string;
-  authorId: number;
-  content: string;
-  date: string;
-  likes: number;
-  commentList?: CommentItem[];
-};
 
 // Mood Location  View
 const MoodEnum: Mood = {
@@ -42,14 +35,8 @@ const Index = () => {
   const [photoDetailInfo, setPhotoDetailInfo] =
     useState<PhotoDetailInfoResponse["data"]>(); // 图片详情信息
 
-  const {
-    data: commentData,
-    error: commentError,
-    loading: commentLoading,
-  }: any = useRequest(Api.getPhotoDetailComments);
-
   // 获取图片详情信息
-  const getPhotoInfo = async (id: string) => {
+  const getPhotoInfo = async (id: number) => {
     const { data } = await Api.getPhotoDetailInfo({ params: { id } });
     const list = data?.list || [];
     const index = data?.index || 0;
@@ -58,14 +45,31 @@ const Index = () => {
     setPhotoDetailInfo(data);
   };
 
-  useEffect(() => {
-    if (!id) return;
-    getPhotoInfo(id);
-  }, [id]);
+  // 获取图片评论列表
+  const getCommentList = async (id: number) => {
+    const { data } = await Api.getPhotoCommentList({ params: { id } });
+    console.log("data.list :>> ", data.list);
+    setCommentList(data?.list || []);
+  };
 
   useEffect(() => {
-    setCommentList(commentData?.list || []);
-  }, [commentData]);
+    if (!+id) return;
+    getPhotoInfo(+id);
+    getCommentList(+id);
+  }, [id]);
+
+  // 评论提交
+  const onCommentSubmit = async (value: CommentData, callback: () => void) => {
+    const data = {
+      ...value,
+      photoId: curPhotoInfo.id,
+      type: 1,
+    };
+    await Api.addPhotoComment({ data });
+    await toast.success("评论成功!");
+    callback();
+    getCommentList(curPhotoInfo.id);
+  };
 
   return (
     <div>
@@ -99,7 +103,7 @@ const Index = () => {
               dateTime={curPhotoInfo?.updateDate}
               title={curPhotoInfo?.updateDate}
             >
-              {dayjs(curPhotoInfo?.updateDate).fromNow(true)}
+              {dayjs(curPhotoInfo?.updateDate).fromNow()}
             </time>
           </div>
         </div>
@@ -757,6 +761,7 @@ const Index = () => {
             className="bg-grey-99"
             addClassName="p-16 md:p-24 md:px-32 lg:px-24"
             list={commentList}
+            onSubmit={onCommentSubmit}
           />
 
           {/* mobile 底部区域 */}

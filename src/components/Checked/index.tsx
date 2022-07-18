@@ -21,7 +21,7 @@ const Checked: FC<CheckedProps> = (props) => {
         onChange(!checked);
       }}
     >
-      <input checked={!!checked} type="checkbox" disabled={disabled} />
+      <input checked={!!checked} readOnly type="checkbox" disabled={disabled} />
       {children}
     </div>
   );

@@ -20,7 +20,7 @@ export interface GetUserInfoResponse extends common.Response {
   data?: BaseUserInfo;
 }
 export interface UserRegisterRequest {
-  name: string;
+  username: string;
   telephone: string;
   password: string;
 }

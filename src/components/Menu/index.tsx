@@ -67,7 +67,7 @@ const Menu: FC<MenuProps> = (props) => {
                             ? items.map((item) => (
                                   <div
                                       className={classnames(
-                                          "px-28 lg:px-16 py-8 lg:py-1 hover:bg-white-15 text-white cursor-pointer",
+                                          "px-16 py-1 hover:bg-white-15 text-white cursor-pointer",
                                           {
                                               "font-semibold":
                                                   value === item.value,

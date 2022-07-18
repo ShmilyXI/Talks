@@ -1,28 +1,31 @@
+import React, { FC, useEffect, useRef, useState } from "react";
+import { CommentData, CommentItem } from "@/types/CommunityTypes";
 import { Icon } from "@components";
 import { useClickAway, useToggle } from "ahooks";
 import classnames from "classnames";
-import React, { FC, useRef, useState } from "react";
-import { CommentItem } from "../../pages/photoDetail/index";
+import dayjs from "dayjs";
+import _ from "lodash";
 
 type Props = {
   list: CommentItem[];
   className?: string;
   addClassName?: string;
+  onSubmit?: (data: CommentData, callback: () => void) => void;
 };
 const Comments: FC<Props> = (props) => {
-  const { list, className, addClassName } = props;
-  const textareaRef = useRef(null);
-  const [
-    isFocus,
-    {
-      toggle: toggleIsFocus,
-      setLeft: setIsFocusLeft,
-      setRight: setIsFocusRight,
-    },
-  ] = useToggle();
+  const { list, className, addClassName, onSubmit = () => {} } = props;
+  const [commentContent, setCommentContent] = useState(""); // 评论内容
+  const [replyContent, setReplyContent] = useState(""); // 评论回复内容
+  const [replyId, setReplyId] = useState<number>(); // 评论回复id
+  const textareaRef = useRef(null); // 一级评论框ref
+  const [isFocus, { setLeft: setIsFocusLeft, setRight: setIsFocusRight }] =
+    useToggle();
+
   useClickAway(() => {
     setIsFocusLeft?.();
+    setCommentContent("");
   }, textareaRef);
+
   return (
     <div
       className={classnames(
@@ -53,16 +56,15 @@ const Comments: FC<Props> = (props) => {
             <textarea
               className={classnames(
                 "bg-white input overflow-hidden break-words !resize-none",
-                {
-                  // "h-[36px]": true,
-                },
               )}
               placeholder="Type your comment here…"
               maxLength={4096}
               rows={1}
               cols={50}
+              value={commentContent}
               name="comment"
               onFocus={() => setIsFocusRight()}
+              onChange={(e) => setCommentContent(e.target?.value || "")}
               onKeyUp={function (e: any) {
                 if (e.keyCode === 8) {
                   e.target.style.height = "inherit";
@@ -72,14 +74,6 @@ const Comments: FC<Props> = (props) => {
                 }
               }}
             ></textarea>
-
-            <div
-              className={classnames("text-red text-12 leading-sm mt-8", {
-                hidden: true,
-              })}
-            >
-              错误信息xxxxx
-            </div>
           </div>
 
           <div
@@ -89,7 +83,23 @@ const Comments: FC<Props> = (props) => {
           >
             <div className="flex justify-between items-center">
               <div>
-                <button className="button button--primary">Publish</button>
+                <button
+                  className="button button--primary"
+                  onClick={() => {
+                    onSubmit(
+                      {
+                        content: commentContent,
+                        commentLevel: 1,
+                      },
+                      () => {
+                        setCommentContent("");
+                        setIsFocusLeft();
+                      },
+                    );
+                  }}
+                >
+                  Publish
+                </button>
               </div>
 
               <div className="text-12 leading-none text-right">
@@ -111,16 +121,19 @@ const Comments: FC<Props> = (props) => {
               {list?.map((item) => (
                 <div
                   className="bg-inherit thread thread--has-replies"
-                  key={item.date}
+                  key={item.create_date}
                 >
                   <div
                     className="comment bg-inherit flex py-6 relative"
-                    id="comment-460388"
+                    id={`comment-${item.id}`}
                   >
                     <div className="flex-none mr-12 relative z-10">
                       <div className="avatar relative">
                         <img
-                          src={item.avatarSrc}
+                          src={
+                            item.user_avatar_url ||
+                            "https://tookapic.com/img/avatars/default.svg"
+                          }
                           width="24"
                           height="24"
                           alt=""
@@ -133,39 +146,50 @@ const Comments: FC<Props> = (props) => {
                       <div className="text-14 leading-md pt-2 text-grey-27 wysiwyg">
                         <div>
                           <a
-                            href={`/${item.authorId}`}
+                            href={`/${item.user_id}`}
                             className="autolink notranslate"
                           >
-                            {item.authorName}
+                            {item.display_name || item.username}
                           </a>
                           <div className="break-all">{item.content}</div>
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap mt-8 -mx-4 text-12 leading-sm">
+                      <div
+                        className={classnames(
+                          "flex-wrap mt-8 -mx-4 text-12 leading-sm",
+                          replyId && replyId === item.id ? "hidden" : "flex",
+                        )}
+                      >
                         <div className="px-4">
                           <a
                             href="https://tookapic.com/photos/661007#comment-460388"
                             className="text-grey-53"
                           >
-                            <time dateTime={item.date} title={item.date}>
-                              4yrs
+                            <time
+                              dateTime={item.create_date}
+                              title={item.create_date}
+                            >
+                              {dayjs(item.create_date).fromNow()}
                             </time>
                           </a>
                         </div>
 
                         <button
                           type="button"
-                          className="button-reset px-4 hover:underline "
+                          className={classnames(
+                            "button-reset px-4 hover:underline",
+                            { hidden: !item.like_count },
+                          )}
                         >
-                          {item.likes}
-                          like
+                          {item.like_count}&nbsp; like
                         </button>
 
                         <div className="px-4 flex items-center">
                           <button
                             type="button"
-                            className="button-reset inline-flex align-top "
+                            className="button-reset inline-flex align-top"
+                            title="喜欢"
                           >
                             <span className="off">
                               <Icon
@@ -187,6 +211,8 @@ const Comments: FC<Props> = (props) => {
                           <button
                             type="button"
                             className="button-reset inline-flex align-top"
+                            title="回复"
+                            onClick={() => setReplyId(item.id)}
                           >
                             <span className="flex">
                               <Icon
@@ -197,7 +223,7 @@ const Comments: FC<Props> = (props) => {
                           </button>
                         </div>
 
-                        <div className="px-4 flex items-center">
+                        {/* <div className="px-4 flex items-center">
                           <button
                             type="button"
                             className="button-reset inline-flex align-top"
@@ -216,6 +242,70 @@ const Comments: FC<Props> = (props) => {
                               />
                             </span>
                           </button>
+                        </div> */}
+                      </div>
+                      <div
+                        className={classnames("my-8", {
+                          hidden:
+                            _.isNil(replyId) ||
+                            (replyId && replyId !== item.id),
+                        })}
+                      >
+                        <textarea
+                          className={classnames(
+                            "bg-white input overflow-hidden break-words !resize-none",
+                          )}
+                          placeholder="Enter your reply…"
+                          maxLength={4096}
+                          rows={1}
+                          cols={50}
+                          value={replyContent}
+                          name="comment-reply"
+                          onChange={(e) =>
+                            setReplyContent(e.target?.value || "")
+                          }
+                          onKeyUp={function (e: any) {
+                            if (e.keyCode === 8) {
+                              e.target.style.height = "inherit";
+                              e.target.style.height = `${e.target.scrollHeight}px`;
+                            } else {
+                              e.target.style.height = `${e.target.scrollHeight}px`;
+                            }
+                          }}
+                        ></textarea>
+
+                        <div className="flex mt-8">
+                          <button
+                            type="submit"
+                            className="button button--primary"
+                            onClick={() => {
+                              onSubmit(
+                                {
+                                  content: replyContent,
+                                  commentLevel: 2,
+                                  parentCommentId: item.id,
+                                  parentCommentUserId: item.user_id,
+                                },
+                                () => {
+                                  setReplyId(undefined);
+                                  setReplyContent("");
+                                },
+                              );
+                            }}
+                          >
+                            Publish
+                          </button>
+
+                          <button
+                            type="button"
+                            className="button button--cancel ml-8"
+                            onClick={() => {
+                              setReplyId(undefined);
+                              setReplyContent("");
+                            }}
+                          >
+                            Cancel
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -223,17 +313,20 @@ const Comments: FC<Props> = (props) => {
 
                   <div className="bg-inherit thread">
                     <div className="thread__previous-replies hidden"></div>
-                    {item?.commentList?.length
-                      ? item?.commentList?.map((child) => (
+                    {item?.children?.length
+                      ? item?.children?.map((child) => (
                           <div
                             className="comment bg-inherit flex py-6 relative"
-                            id="comment-460395"
-                            key={child.date}
+                            id={`comment-${child.id}`}
+                            key={child.create_date}
                           >
                             <div className="flex-none mr-12 relative z-10">
                               <div className="avatar relative">
                                 <img
-                                  src={child.avatarSrc}
+                                  src={
+                                    child.user_avatar_url ||
+                                    "https://tookapic.com/img/avatars/default.svg"
+                                  }
                                   width="24"
                                   height="24"
                                   alt=""
@@ -245,42 +338,71 @@ const Comments: FC<Props> = (props) => {
                             <div className="comment__details bg-inherit flex-grow">
                               <div className="text-14 leading-md pt-2 text-grey-27 wysiwyg">
                                 <div>
-                                  <a
-                                    href={`/${child.authorId}`}
-                                    className="autolink notranslate"
-                                  >
-                                    {child.authorName}
-                                  </a>
+                                  {child?.replyUserInfo?.id ? (
+                                    <>
+                                      <a
+                                        href={`/${child.user_id}`}
+                                        className="autolink notranslate"
+                                      >
+                                        {child.display_name || child.username}
+                                      </a>
+                                      &nbsp; 回复 &nbsp;
+                                      <a
+                                        href={`/${child?.replyUserInfo?.id}`}
+                                        className="autolink notranslate"
+                                      >
+                                        {child?.replyUserInfo?.display_name ||
+                                          child?.replyUserInfo?.username}
+                                      </a>
+                                    </>
+                                  ) : (
+                                    <a
+                                      href={`/${child.user_id}`}
+                                      className="autolink notranslate"
+                                    >
+                                      {child.display_name || child.username}
+                                    </a>
+                                  )}
                                   <div className="break-all">
                                     {child.content}
                                   </div>
                                 </div>
                               </div>
 
-                              <div className="flex flex-wrap mt-8 -mx-4 text-12 leading-sm">
+                              <div
+                                className={classnames(
+                                  "flex-wrap mt-8 -mx-4 text-12 leading-sm",
+                                  replyId && replyId === child.id
+                                    ? "hidden"
+                                    : "flex",
+                                )}
+                              >
                                 <div className="px-4">
                                   <a className="text-grey-53 cursor-pointer">
                                     <time
-                                      dateTime={child.date}
-                                      title={child.date}
+                                      dateTime={child.create_date}
+                                      title={child.create_date}
                                     >
-                                      4yrs
+                                      {dayjs(child.create_date).fromNow()}
                                     </time>
                                   </a>
                                 </div>
 
                                 <button
                                   type="button"
-                                  className="button-reset px-4 hover:underline "
+                                  className={classnames(
+                                    "button-reset px-4 hover:underline",
+                                    { hidden: !child.like_count },
+                                  )}
                                 >
-                                  {child.likes}
-                                  like
+                                  {child.like_count}&nbsp; like
                                 </button>
 
                                 <div className="px-4 flex items-center">
                                   <button
                                     type="button"
                                     className="button-reset inline-flex align-top "
+                                    title="喜欢"
                                   >
                                     <span className="off">
                                       <Icon
@@ -302,6 +424,10 @@ const Comments: FC<Props> = (props) => {
                                   <button
                                     type="button"
                                     className="button-reset inline-flex align-top"
+                                    title="回复"
+                                    onClick={() => {
+                                      setReplyId(child.id);
+                                    }}
                                   >
                                     <span className="flex">
                                       <Icon
@@ -312,7 +438,7 @@ const Comments: FC<Props> = (props) => {
                                   </button>
                                 </div>
 
-                                <div className="px-4 flex items-center">
+                                {/* <div className="px-4 flex items-center">
                                   <button
                                     type="button"
                                     className="button-reset inline-flex align-top"
@@ -330,6 +456,72 @@ const Comments: FC<Props> = (props) => {
                                         addClassName="text-16 text-accent"
                                       />
                                     </span>
+                                  </button>
+                                </div> */}
+                              </div>
+                              <div
+                                className={classnames("my-8", {
+                                  hidden:
+                                    _.isNil(replyId) ||
+                                    (replyId && replyId !== child.id),
+                                })}
+                              >
+                                <textarea
+                                  className={classnames(
+                                    "bg-white input overflow-hidden break-words !resize-none",
+                                  )}
+                                  placeholder="Enter your reply…"
+                                  maxLength={4096}
+                                  rows={1}
+                                  cols={50}
+                                  value={replyContent}
+                                  name="comment-reply"
+                                  onChange={(e) =>
+                                    setReplyContent(e.target?.value || "")
+                                  }
+                                  onKeyUp={function (e: any) {
+                                    if (e.keyCode === 8) {
+                                      e.target.style.height = "inherit";
+                                      e.target.style.height = `${e.target.scrollHeight}px`;
+                                    } else {
+                                      e.target.style.height = `${e.target.scrollHeight}px`;
+                                    }
+                                  }}
+                                ></textarea>
+
+                                <div className="flex mt-8">
+                                  <button
+                                    type="submit"
+                                    className="button button--primary"
+                                    onClick={() => {
+                                      onSubmit(
+                                        {
+                                          content: replyContent,
+                                          commentLevel: 2,
+                                          parentCommentId: item.id,
+                                          parentCommentUserId: item.user_id,
+                                          replyCommentId: child.id,
+                                          replyCommentUserId: child.user_id,
+                                        },
+                                        () => {
+                                          setReplyId(undefined);
+                                          setReplyContent("");
+                                        },
+                                      );
+                                    }}
+                                  >
+                                    Publish
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    className="button button--cancel ml-8"
+                                    onClick={() => {
+                                      setReplyId(undefined);
+                                      setReplyContent("");
+                                    }}
+                                  >
+                                    Cancel
                                   </button>
                                 </div>
                               </div>

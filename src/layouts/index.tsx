@@ -19,13 +19,13 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     }, [router.pathname]);
 
     return (
-        <Fragment>
+        <div>
             {!hideHeader ? <Header /> : null}
             <div className="bg-white text-grey-53 font-sans text-16 leading-normal antialiased box-border">
                 {children}
             </div>
             {!hideFooter ? <Footer /> : null}
-        </Fragment>
+        </div>
     );
 };
 
