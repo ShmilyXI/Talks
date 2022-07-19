@@ -4,8 +4,8 @@ export interface BaseUserInfo {
   username: string;
   telephone: string;
   avatar_url: string;
-  create_date: string;
-  update_date: string;
+  create_time: string;
+  update_time: string;
   last_login_date: string;
   display_name: string;
   email: string;

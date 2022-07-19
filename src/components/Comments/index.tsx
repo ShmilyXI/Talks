@@ -124,7 +124,7 @@ const Comments: FC<Props> = (props) => {
               {list?.map((item) => (
                 <div
                   className="bg-inherit thread thread--has-replies"
-                  key={item.create_date}
+                  key={item.create_time}
                 >
                   <div
                     className="comment bg-inherit flex py-6 relative"
@@ -170,10 +170,10 @@ const Comments: FC<Props> = (props) => {
                             className="text-grey-53"
                           >
                             <time
-                              dateTime={item.create_date}
-                              title={item.create_date}
+                              dateTime={item.create_time}
+                              title={item.create_time}
                             >
-                              {dayjs(item.create_date).fromNow()}
+                              {dayjs(item.create_time).fromNow()}
                             </time>
                           </a>
                         </div>
@@ -323,7 +323,7 @@ const Comments: FC<Props> = (props) => {
                           <div
                             className="comment bg-inherit flex py-6 relative"
                             id={`comment-${child.id}`}
-                            key={child.create_date}
+                            key={child.create_time}
                           >
                             <div className="flex-none mr-12 relative z-10">
                               <div className="avatar relative">
@@ -385,10 +385,10 @@ const Comments: FC<Props> = (props) => {
                                 <div className="px-4">
                                   <a className="text-grey-53 cursor-pointer">
                                     <time
-                                      dateTime={child.create_date}
-                                      title={child.create_date}
+                                      dateTime={child.create_time}
+                                      title={child.create_time}
                                     >
-                                      {dayjs(child.create_date).fromNow()}
+                                      {dayjs(child.create_time).fromNow()}
                                     </time>
                                   </a>
                                 </div>

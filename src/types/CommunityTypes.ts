@@ -7,7 +7,7 @@ export type CommentItem = {
   user_avatar_url: string;
   photo_id: number;
   content: string;
-  create_date: string;
+  create_time: string;
   like_count: number;
   status: number;
   top_status: number;
