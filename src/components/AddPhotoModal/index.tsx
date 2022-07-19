@@ -10,7 +10,7 @@ import Api from "@/service";
 import toast from "react-hot-toast";
 import Form, { Field } from "rc-field-form";
 import { Checked } from "@/components";
-import  { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 type Props = {
   visible: boolean;
@@ -32,9 +32,10 @@ const Index: FC<Props> = (props) => {
   const { t } = useTranslation();
 
   // 提交表单
-  const onSubmit = async (values) => {
+  const onSubmit = async () => {
     setLoading(true);
     try {
+      const values = await form.validateFields();
       const { data: photoData } = await Api.uploadPhoto({
         data: tempFile,
       });
@@ -46,11 +47,12 @@ const Index: FC<Props> = (props) => {
           height: photoData?.height,
           themeColor: photoData?.themeColor,
           place: photoData?.place?.value, // 地点信息暂时mock 直接使用value展示
+          photoExifInfo: photoData?.photoExifInfo,
         },
       });
       if (data?.id) {
         setLoading(false);
-        form.setFieldsValue({});
+        form.resetFields();
         setTempFile(undefined);
         setTempImage(undefined);
         await toast.success("发布成功!");
@@ -68,8 +70,8 @@ const Index: FC<Props> = (props) => {
     if (!file) {
       return;
     }
-    if (file.size > 1024 * 1024 * 10) {
-      toast.error("文件大小不能超过10M");
+    if (file.size > 1024 * 1024 * 20) {
+      toast.error("文件大小不能超过20M");
       return;
     }
     const formData = new FormData();
@@ -96,7 +98,7 @@ const Index: FC<Props> = (props) => {
               type="button"
               className="modal__close z-30"
               onClick={() => {
-                form.setFieldsValue({});
+                form.resetFields();
                 setTempFile(undefined);
                 setTempImage(undefined);
                 setLoading(false);
@@ -112,7 +114,18 @@ const Index: FC<Props> = (props) => {
               </svg>
             </button>
 
-            <Form form={form} onFinish={onSubmit}>
+            <Form
+              form={form}
+              initialValues={{
+                title: undefined,
+                description: undefined,
+                galleryList: undefined,
+                shootingDate: undefined,
+                mood: undefined,
+                place: undefined,
+                showComments: false,
+              }}
+            >
               {(values, _form) => (
                 <div className="story-form">
                   <div className="bg-white -m-16 md:-m-24 sm:rounded-6">
@@ -121,9 +134,10 @@ const Index: FC<Props> = (props) => {
                         <input
                           type="file"
                           className="hidden"
-                          accept="image/*"
+                          accept="image/jpeg"
                           key={tempFile?.get("name")}
                           onChange={onFileChange}
+                          disabled={loading}
                         />
                         <img
                           src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'521' height%3D'300'%2F%3E"
@@ -170,10 +184,11 @@ const Index: FC<Props> = (props) => {
                               <input
                                 type="file"
                                 className="w-full h-full opacity-0 absolute cursor-pointer"
-                                accept="image/*"
+                                accept="image/jpeg"
                                 key={tempFile?.get("name")}
                                 onChange={onFileChange}
                                 title="重新选择图片"
+                                disabled={loading}
                               />
                               <img
                                 src={
@@ -244,21 +259,24 @@ const Index: FC<Props> = (props) => {
                           </div>
 
                           <div className="mr-8 mb-8">
-                            <Field name="mood">
-                              <Mood disabled={loading} />
-                            </Field>
-                          </div>
-
-                          <div className="mr-8 mb-8">
                             <Field name="galleryList">
                               <Gallery disabled={loading} />
                             </Field>
                           </div>
 
                           <div className="mr-8 mb-8">
+                            <Field name="mood">
+                              <Mood disabled={loading} />
+                            </Field>
+                          </div>
+
+                          <div className="mr-8 mb-8">
                             <Field name="showComments">
                               <Checked disabled={loading}>
-                                <label className="button button--pill is-off">
+                                <button
+                                  className="button button--pill is-off"
+                                  disabled={loading}
+                                >
                                   <span
                                     className="button--pill__icon"
                                     title={t("photoModal.comments_off")}
@@ -271,9 +289,12 @@ const Index: FC<Props> = (props) => {
                                       <path d="M320 80c114.7 0 208 71.8 208 160 0 25.3-7.9 49.1-21.5 70.4l37.9 29.6c20.1-29.6 31.6-63.7 31.6-100 0-114.9-114.6-208-256-208-48.2 0-93 11-131.5 29.8l43 33.6C258.4 85.6 288.3 80 320 80zm0 320c-26.7 0-53.1-4.1-78.4-12.1l-22.7-7.2-19.5 13.8c-14.3 10.1-33.9 21.4-57.5 29 7.3-12.1 14.4-25.7 19.9-40.2l10.6-28.1-20.6-21.8C133.7 314.1 112 282.2 112 240c0-16.6 3.3-32.7 9.5-47.8L82.8 162c-12 24.1-18.8 50.4-18.8 78 0 47.6 19.9 91.2 52.9 126.3-14.9 39.4-45.9 72.8-46.4 73.2-6.6 7-8.4 17.2-4.6 26S78.4 480 88 480c61.5 0 110-25.7 139.1-46.3C256 442.8 287.2 448 320 448c37.5 0 73-6.7 105.1-18.5l-46.2-36.2c-18.7 4.3-38.5 6.7-58.9 6.7zm314 71L481.6 351.8l-6.8-5.3L36 3.5C29.1-2 19-.9 13.5 6l-10 12.5C-2 25.4-.9 35.5 6 41l598 467.5c6.9 5.5 17 4.4 22.5-2.5l10-12.5c5.5-6.9 4.4-17-2.5-22.5z" />
                                     </svg>
                                   </span>
-                                </label>
+                                </button>
 
-                                <label className="button button--pill is-on">
+                                <button
+                                  className="button button--pill is-on"
+                                  disabled={loading}
+                                >
                                   <span
                                     className="button--pill__icon"
                                     title={t("photoModal.comments_on")}
@@ -286,7 +307,7 @@ const Index: FC<Props> = (props) => {
                                       <path d="M288 32C129 32 0 125.1 0 240c0 49.3 23.7 94.5 63.3 130.2-8.7 23.3-22.1 32.7-37.1 43.1C15.1 421-6 433 1.6 456.5c5.1 15.4 20.9 24.7 38.1 23.3 57.7-4.6 111.2-19.2 157-42.5 28.7 6.9 59.4 10.7 91.2 10.7 159.1 0 288-93 288-208C576 125.1 447.1 32 288 32zm0 368c-32.5 0-65.4-4.4-97.3-14-32.3 19-78.7 46-134.7 54 32-24 56.8-61.6 61.2-88.4C79.1 325.6 48 286.7 48 240c0-70.9 86.3-160 240-160s240 89.1 240 160c0 71-86.3 160-240 160z" />
                                     </svg>
                                   </span>
-                                </label>
+                                </button>
                               </Checked>
                             </Field>
                           </div>
@@ -311,8 +332,8 @@ const Index: FC<Props> = (props) => {
 
                         <button
                           className="button button--primary w-full mt-4"
-                          type="submit"
                           disabled={loading}
+                          onClick={onSubmit}
                         >
                           {t("photoModal.publish_photo")}
                           {/* {t("photoModal.save_change")} */}

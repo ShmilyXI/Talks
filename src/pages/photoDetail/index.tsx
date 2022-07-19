@@ -53,15 +53,21 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (!+id) return;
-    getPhotoInfo(+id);
-    getCommentList(+id);
+    const _id = +id;
+    if (!_id) return;
+    getPhotoInfo(_id);
+    getCommentList(_id);
   }, [id]);
 
   // 评论提交
   const onCommentSubmit = async (value: CommentData, callback: () => void) => {
+    if (!_.trim(value?.content)) {
+      toast.error("请输入评论内容");
+      return;
+    }
     const data = {
       ...value,
+      content: _.trim(value?.content),
       photoId: curPhotoInfo.id,
       type: 1,
     };
@@ -113,7 +119,11 @@ const Index = () => {
             list={photoList || []}
             index={photoDetailInfo?.index}
             onChange={(index) => {
+              console.log("index", index);
               const item = photoList?.[index];
+              if (+item?.id) {
+                getCommentList(+item?.id);
+              }
               item && setCurPhotoInfo(item);
             }}
           />
@@ -495,7 +505,7 @@ const Index = () => {
             </div> */}
 
             {/* 相机信息 */}
-            {/* <div className="hidden lg:block mt-48">
+            <div className="hidden lg:block mt-48">
               <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
                 {t("common.exif")}
               </div>
@@ -507,7 +517,7 @@ const Index = () => {
                   </div>
 
                   <div className="text-14 lg:text-16 text-black">
-                    {curPhotoInfo?.exifData?.brand}
+                    {curPhotoInfo?.exifData?.brand || "无"}
                   </div>
                 </div>
 
@@ -517,7 +527,7 @@ const Index = () => {
                   </div>
 
                   <div className="text-14 lg:text-16 text-black">
-                    {curPhotoInfo?.exifData?.model}
+                    {curPhotoInfo?.exifData?.model || "无"}
                   </div>
                 </div>
 
@@ -527,7 +537,7 @@ const Index = () => {
                   </div>
 
                   <div className="text-14 lg:text-16 text-black">
-                    {curPhotoInfo?.exifData?.aperture}
+                    {curPhotoInfo?.exifData?.aperture || "无"}
                   </div>
                 </div>
 
@@ -537,7 +547,7 @@ const Index = () => {
                   </div>
 
                   <div className="text-14 lg:text-16 text-black">
-                    {curPhotoInfo?.exifData?.focalLength}
+                    {curPhotoInfo?.exifData?.focalLength || "无"}
                   </div>
                 </div>
 
@@ -547,7 +557,7 @@ const Index = () => {
                   </div>
 
                   <div className="text-14 lg:text-16 text-black">
-                    {curPhotoInfo?.exifData?.shutterSpeed}
+                    {curPhotoInfo?.exifData?.shutterSpeed || "无"}
                   </div>
                 </div>
 
@@ -557,11 +567,11 @@ const Index = () => {
                   </div>
 
                   <div className="text-14 lg:text-16 text-black">
-                    {curPhotoInfo?.exifData?.iso}
+                    {curPhotoInfo?.exifData?.iso || "无"}
                   </div>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -776,7 +786,7 @@ const Index = () => {
           </div> */}
 
           {/* mobile 设备参数 */}
-          {/* <div className="p-16 md:p-32 lg:hidden">
+          <div className="p-16 md:p-32 lg:hidden">
             <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
               {t("common.exif")}
             </div>
@@ -788,7 +798,7 @@ const Index = () => {
                 </div>
 
                 <div className="text-14 lg:text-16 text-black">
-                  {curPhotoInfo?.exifData?.brand}
+                  {curPhotoInfo?.exifData?.brand || "无"}
                 </div>
               </div>
 
@@ -798,7 +808,7 @@ const Index = () => {
                 </div>
 
                 <div className="text-14 lg:text-16 text-black">
-                  {curPhotoInfo?.exifData?.model}
+                  {curPhotoInfo?.exifData?.model || "无"}
                 </div>
               </div>
 
@@ -808,7 +818,7 @@ const Index = () => {
                 </div>
 
                 <div className="text-14 lg:text-16 text-black">
-                  {curPhotoInfo?.exifData?.aperture}
+                  {curPhotoInfo?.exifData?.aperture || "无"}
                 </div>
               </div>
 
@@ -818,7 +828,7 @@ const Index = () => {
                 </div>
 
                 <div className="text-14 lg:text-16 text-black">
-                  {curPhotoInfo?.exifData?.focalLength}
+                  {curPhotoInfo?.exifData?.focalLength || "无"}
                 </div>
               </div>
 
@@ -828,7 +838,7 @@ const Index = () => {
                 </div>
 
                 <div className="text-14 lg:text-16 text-black">
-                  {curPhotoInfo?.exifData?.shutterSpeed}
+                  {curPhotoInfo?.exifData?.shutterSpeed || "无"}
                 </div>
               </div>
 
@@ -836,11 +846,11 @@ const Index = () => {
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">ISO</div>
 
                 <div className="text-14 lg:text-16 text-black">
-                  {curPhotoInfo?.exifData?.iso}
+                  {curPhotoInfo?.exifData?.iso || "无"}
                 </div>
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>

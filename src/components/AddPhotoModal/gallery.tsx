@@ -6,6 +6,7 @@ import React, { FC, useEffect, useRef, useState } from "react";
 type GalleryProps = {
   onChange?: (value?: number[]) => void;
   disabled?: boolean;
+  value?: number[];
 };
 
 type GalleryItem = {
@@ -37,12 +38,12 @@ const mockGalleryList: GalleryItem[] = [
 ];
 
 const Gallery: FC<GalleryProps> = (props) => {
-  const { onChange = () => {}, disabled } = props;
+  const { onChange = () => {}, disabled, value } = props;
 
   const [gallerySearchValue, setGallerySearchValue] = useState<string>(); // 画廊弹窗搜索值
   const [galleryLock, setGalleryLock] = useState(false); // 画廊弹窗私人锁
   const [galleryList, setGalleryList] = useState<GalleryItem[]>([]); // 画廊列表
-  const [gallerySelectKeys, setGallerySelectKeys] = useState<number[]>([]); // 画廊元素选择id列表
+  const [gallerySelectKeys, setGallerySelectKeys] = useState<number[]>(); // 画廊元素选择id列表
   const galleryModalRef = useRef<HTMLDivElement>(null);
 
   const [
@@ -57,6 +58,10 @@ const Gallery: FC<GalleryProps> = (props) => {
   useEffect(() => {
     onChange(gallerySelectKeys);
   }, [gallerySelectKeys]);
+
+  useEffect(() => {
+    setGallerySelectKeys(value);
+  }, [value]);
 
   useEffect(() => {
     setGalleryList(mockGalleryList);

@@ -77,7 +77,7 @@ const Calendar: FC<CalendarProps> = (props) => {
           </span>
         </button>
         <div
-          className={classnames("w-248 absolute bottom-[40px]", {
+          className={classnames("w-248 absolute bottom-[unset] md:bottom-[40px]", {
             hidden: !showModal,
           })}
           id="calendar-modal"

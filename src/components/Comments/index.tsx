@@ -57,7 +57,8 @@ const Comments: FC<Props> = (props) => {
               className={classnames(
                 "bg-white input overflow-hidden break-words !resize-none",
               )}
-              placeholder="Type your comment here…"
+              // placeholder="Type your comment here…"
+              placeholder="在这里输入你的评论…"
               maxLength={4096}
               rows={1}
               cols={50}
@@ -98,13 +99,15 @@ const Comments: FC<Props> = (props) => {
                     );
                   }}
                 >
-                  Publish
+                  {/* Publish */}
+                  发布
                 </button>
               </div>
 
-              <div className="text-12 leading-none text-right">
-                Use @ to mention other users
-              </div>
+              {/* <div className="text-12 leading-none text-right"> */}
+              {/* Use @ to mention other users */}
+              {/* 使用 @ 来提到其他用户 */}
+              {/* </div> */}
             </div>
           </div>
         </div>
@@ -293,7 +296,8 @@ const Comments: FC<Props> = (props) => {
                               );
                             }}
                           >
-                            Publish
+                            {/* Publish */}
+                            发布
                           </button>
 
                           <button
@@ -304,7 +308,8 @@ const Comments: FC<Props> = (props) => {
                               setReplyContent("");
                             }}
                           >
-                            Cancel
+                            {/* Cancel */}
+                            取消
                           </button>
                         </div>
                       </div>
@@ -510,7 +515,8 @@ const Comments: FC<Props> = (props) => {
                                       );
                                     }}
                                   >
-                                    Publish
+                                    {/* Publish */}
+                                    发布
                                   </button>
 
                                   <button
@@ -521,7 +527,8 @@ const Comments: FC<Props> = (props) => {
                                       setReplyContent("");
                                     }}
                                   >
-                                    Cancel
+                                    {/* Cancel */}
+                                    取消
                                   </button>
                                 </div>
                               </div>
@@ -549,7 +556,10 @@ const Comments: FC<Props> = (props) => {
               />
             </div>
 
-            <div className="text-14 leading-md">No comments</div>
+            <div className="text-14 leading-md">
+              {/* No comments */}
+              没有评论
+            </div>
           </div>
         </div>
       </div>

@@ -48,7 +48,7 @@ const request = axiosCreateRequest<RequestConfig, HttpJson>({
 request.middlewares.request.use(
   showErrorMiddleware({
     showError: (err: SerializedError<"retCode", "message">) =>
-      void toast.error(err.message || "系统繁忙，请稍后再试"),
+      void toast.error(err?.message || "系统繁忙，请稍后再试"),
   }),
 );
 request.middlewares.request.use(axiosFormDataMiddleware());

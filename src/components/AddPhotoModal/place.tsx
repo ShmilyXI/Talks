@@ -48,6 +48,7 @@ const Place: FC<PlaceProps> = (props) => {
               className="button button--pill"
               type="button"
               onClick={togglePlaceInput}
+              disabled={disabled}
             >
               <span className="button--pill__icon" title="Add place">
                 <svg
@@ -131,6 +132,7 @@ const Place: FC<PlaceProps> = (props) => {
             <button
               type="button"
               className="button-reset py-2 px-8 leading-none text-green-75 hover:text-green-85"
+              disabled={disabled}
               onClick={() => {
                 setPlaceSearchValue("");
                 onChange();

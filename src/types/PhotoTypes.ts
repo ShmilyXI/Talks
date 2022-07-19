@@ -31,7 +31,7 @@ export interface BasePhotoInfo {
 }
 
 export interface PhotoDetailInfoResponse extends common.Response {
-  data?: { index: number; list: BasePhotoInfo[]; photoInfo: BasePhotoInfo };
+  data?: { index: number; list: BasePhotoInfo[] };
 }
 export interface PhotoDetailInfoRequest {
   id: string | number;
@@ -74,6 +74,7 @@ export interface UploadPhotoResponse extends common.Response {
     themeColor: string;
     type: string;
     width: number;
+    photoExifInfo?: ExifData;
   };
 }
 
@@ -93,6 +94,7 @@ export interface PublishPhotoRequest {
   mood: string;
   place: string;
   tags: string[];
+  photoExifInfo?: ExifData;
 }
 export interface PublishPhotoResponse extends common.Response {
   data?: {
