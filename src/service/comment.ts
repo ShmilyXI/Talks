@@ -15,8 +15,8 @@ const createApi = request.createApi({ baseURL: "/api" });
 const commentApi = {
   /** 获取照片评论列表 **/
   getPhotoCommentList: createApi<
-    GetPhotoCommentListRequest,
-    RequestPostType<GetPhotoCommentListResponse>
+    GetPhotoCommentListResponse,
+    RequestGetType<GetPhotoCommentListRequest>
   >({
     url: "/comment/get-photo-comment-list",
     method: "GET",

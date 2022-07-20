@@ -10,11 +10,11 @@ export interface BaseUserInfo {
   display_name: string;
   email: string;
   individual_resume?: string;
-  location?: string;
+  place?: string;
 }
 
 export interface GetUserInfoRequest {
-  id?: string;
+  id?: number;
 }
 export interface GetUserInfoResponse extends common.Response {
   data?: BaseUserInfo;
@@ -45,7 +45,7 @@ export interface UpdateUserInfoRequest {
   displayName: string;
   email: string;
   individualResume?: string;
-  location?: string;
+  place?: string;
   userName: string;
 }
 export interface UpdateUserInfoResponse extends common.Response {

@@ -70,11 +70,12 @@ const Index = () => {
   }, [showWrap]);
 
   useClickAway(() => {
+    setWrapLeft();
     if (showMInputTypeMenu) {
-      setWrapLeft();
       setSearchValue("");
       setMInputTypeMenuLeft();
     }
+    
   }, [wrapRef, buttonRef]);
 
   useClickAway(() => {
@@ -496,10 +497,10 @@ const Index = () => {
           </button>
         </div>
         <a
-          href="/userDetail/977197585"
-          className={classnames("w-64 p-16 text-center", {
+          className={classnames("w-64 p-16 text-center cursor-pointer", {
             hidden: !isLogin,
           })}
+          onClick={()=>goRoute(`/userDetail?id=${userInfo.id}`)}
         >
           <span className="avatar">
             <img

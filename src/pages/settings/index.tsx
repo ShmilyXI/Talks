@@ -21,10 +21,14 @@ const Index = () => {
     const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
     form.setFieldsValue({
       displayName: _userInfo?.display_name,
-      location: _userInfo?.location,
+      place: _userInfo?.place,
       email: _userInfo?.email,
       userName: _userInfo?.username,
-      individualResume: _userInfo?.individual_resume,
+      // 个人简介回显时,需要将<br/>替换为\r\n
+      individualResume: _userInfo?.individual_resume?.replace(
+        /<br\/>/g,
+        "\r\n",
+      ),
     });
     setUserInfo(_userInfo);
   }, []);
@@ -55,9 +59,15 @@ const Index = () => {
         });
         avatarUrl = _avatarUrl;
       }
+      // 个人简介保存时,需要将\r\n替换为<br/>
+      const individualResume = values.individualResume
+        ?.replace(/\r\n/g, "<br/>")
+        .replace(/\n/g, "<br/>")
+        .replace(/\s/g, " ");
       const { data } = await Api.updateUserInfo({
         data: {
           ...values,
+          individualResume,
           avatarUrl,
         },
       });
@@ -194,7 +204,7 @@ const Index = () => {
 
                 <div className="mb-16 px-12 w-full sm:w-1/2">
                   <div className="text-14 leading-md mb-8">位置</div>
-                  <Field name="location">
+                  <Field name="place">
                     <input
                       className="input"
                       disabled={loading}
@@ -204,10 +214,10 @@ const Index = () => {
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
-                      hidden: !_form.getFieldError("location")?.[0],
+                      hidden: !_form.getFieldError("place")?.[0],
                     })}
                   >
-                    {_form.getFieldError("location")?.[0]}
+                    {_form.getFieldError("place")?.[0]}
                   </div>
                 </div>
 
@@ -300,12 +310,12 @@ const Index = () => {
               </div>
 
               <div className="md:flex items-center justify-between flex-row-reverse text-center">
-                <div className="text-14 break-words">
+                {/* <div className="text-14 break-words">
                   您的个人资料 :&nbsp;
                   <a href={`/userDetail/${userInfo?.username}`}>
                     userDetail/{userInfo?.username}
                   </a>
-                </div>
+                </div> */}
 
                 <div className="mt-16 md:mt-0">
                   <button

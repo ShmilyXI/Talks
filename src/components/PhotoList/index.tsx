@@ -14,7 +14,11 @@ import _ from "lodash";
 import { GalleryPhotoItem } from "@/types/PhotoTypes";
 import dayjs from "dayjs";
 
-type PhotoListProps = { list: GalleryPhotoItem[]; total?: number };
+type PhotoListProps = {
+  list: GalleryPhotoItem[];
+  total?: number;
+  isDetail?: boolean;
+};
 
 const BreakPoints = {
   xs: 352,
@@ -29,7 +33,7 @@ const BreakPoints = {
 configResponsive(BreakPoints);
 
 const PhotoList: FC<PhotoListProps> = (props) => {
-  const { list, total } = props;
+  const { list, total, isDetail } = props;
   const router = useRouter();
   const { t } = useTranslation();
   const [photoList, setPhotoList] = useState<GalleryPhotoItem[]>([]); // 图片列表
@@ -106,9 +110,18 @@ const PhotoList: FC<PhotoListProps> = (props) => {
               >
                 <div className="relative bg-white w-full h-full">
                   {/* 小屏 */}
-                  <div className="flex grid:hidden justify-between items-center px-16 py-8 story-list__header">
+                  <div
+                    className={classnames(
+                      "grid:hidden justify-between items-center px-16 py-8 story-list__header",
+                      isDetail ? "hidden" : "flex",
+                    )}
+                  >
                     <div className="flex items-center min-w-0">
-                      <div className="flex-none">
+                      <div
+                        className={classnames("flex-none mr-16", {
+                          hidden: !item.avatarUrl,
+                        })}
+                      >
                         <div className="avatar">
                           <img
                             src={item.avatarUrl}
@@ -120,7 +133,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                         </div>
                       </div>
 
-                      <div className="ml-16 min-w-0 truncate">
+                      <div className="min-w-0 truncate">
                         <a
                           className="font-medium story-list__user block text-14 leading-md cursor-pointer"
                           onClick={() =>
@@ -194,7 +207,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     {/* 遮罩 顶部*/}
                     <div className="story-list__overlay-item absolute pin-t pin-x z-5 px-8 pt-8 text-white text-12 leading-sm pointer-events-none text-shadow-grid flex justify-between">
                       <div className="flex items-center">
-                        <div className="flex-none mr-8">
+                        <div
+                          className={classnames("flex-none mr-8", {
+                            hidden: !item.avatarUrl || isDetail,
+                          })}
+                        >
                           <div className="avatar bg-black">
                             <img
                               src={item.avatarUrl}
@@ -207,14 +224,25 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                         <div>
                           <div className="font-medium">
-                            <a
-                              className="pointer-events-auto text-inherit break-words cursor-pointer"
-                              onClick={() =>
-                                goRoute(`/userDetail?pid=${item.userId}`)
-                              }
-                            >
-                              {item.authorName}
-                            </a>
+                            {isDetail ? (
+                              <>
+                                <div className="text-inherit break-words text-18">
+                                  {item.title}
+                                </div>
+                                <div className="text-inherit break-words">
+                                  {item.createDate}
+                                </div>
+                              </>
+                            ) : (
+                              <a
+                                className="pointer-events-auto text-inherit break-words cursor-pointer text-18"
+                                onClick={() =>
+                                  goRoute(`/userDetail?pid=${item.userId}`)
+                                }
+                              >
+                                {item.authorName}
+                              </a>
+                            )}
                           </div>
 
                           <div

@@ -365,7 +365,7 @@ const Index = () => {
                 <a
                   className="text-inherit ml-4 cursor-pointer"
                   onClick={() =>
-                    console.log("location-->", curPhotoInfo?.place)
+                    console.log("place-->", curPhotoInfo?.place)
                   }
                 >
                   <span className="block lg:truncate lg:max-w-200">
