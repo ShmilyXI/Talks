@@ -5,18 +5,31 @@ import { useClickAway, useToggle } from "ahooks";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import _ from "lodash";
+import { UserLikedRequest } from "@/types/UserTypes";
+import { Storage } from "@/utils/storage";
+import swal from "sweetalert";
 
 type Props = {
   list: CommentItem[];
   className?: string;
   addClassName?: string;
   onSubmit?: (data: CommentData, callback: () => void) => void;
+  onUserLiked?: (data: UserLikedRequest) => void;
+  onDeleteComment?: (id: number) => void;
 };
 const Comments: FC<Props> = (props) => {
-  const { list, className, addClassName, onSubmit = () => {} } = props;
+  const {
+    list,
+    className,
+    addClassName,
+    onSubmit = () => {},
+    onUserLiked = () => {},
+    onDeleteComment = () => {},
+  } = props;
   const [commentContent, setCommentContent] = useState(""); // 评论内容
   const [replyContent, setReplyContent] = useState(""); // 评论回复内容
   const [replyId, setReplyId] = useState<number>(); // 评论回复id
+  const [userInfo, setUserInfo] = useState<any>();
   const textareaRef = useRef(null); // 一级评论框ref
   const [isFocus, { setLeft: setIsFocusLeft, setRight: setIsFocusRight }] =
     useToggle();
@@ -25,6 +38,12 @@ const Comments: FC<Props> = (props) => {
     setIsFocusLeft?.();
     setCommentContent("");
   }, textareaRef);
+
+  useEffect(() => {
+    const storage = new Storage(sessionStorage, "Talks");
+    const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
+    setUserInfo(_userInfo);
+  }, []);
 
   return (
     <div
@@ -55,7 +74,7 @@ const Comments: FC<Props> = (props) => {
           <div>
             <textarea
               className={classnames(
-                "bg-white input overflow-hidden break-words !resize-none",
+                "bg-white input overflow-hidden break-words !resize-none !transition-[height]",
               )}
               // placeholder="Type your comment here…"
               placeholder="在这里输入你的评论…"
@@ -66,6 +85,9 @@ const Comments: FC<Props> = (props) => {
               name="comment"
               onFocus={() => setIsFocusRight()}
               onChange={(e) => setCommentContent(e.target?.value || "")}
+              onBlur={function (e: any) {
+                e.target.style.height = "inherit";
+              }}
               onKeyUp={function (e: any) {
                 if (e.keyCode === 8) {
                   e.target.style.height = "inherit";
@@ -182,10 +204,10 @@ const Comments: FC<Props> = (props) => {
                           type="button"
                           className={classnames(
                             "button-reset px-4 hover:underline",
-                            { hidden: !item.like_count },
+                            { hidden: !item.liked_count },
                           )}
                         >
-                          {item.like_count}&nbsp; like
+                          {item.liked_count}like
                         </button>
 
                         <div className="px-4 flex items-center">
@@ -193,20 +215,27 @@ const Comments: FC<Props> = (props) => {
                             type="button"
                             className="button-reset inline-flex align-top"
                             title="喜欢"
+                            onClick={_.debounce(
+                              () =>
+                                onUserLiked({
+                                  likedId: item?.id,
+                                  likedStatus: item?.likedStatus === 1 ? 0 : 1,
+                                  likedType: 1,
+                                }),
+                              500,
+                            )}
                           >
-                            <span className="off">
+                            {item?.likedStatus === 1 ? (
+                              <Icon
+                                className="icon-likefill"
+                                addClassName="text-12 text-red"
+                              />
+                            ) : (
                               <Icon
                                 className="icon-like"
                                 addClassName="text-12 text-grey-53 hover:text-grey-27"
                               />
-                            </span>
-
-                            <span className="on">
-                              <Icon
-                                className="icon-likefull"
-                                addClassName="text-16 text-red"
-                              />
-                            </span>
+                            )}
                           </button>
                         </div>
 
@@ -246,6 +275,35 @@ const Comments: FC<Props> = (props) => {
                             </span>
                           </button>
                         </div> */}
+                        <div
+                          className={classnames(
+                            "px-4 items-center",
+                            userInfo?.id === item.user_id ? "flex" : "hidden",
+                          )}
+                          data-tippy-content="删除"
+                        >
+                          <button
+                            type="button"
+                            className="button-reset inline-flex align-top"
+                            title="删除"
+                            onClick={() => {
+                              swal({
+                                title: "确认删除评论?",
+                                buttons: ["取消", "确认"],
+                                dangerMode: true,
+                              }).then((willDelete) => {
+                                if (willDelete) {
+                                  onDeleteComment(item.id);
+                                }
+                              });
+                            }}
+                          >
+                            <Icon
+                              className="icon-delete"
+                              addClassName="text-16 text-grey-53 hover:text-grey-27"
+                            />
+                          </button>
+                        </div>
                       </div>
                       <div
                         className={classnames("my-8", {
@@ -256,9 +314,9 @@ const Comments: FC<Props> = (props) => {
                       >
                         <textarea
                           className={classnames(
-                            "bg-white input overflow-hidden break-words !resize-none",
+                            "bg-white input overflow-hidden break-words !resize-none !transition-[height]",
                           )}
-                          placeholder="Enter your reply…"
+                          placeholder="在这里输入你的评论…"
                           maxLength={4096}
                           rows={1}
                           cols={50}
@@ -397,31 +455,39 @@ const Comments: FC<Props> = (props) => {
                                   type="button"
                                   className={classnames(
                                     "button-reset px-4 hover:underline",
-                                    { hidden: !child.like_count },
+                                    { hidden: !child.liked_count },
                                   )}
                                 >
-                                  {child.like_count}&nbsp; like
+                                  {child.liked_count}like
                                 </button>
 
                                 <div className="px-4 flex items-center">
                                   <button
                                     type="button"
-                                    className="button-reset inline-flex align-top "
+                                    className="button-reset inline-flex align-top"
                                     title="喜欢"
+                                    onClick={_.debounce(
+                                      () =>
+                                        onUserLiked({
+                                          likedId: child?.id,
+                                          likedStatus:
+                                            child?.likedStatus === 1 ? 0 : 1,
+                                          likedType: 1,
+                                        }),
+                                      500,
+                                    )}
                                   >
-                                    <span className="off">
+                                    {child?.likedStatus === 1 ? (
+                                      <Icon
+                                        className="icon-likefill"
+                                        addClassName="text-12 text-red"
+                                      />
+                                    ) : (
                                       <Icon
                                         className="icon-like"
                                         addClassName="text-12 text-grey-53 hover:text-grey-27"
                                       />
-                                    </span>
-
-                                    <span className="on">
-                                      <Icon
-                                        className="icon-likefull"
-                                        addClassName="text-12 text-red"
-                                      />
-                                    </span>
+                                    )}
                                   </button>
                                 </div>
 
@@ -463,6 +529,36 @@ const Comments: FC<Props> = (props) => {
                                     </span>
                                   </button>
                                 </div> */}
+                                <div
+                                  className={classnames(
+                                    "px-4 items-center",
+                                    userInfo?.id === child.user_id
+                                      ? "flex"
+                                      : "hidden",
+                                  )}
+                                >
+                                  <button
+                                    type="button"
+                                    className="button-reset inline-flex align-top"
+                                    title="删除"
+                                    onClick={() => {
+                                      swal({
+                                        title: "确认删除评论?",
+                                        buttons: ["取消", "确认"],
+                                        dangerMode: true,
+                                      }).then((willDelete) => {
+                                        if (willDelete) {
+                                          onDeleteComment(child.id);
+                                        }
+                                      });
+                                    }}
+                                  >
+                                    <Icon
+                                      className="icon-delete"
+                                      addClassName="text-16 text-grey-53 hover:text-grey-27"
+                                    />
+                                  </button>
+                                </div>
                               </div>
                               <div
                                 className={classnames("my-8", {
@@ -473,9 +569,9 @@ const Comments: FC<Props> = (props) => {
                               >
                                 <textarea
                                   className={classnames(
-                                    "bg-white input overflow-hidden break-words !resize-none",
+                                    "bg-white input overflow-hidden break-words !resize-none !transition-[height]",
                                   )}
-                                  placeholder="Enter your reply…"
+                                  placeholder="在这里输入你的评论…"
                                   maxLength={4096}
                                   rows={1}
                                   cols={50}

@@ -1,4 +1,4 @@
-import { common } from "./types";
+import { common } from './types';
 
 type ExifData = {
   brand: string;
@@ -25,6 +25,7 @@ export interface BasePhotoInfo {
   place: string;
   tags: string[];
   mood: string;
+  likedStatus?: number;
   exifData: ExifData;
   createDate: string;
   updateDate: string;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import "@/utils/i18n";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjsLocalZh from "dayjs/locale/zh-cn";
+import tippy from "tippy.js";
 
 import dayjs from "dayjs";
 
@@ -16,25 +17,30 @@ import "tailwindcss/tailwind.css";
 import "@styles/default.css";
 import "@styles/global.less";
 import "yet-another-react-lightbox/styles.css";
+import "tippy.js/dist/tippy.css";
 
 dayjs.extend(relativeTime); // dayjs 相对时间插件
 dayjs.locale(dayjsLocalZh); // dayjs 国际化
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-    const queryClient = new QueryClient();
+  const queryClient = new QueryClient();
 
-    return (
-        <QueryClientProvider client={queryClient}>
-            <Hydrate state={pageProps.dehydratedState}>
-                <Provider store={store}>
-                    <Layouts>
-                        <Component {...pageProps} />
-                        <Toaster />
-                    </Layouts>
-                </Provider>
-            </Hydrate>
-        </QueryClientProvider>
-    );
+  useEffect(() => {
+    tippy("[data-tippy-content]");
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Provider store={store}>
+          <Layouts>
+            <Component {...pageProps} />
+            <Toaster />
+          </Layouts>
+        </Provider>
+      </Hydrate>
+    </QueryClientProvider>
+  );
 }
 
 export default MyApp;

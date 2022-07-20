@@ -7,7 +7,9 @@ import {
   GetUserInfoRequest,
   UpdateUserInfoResponse,
   UpdateUserInfoRequest,
-  UploadAvatarResponse
+  UploadAvatarResponse,
+  UserLikedRequest,
+  UserLikedResponse
 } from "@/types/UserTypes";
 import request, {
   HttpJson,
@@ -51,6 +53,14 @@ const userApi = {
     RequestPostType<UpdateUserInfoRequest>
   >({
     url: "/user/update-user-info",
+    method: "POST",
+  }),
+  /** 用户点赞 **/
+  userLiked: createApi<
+    UserLikedResponse,
+    RequestPostType<UserLikedRequest>
+  >({
+    url: "/user/user-liked",
     method: "POST",
   }),
 };

@@ -10,8 +10,8 @@ import { BasePhotoInfo, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
 import classNames from "classnames";
 import _ from "lodash";
 import toast from "react-hot-toast";
-import { Storage } from "@/utils/storage";
 import { CommentData, CommentItem } from "@/types/CommunityTypes";
+import { UserLikedRequest } from "@/types/UserTypes";
 
 type Mood = Record<string, { text: string; icon: string }>;
 
@@ -56,7 +56,6 @@ const Index = () => {
     const _id = +id;
     if (!_id) return;
     getPhotoInfo(_id);
-    getCommentList(_id);
   }, [id]);
 
   // 评论提交
@@ -75,6 +74,41 @@ const Index = () => {
     await toast.success("评论成功!");
     callback();
     getCommentList(curPhotoInfo.id);
+  };
+
+  // 用户点赞照片
+  const onUserLiked = async (value: UserLikedRequest) => {
+    try {
+      const { likedId, likedStatus, likedType } = value;
+      await Api.userLiked({
+        data: {
+          likedId,
+          likedStatus,
+          likedType,
+        },
+      });
+      await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
+      if (likedType === 0) {
+        getPhotoInfo(curPhotoInfo.id);
+      }
+      if (likedType === 1) {
+        getCommentList(curPhotoInfo.id);
+      }
+    } catch (error) {
+      await toast.error("点赞失败,请重试!");
+    }
+  };
+
+  // 删除评论
+  const onDeleteComment = async (id: number) => {
+    if (_.isNil(id)) return;
+    try {
+      await Api.deletePhotoComment({ data: { id } });
+      await toast.success("删除成功!");
+      getCommentList(curPhotoInfo.id);
+    } catch (error) {
+      await toast.error("删除失败,请重试!");
+    }
   };
 
   return (
@@ -153,21 +187,30 @@ const Index = () => {
                   <div className="px-8 leading-none">
                     <button
                       type="button"
-                      className="button-reset inline-flex align-top "
+                      className="button-reset inline-flex align-top"
+                      title="喜欢"
+                      onClick={_.debounce(
+                        () =>
+                          onUserLiked({
+                            likedId: curPhotoInfo?.id,
+                            likedStatus:
+                              curPhotoInfo?.likedStatus === 1 ? 0 : 1,
+                            likedType: 0,
+                          }),
+                        500,
+                      )}
                     >
-                      <span className="off">
-                        <Icon
-                          className="icon-like"
-                          addClassName="text-22 text-black"
-                        />
-                      </span>
-
-                      <span className="on">
+                      {curPhotoInfo?.likedStatus === 1 ? (
                         <Icon
                           className="icon-likefill"
                           addClassName="text-22 text-red"
                         />
-                      </span>
+                      ) : (
+                        <Icon
+                          className="icon-like"
+                          addClassName="text-22 text-black"
+                        />
+                      )}
                     </button>
                   </div>
 
@@ -625,20 +668,28 @@ const Index = () => {
                   <button
                     type="button"
                     className="button-reset inline-flex align-top "
+                    title="喜欢"
+                    onClick={_.debounce(
+                      () =>
+                        onUserLiked({
+                          likedId: curPhotoInfo?.id,
+                          likedStatus: curPhotoInfo?.likedStatus === 1 ? 0 : 1,
+                          likedType: 0,
+                        }),
+                      500,
+                    )}
                   >
-                    <span className="off">
-                      <Icon
-                        className="icon-like"
-                        addClassName="text-black text-22"
-                      />
-                    </span>
-
-                    <span className="on">
+                    {curPhotoInfo?.likedStatus === 1 ? (
                       <Icon
                         className="icon-likefill"
                         addClassName="text-red text-22"
                       />
-                    </span>
+                    ) : (
+                      <Icon
+                        className="icon-like"
+                        addClassName="text-black text-22"
+                      />
+                    )}
                   </button>
                 </div>
 
@@ -772,6 +823,8 @@ const Index = () => {
             addClassName="p-16 md:p-24 md:px-32 lg:px-24"
             list={commentList}
             onSubmit={onCommentSubmit}
+            onUserLiked={onUserLiked}
+            onDeleteComment={onDeleteComment}
           />
 
           {/* mobile 底部区域 */}
