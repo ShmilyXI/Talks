@@ -1,21 +1,17 @@
 import React, { FC, useEffect, useState } from "react";
-import { Icon, PlaceholderSvg } from "@components";
-import classnames from "classnames";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import Captions from "yet-another-react-lightbox/plugins/captions";
 import Inline from "yet-another-react-lightbox/plugins/inline";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import { BasePhotoInfo } from "@/types/PhotoTypes";
+import _ from "lodash";
 
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
+import './index.less'
 
-import { useToggle } from "ahooks";
-import dayjs from "dayjs";
-import { BasePhotoInfo } from "@/types/PhotoTypes";
-import _ from "lodash";
 
 type Props = {
   list: BasePhotoInfo[];
@@ -40,7 +36,7 @@ const PhotoViews: FC<Props> = (props) => {
     ],
   }));
   return (
-    <div className="bg-black w-full h-[70vh]">
+    <div className="bg-black w-full h-[70vh] photo-views">
       <Lightbox
         open
         key={defaultIndex}

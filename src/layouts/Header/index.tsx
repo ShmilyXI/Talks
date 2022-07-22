@@ -287,7 +287,7 @@ const Index = () => {
                   onClick={() => {
                     setWrapLeft();
                     setSearchValue("");
-                    goRoute("/talks");
+                    goRoute("/community");
                   }}
                 >
                   <span className="group-hover:underline">

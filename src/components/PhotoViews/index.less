@@ -1,0 +1,16 @@
+.photo-views {
+  .yarl__thumbnails_thumbnail {
+    .yarl__slide_image {
+      transition: filter 0.15s;
+      filter: grayscale(80%);
+      &:hover {
+        filter: grayscale(0%);
+      }
+    }
+  }
+  .yarl__thumbnails_thumbnail_active {
+    .yarl__slide_image {
+      filter: grayscale(0%);
+    }
+  }
+}

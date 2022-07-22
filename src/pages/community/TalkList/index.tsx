@@ -91,7 +91,7 @@ const Index = () => {
                                           <a
                                               onClick={() =>
                                                   goRoute(
-                                                      `/talks/detail?authorId=${item.authorId}`,
+                                                      `/community/detail?authorId=${item.authorId}`,
                                                   )
                                               }
                                               target="_blank"
@@ -149,7 +149,7 @@ const Index = () => {
                                                     <a
                                                         onClick={() =>
                                                             goRoute(
-                                                                `/talks/detail?authorId=${item.authorId}`,
+                                                                `/community/detail?authorId=${item.authorId}`,
                                                             )
                                                         }
                                                         className="avatar border-2 border-white -ml-12 relative z-3 cursor-pointer"

@@ -5,8 +5,8 @@ import dayjs from "dayjs";
 import { Comments } from "@components";
 import UnansweredTalks from "../UnansweredTalks";
 import TopContributors from "../TopContributors";
-import { CommentItem } from "@/pages/photoDetail";
 import Api from "@/service";
+import { CommentItem } from "@/types/CommunityTypes";
 
 type DetailInfo = {
     title: string;
@@ -47,7 +47,7 @@ const Detail = () => {
                                     <div className="flex flex-wrap -mx-10 md:-mx-12 text-14 md:text-16">
                                         <div className="px-10 md:px-12">
                                             <a
-                                                href="/talks"
+                                                href="/community"
                                                 className="block text-accent"
                                             >
                                                 Back to Talks
@@ -78,7 +78,7 @@ const Detail = () => {
                                                     className="text-black block truncate cursor-pointer"
                                                     onClick={() =>
                                                         goRoute(
-                                                            `/userDetail?pid=${detailInfo?.authorId}`,
+                                                            `/userDetail?id=${detailInfo?.authorId}`,
                                                         )
                                                     }
                                                 >

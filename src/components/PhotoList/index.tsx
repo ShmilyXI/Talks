@@ -13,8 +13,12 @@ import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { GalleryPhotoItem } from "@/types/PhotoTypes";
 import dayjs from "dayjs";
+import { UserLikedRequest } from "@/types/UserTypes";
+import Api from "@/service";
+import toast from "react-hot-toast";
 
 type PhotoListProps = {
+  getData: () => void;
   list: GalleryPhotoItem[];
   total?: number;
   isDetail?: boolean;
@@ -33,7 +37,7 @@ const BreakPoints = {
 configResponsive(BreakPoints);
 
 const PhotoList: FC<PhotoListProps> = (props) => {
-  const { list, total, isDetail } = props;
+  const { getData = () => {}, list, total, isDetail } = props;
   const router = useRouter();
   const { t } = useTranslation();
   const [photoList, setPhotoList] = useState<GalleryPhotoItem[]>([]); // 图片列表
@@ -75,7 +79,26 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
   // 路由跳转
   const goRoute = (path: string) => {
+    console.log("path", path);
     router.push(path);
+  };
+
+  // 用户点赞照片
+  const onUserLiked = async (value: UserLikedRequest) => {
+    try {
+      const { likedId, likedStatus, likedType } = value;
+      await Api.userLiked({
+        data: {
+          likedId,
+          likedStatus,
+          likedType,
+        },
+      });
+      await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
+      getData();
+    } catch (error) {
+      await toast.error("点赞失败,请重试!");
+    }
   };
 
   return (
@@ -132,12 +155,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           />
                         </div>
                       </div>
-
                       <div className="min-w-0 truncate">
                         <a
                           className="font-medium story-list__user block text-14 leading-md cursor-pointer"
                           onClick={() =>
-                            goRoute(`/userDetail?pid=${item.userId}`)
+                            goRoute(`/userDetail?id=${item.userId}`)
                           }
                         >
                           <span className="block truncate">
@@ -162,11 +184,8 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     </div>
 
                     <div className="ml-16 flex items-center flex-none text-12 leading-sm">
-                      <time
-                        dateTime="2022-05-11T18:53:20+00:00"
-                        title="2022-05-11T18:53:20+00:00"
-                      >
-                        8h
+                      <time dateTime={item.createDate} title={item.createDate}>
+                        {dayjs(item?.createDate).fromNow()}
                       </time>
                     </div>
                   </div>
@@ -237,7 +256,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               <a
                                 className="pointer-events-auto text-inherit break-words cursor-pointer text-18"
                                 onClick={() =>
-                                  goRoute(`/userDetail?pid=${item.userId}`)
+                                  goRoute(`/userDetail?id=${item.userId}`)
                                 }
                               >
                                 {item.authorName}
@@ -264,13 +283,24 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           <a
                             className="pointer-events-auto inline-flex align-top cursor-pointer"
                             onClick={() => {
-                              console.log("like");
+                              onUserLiked({
+                                likedId: item?.id,
+                                likedStatus: item?.likedStatus === 1 ? 0 : 1,
+                                likedType: 0,
+                              });
                             }}
                           >
-                            <Icon
-                              className="icon-like"
-                              addClassName="text-white text-16"
-                            />
+                            {item?.likedStatus === 1 ? (
+                              <Icon
+                                className="icon-likefill"
+                                addClassName="text-16 text-red"
+                              />
+                            ) : (
+                              <Icon
+                                className="icon-like"
+                                addClassName="text-16 text-white"
+                              />
+                            )}
                           </a>
                         </div>
 
@@ -304,7 +334,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           </a>
 
                           <span className="font-medium text-12 ml-3 leading-none text-white">
-                            {item.answerCount || 0}
+                            {item.commentCount || 0}
                           </span>
                         </div>
                       </div>
@@ -338,12 +368,25 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           <div className="px-8 leading-none text-14">
                             <a
                               className="inline-flex align-top cursor-pointer"
-                              onClick={() => console.log("like")}
+                              onClick={() => {
+                                onUserLiked({
+                                  likedId: item?.id,
+                                  likedStatus: item?.likedStatus === 1 ? 0 : 1,
+                                  likedType: 0,
+                                });
+                              }}
                             >
-                              <Icon
-                                className="icon-like"
-                                addClassName="text-black text-22"
-                              />
+                              {item?.likedStatus === 1 ? (
+                                <Icon
+                                  className="icon-likefill"
+                                  addClassName="text-22 text-red"
+                                />
+                              ) : (
+                                <Icon
+                                  className="icon-like"
+                                  addClassName="text-22 text-black"
+                                />
+                              )}
                             </a>
                           </div>
                         </div>
@@ -381,7 +424,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             goRoute(`/photoDetail?id=${item.id}#comment`)
                           }
                         >
-                          {item.answerCount || 0}
+                          {item.commentCount || 0}
                           &nbsp;
                           {t("common.comments")}
                         </a>

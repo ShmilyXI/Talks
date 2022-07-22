@@ -28,7 +28,6 @@ const Index = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const { t } = useTranslation();
-  const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] = useToggle();
   const [curPhotoInfo, setCurPhotoInfo] = useState<BasePhotoInfo>(); // 当前图片信息
   const [photoList, setPhotoList] = useState<BasePhotoInfo[]>(); // 图片列表
   const [commentList, setCommentList] = useState<CommentItem[]>([]); // 评论列表
@@ -48,7 +47,6 @@ const Index = () => {
   // 获取图片评论列表
   const getCommentList = async (id: number) => {
     const { data } = await Api.getPhotoCommentList({ params: { id } });
-    console.log("data.list :>> ", data.list);
     setCommentList(data?.list || []);
   };
 
@@ -130,7 +128,7 @@ const Index = () => {
             </div>
 
             <div className="ml-16 min-w-0 truncate">
-              <a className="font-medium text-black block text-14 leading-md cursor-pointer">
+              <a className="font-medium text-black block text-14 leading-md cursor-pointer" href={`/userDetail?id=${curPhotoInfo?.userId}`}>
                 <span className="block truncate">
                   {curPhotoInfo?.authorName}
                 </span>

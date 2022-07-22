@@ -1,4 +1,4 @@
-import { common } from "./types";
+import { common } from './types';
 
 type ExifData = {
   brand: string;
@@ -55,6 +55,9 @@ export interface GalleryPhotoItem {
   updateDate: string;
   authorName: string;
   avatarUrl: string;
+  commentCount: number;
+  likedStatus: number;
+  liked_count: number;
 }
 export interface GetGalleryPhotoListResponse extends common.Response {
   data?: {

@@ -39,7 +39,7 @@ const UserDetail = () => {
     <div>
       <div className="d-container max-w-744 xl:min-w-744 xl:max-w-full pt-16 pb-24 grid:py-48 xl:py-80 flex justify-center">
         <div className="grid:flex items-start relative w-full grid:w-auto">
-          <div className="relative w-80 grid:w-128">
+          <div className="relative w-[128px] h-[128px]">
             <div className="avatar">
               <img
                 src={
@@ -49,12 +49,11 @@ const UserDetail = () => {
                 width="128"
                 height="128"
                 alt=""
-                className="avatar__photo w-80 grid:w-128 h-80 grid:h-128 object-cover rounded-full"
+                className="avatar__photo w-[128px] h-[128px] object-cover rounded-full"
               />
             </div>
-
             {/* 个人徽章 */}
-            <div className="absolute flex flex-col items-end grid:items-start grid:flex-row pin-r pin-t grid:pin-b grid:pin-t-auto grid:pin-r-center h-80 grid:h-auto w-36 grid:w-108 -mr-16 grid:mr-0 grid:-mb-18 z-1">
+            <div className="absolute flex flex-col items-end grid:items-start grid:flex-row pin-r top-[32px] grid:pin-b grid:pin-t-auto grid:pin-r-center grid:h-auto w-36 grid:w-108 -mr-16 grid:mr-0 grid:-mb-18 z-1">
               <div className="flex-none grid:px-2 order-1 w-24 grid:w-36 cursor-pointer">
                 <img
                   src="https://tookapic.com/img/badges/1000-photo-club.svg"
@@ -85,6 +84,7 @@ const UserDetail = () => {
                 />
               </div>
             </div>
+
           </div>
 
           <div className="grid:ml-24 md:ml-48 flex-grow mt-24 grid:mt-0 min-w-0">
@@ -187,7 +187,7 @@ const UserDetail = () => {
                 "mt-8 grid:mt-16 text-grey-27 break-words text-14 grid:text-16 xl:max-w-568",
                 { hidden: !userInfo?.individual_resume },
               )}
-              dangerouslySetInnerHTML={{__html: userInfo?.individual_resume}}
+              dangerouslySetInnerHTML={{ __html: userInfo?.individual_resume }}
             >
               {/* {userInfo?.individual_resume} */}
             </div>
@@ -244,7 +244,11 @@ const UserDetail = () => {
           </div>
         </div>
       </div> */}
-      <PhotoList list={photoList} isDetail/>
+      <PhotoList
+        getData={() => getPhotoListByUserId(+id)}
+        list={photoList}
+        isDetail
+      />
     </div>
   );
 };

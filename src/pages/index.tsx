@@ -18,6 +18,7 @@ const Browse = () => {
   const {
     data: photoData,
     loading: getGalleryPhotoListLoading,
+    run: runGetGalleryPhotoList,
     pagination,
   } = usePagination(
     ({ current, pageSize }) =>
@@ -30,7 +31,7 @@ const Browse = () => {
   );
 
   const items: IItem[] = [
-    { label: '全部', value: "1" },
+    { label: "全部", value: "1" },
     // { label: t("common.popular"), value: "2" },
     // { label: t("common.recent"), value: "3" },
     // { label: t("common.debuts"), value: "4" },
@@ -39,6 +40,14 @@ const Browse = () => {
     // { label: t("common.favorites"), value: "7" },
     // { label: t("common.liked"), value: "8" },
   ];
+
+  // 获取列表数据
+  const getData = () => {
+    runGetGalleryPhotoList({
+      current: pagination.current,
+      pageSize: pagination.pageSize,
+    });
+  };
 
   return (
     <div>
@@ -55,7 +64,7 @@ const Browse = () => {
           </div>
         </div>
       </div>
-      <PhotoList list={photoData?.list || []} total={photoData?.total} />
+      <PhotoList getData={getData} list={photoData?.list || []} total={photoData?.total} />
     </div>
   );
 };
