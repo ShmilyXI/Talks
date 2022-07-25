@@ -128,7 +128,10 @@ const Index = () => {
             </div>
 
             <div className="ml-16 min-w-0 truncate">
-              <a className="font-medium text-black block text-14 leading-md cursor-pointer" href={`/userDetail?id=${curPhotoInfo?.userId}`}>
+              <a
+                className="font-medium text-black block text-14 leading-md cursor-pointer"
+                href={`/userDetail?id=${curPhotoInfo?.userId}`}
+              >
                 <span className="block truncate">
                   {curPhotoInfo?.authorName}
                 </span>
@@ -322,7 +325,9 @@ const Index = () => {
               className="wysiwyg wysiwyg--story mb-8 sm:mb-16"
               data-target="translations.body"
             >
-              <div>{curPhotoInfo?.description}</div>
+              <div
+                dangerouslySetInnerHTML={{ __html: curPhotoInfo?.description }}
+              ></div>
               <p>
                 {curPhotoInfo?.tags?.length
                   ? curPhotoInfo?.tags.map((tag) => (
@@ -362,9 +367,7 @@ const Index = () => {
                 <Icon className="icon-map" addClassName="text-14 lg:text-16" />
                 <a
                   className="text-inherit ml-4 cursor-pointer"
-                  onClick={() =>
-                    console.log("place-->", curPhotoInfo?.place)
-                  }
+                  onClick={() => console.log("place-->", curPhotoInfo?.place)}
                 >
                   <span className="block lg:truncate lg:max-w-200">
                     {curPhotoInfo?.place}

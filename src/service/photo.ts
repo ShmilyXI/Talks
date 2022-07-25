@@ -1,3 +1,4 @@
+/* 照片 */
 import {
   GetGalleryPhotoListRequest,
   GetGalleryPhotoListResponse,

@@ -1,4 +1,4 @@
-import { common } from './types';
+import { common } from "./types";
 
 type ExifData = {
   brand: string;
@@ -23,9 +23,14 @@ export interface BasePhotoInfo {
   viewCount: number;
   themeColor: string;
   place: string;
+  placeId: string;
+  location: string;
+  provincialName:  string;
+  cityName: string;
+  areaName: string;
   tags: string[];
   mood: string;
-  likedStatus?: number;
+  likedStatus: number;
   exifData: ExifData;
   createDate: string;
   updateDate: string;
@@ -51,6 +56,11 @@ export interface GalleryPhotoItem {
   viewCount: number;
   themeColor: string;
   place: string;
+  placeId: string;
+  location: string;
+  provincialName:  string;
+  cityName: string;
+  areaName: string;
   tags: string;
   updateDate: string;
   authorName: string;
@@ -97,6 +107,11 @@ export interface PublishPhotoRequest {
   themeColor: string;
   mood: string;
   place: string;
+  placeId: string;
+  location: string;
+  provincialName:  string;
+  cityName: string;
+  areaName: string;
   tags: string[];
   photoExifInfo?: ExifData;
 }

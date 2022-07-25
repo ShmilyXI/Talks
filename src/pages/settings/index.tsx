@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Filter from "@components/Filter";
-import { IItem } from "@components/Menu";
+import Menu, { IItem } from "@components/Menu";
 import Form, { Field } from "rc-field-form";
 import toast from "react-hot-toast";
 import classnames from "classnames";
 import { Storage } from "@/utils/storage";
 import Api from "@/service";
 import { useRouter } from "next/router";
+import _ from "lodash";
+import Place from "@components/AddPhotoModal/place";
 
 const Index = () => {
   const [tempFile, setTempFile] = useState<any>(); // 暂存上传的图片文件
@@ -19,9 +21,17 @@ const Index = () => {
   useEffect(() => {
     const storage = new Storage(sessionStorage, "Talks");
     const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
+    const place = {
+      value: _userInfo?.place_id,
+      label: _userInfo?.place,
+      location: _userInfo?.location,
+      provincialName: _userInfo?.provincial_name,
+      cityName: _userInfo?.city_name,
+      areaName: _userInfo?.area_name,
+    };
     form.setFieldsValue({
       displayName: _userInfo?.display_name,
-      place: _userInfo?.place,
+      place,
       email: _userInfo?.email,
       userName: _userInfo?.username,
       // 个人简介回显时,需要将<br/>替换为\r\n
@@ -43,11 +53,12 @@ const Index = () => {
   ];
 
   // 提交
-  const onSubmit = async (values: any) => {
+  const onSubmit = async () => {
     if (!tempFile && !userInfo?.avatar_url) {
       toast.error("请上传头像!");
       return;
     }
+    const values = await form.validateFields();
     console.log("values", values);
     setLoading(true);
     try {
@@ -67,6 +78,12 @@ const Index = () => {
       const { data } = await Api.updateUserInfo({
         data: {
           ...values,
+          place: values?.place?.label,
+          placeId: values?.place?.value,
+          location: values?.place?.location,
+          provincialName: values?.place?.provincialName,
+          cityName: values?.place?.cityName,
+          areaName: values?.place?.areaName,
           individualResume,
           avatarUrl,
         },
@@ -74,6 +91,7 @@ const Index = () => {
       form.resetFields();
       setTempFile(undefined);
       setTempImage(undefined);
+      console.log("data", data);
       const storage = new Storage(sessionStorage, "Talks");
       storage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
@@ -134,7 +152,7 @@ const Index = () => {
         </div>
       </div>
       <div className="d-container max-w-552 p-16 md:pt-0 sm:pb-24 md:pb-24 lg:pb-32 xl:pb-48">
-        <Form form={form} onFinish={onSubmit}>
+        <Form form={form}>
           {(values, _form) => (
             <>
               <input
@@ -205,13 +223,9 @@ const Index = () => {
                 <div className="mb-16 px-12 w-full sm:w-1/2">
                   <div className="text-14 leading-md mb-8">位置</div>
                   <Field name="place">
-                    <input
-                      className="input"
-                      disabled={loading}
-                      maxLength={64}
-                      type="text"
-                    />
+                    <Place isSetting disabled={loading} />
                   </Field>
+
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
                       hidden: !_form.getFieldError("place")?.[0],
@@ -320,8 +334,8 @@ const Index = () => {
                 <div className="mt-16 md:mt-0">
                   <button
                     className="button button--primary w-full md:w-auto"
-                    type="submit"
                     disabled={loading}
+                    onClick={onSubmit}
                   >
                     <>
                       <span

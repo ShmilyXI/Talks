@@ -3,45 +3,46 @@ const next = require("next");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const devProxy = {
-    "/api": {
-        target: "http://127.0.0.1:3000", // 端口自己配置合适的
-        pathRewrite: {
-            "^/api": "/",
-        },
-        changeOrigin: true,
+  "/api": {
+    target: "http://127.0.0.1:3000", // 端口自己配置合适的
+    pathRewrite: {
+      "^/api": "/",
     },
+    changeOrigin: true,
+  },
 };
 
-process.env.__NEXT_REACT_ROOT = "true"
+process.env.__NEXT_REACT_ROOT = "true";
 const port = parseInt(process.env.PORT, 10) || 9000;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
-    dev,
+  dev,
 });
 const handle = app.getRequestHandler();
 
-app.prepare()
-    .then(() => {
-        const server = express();
-        if (dev && devProxy) {
-            Object.keys(devProxy).forEach(function (context) {
-                server.use(createProxyMiddleware(context, devProxy[context]));
-            });
-        }
+app
+  .prepare()
+  .then(() => {
+    const server = express();
+    if (dev && devProxy) {
+      Object.keys(devProxy).forEach(function (context) {
+        server.use(createProxyMiddleware(context, devProxy[context]));
+      });
+    }
 
-        server.all("*", (req, res) => {
-            handle(req, res);
-        });
-
-        server.listen(port, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.log(`> Ready on http://localhost:${port}`);
-        });
-    })
-    .catch((err) => {
-        console.log("An error occurred, unable to start the server");
-        console.log("发生错误，无法启动服务器");
-        console.log(err);
+    server.all("*", (req, res) => {
+      handle(req, res);
     });
+
+    server.listen(port, (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log(`> Ready on http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log("An error occurred, unable to start the server");
+    console.log("发生错误，无法启动服务器");
+    console.log(err);
+  });

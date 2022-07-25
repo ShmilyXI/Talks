@@ -1,19 +1,21 @@
+import Api from "@/service";
 import Menu, { IItem } from "@components/Menu";
 import { useToggle } from "ahooks";
 import classnames from "classnames";
 import _ from "lodash";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 
 type PlaceProps = {
   value?: IItem;
   onChange?: (value?: IItem) => void;
   disabled?: boolean;
+  isSetting?: boolean;
 };
 
 const Place: FC<PlaceProps> = (props) => {
-  const { value, onChange = () => {}, disabled } = props;
+  const { value, onChange = () => {}, disabled, isSetting } = props;
 
-  const [placeSearchValue, setPlaceSearchValue] = useState<string>(); // 地点搜索值
+  const [addressList, setAddressList] = useState<IItem[]>(); // 地点列表
 
   const [
     showPlaceMenu,
@@ -24,25 +26,42 @@ const Place: FC<PlaceProps> = (props) => {
     },
   ] = useToggle(); // 是否展示地点筛选框
 
-  useEffect(() => {
-    if (placeSearchValue) {
-      setPlaceMenuRight();
-    } else {
-      setPlaceMenuLeft();
-    }
-  }, [placeSearchValue]);
-
   const [
     showPlaceInput,
     { toggle: togglePlaceInput, setLeft: setPlaceInputLeft },
-  ] = useToggle(); // 是否展示地点输入框
+  ] = useToggle(isSetting); // 是否展示地点输入框
+
+  // 关键字查询
+  const onKeywordChange = async (value: string) => {
+    if (!value) {
+      setAddressList([]);
+      return;
+    }
+    const params = {
+      key: "a9372fc90423fc38ce7c57aa18adf4ed",
+      keywords: value,
+    };
+    const { data } = await Api.getPlaceByKeyword(params);
+    const list = _.map(data?.pois || [], (item) => ({
+      value: item.id,
+      label: item.name,
+      location: item.location,
+      provincialName: item.pname,
+      cityName: item.cityname,
+      areaName: item.adname,
+      className: "text-sm break-words whitespace-normal",
+    }));
+    console.log("list :>> ", list);
+    setPlaceMenuRight();
+    setAddressList(list);
+  };
 
   return (
-    <div className="relative">
+    <div className="relative" key={value?.value}>
       <input type="hidden" name="place" disabled={disabled} />
 
       <div>
-        <div className={classnames(value?.value ? "on" : "off")}>
+        <div className={classnames(value?.value ? "hidden" : "block")}>
           <div className={classnames(showPlaceInput ? "on" : "off")}>
             <button
               className="button button--pill"
@@ -63,45 +82,48 @@ const Place: FC<PlaceProps> = (props) => {
           </div>
 
           <div
-            className={classnames("relative", showPlaceInput ? "off" : "on")}
+            className={classnames(
+              "relative",
+              showPlaceInput ? "block" : "hidden",
+            )}
           >
             <Menu
               visible={showPlaceMenu}
               onChange={(item) => {
+                console.log("item", item);
                 onChange(item);
-                setPlaceInputLeft();
+                if (!isSetting) {
+                  setPlaceInputLeft();
+                }
               }}
               setLeft={setPlaceMenuLeft}
               modalClassName="top-[-8px] left-[-5px] w-full"
-              wrapClassName="py-2"
-              items={[
-                {
-                  label: "111",
-                  value: "1",
-                },
-                {
-                  label: "222",
-                  value: "2",
-                },
-              ]}
+              wrapClassName="py-2 max-h-[350px] overflow-auto"
+              items={addressList}
             >
               <input
                 type="text"
-                className="input py-5 pr-28"
+                className={classnames("input", !isSetting ? "py-5 pr-28" : "")}
                 placeholder="Location"
                 disabled={disabled}
-                value={placeSearchValue || ""}
-                onChange={(e) => {
-                  setPlaceSearchValue(e.target.value || "");
-                }}
+                onChange={_.debounce((e) => {
+                  const value = e.target.value || "";
+                  onKeywordChange(value);
+                }, 500)}
               />
             </Menu>
             <button
               type="button"
-              className="button-reset py-2 px-8 leading-none text-grey-80 hover:text-grey-53 absolute pin-r pin-t-center"
+              className={classnames(
+                "button-reset py-2 px-8 leading-none text-grey-80 hover:text-grey-53 absolute pin-r pin-t-center",
+                { hidden: isSetting },
+              )}
+              disabled={disabled}
               onClick={() => {
-                setPlaceSearchValue("");
-                setPlaceInputLeft();
+                if (!isSetting) {
+                  setPlaceInputLeft();
+                }
+                onChange();
               }}
             >
               <svg
@@ -116,7 +138,13 @@ const Place: FC<PlaceProps> = (props) => {
         </div>
 
         <div className={classnames(value?.value ? "off" : "on")}>
-          <div className="button button--pill is-active cursor-default">
+          <button
+            className={classnames(
+              "button button--pill  cursor-default !max-w-[300px]",
+              { "is-active": !isSetting },
+            )}
+            disabled={disabled}
+          >
             <span className="button--pill__icon mr-6 flex-none">
               <svg
                 className="icon"
@@ -129,14 +157,15 @@ const Place: FC<PlaceProps> = (props) => {
 
             <span className="truncate">{value?.label}</span>
 
-            <button
+            <a
               type="button"
-              className="button-reset py-2 px-8 leading-none text-green-75 hover:text-green-85"
-              disabled={disabled}
+              className={classnames(
+                "button-reset py-2 px-8 leading-none cursor-pointer",
+                !isSetting ? "text-green-75 hover:text-green-85 " : "",
+              )}
               onClick={() => {
-                setPlaceSearchValue("");
                 onChange();
-                // setPlaceInputLeft();
+                setAddressList([]);
               }}
             >
               <svg
@@ -146,8 +175,8 @@ const Place: FC<PlaceProps> = (props) => {
               >
                 <path d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z" />
               </svg>
-            </button>
-          </div>
+            </a>
+          </button>
         </div>
       </div>
     </div>

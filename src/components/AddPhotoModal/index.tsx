@@ -39,14 +39,25 @@ const Index: FC<Props> = (props) => {
       const { data: photoData } = await Api.uploadPhoto({
         data: tempFile,
       });
+      // 照片描述保存时,需要将\r\n替换为<br/>
+      const description = values.description
+        ?.replace(/\r\n/g, "<br/>")
+        .replace(/\n/g, "<br/>")
+        .replace(/\s/g, " ");
       const { data } = await Api.publishPhoto({
         data: {
           ...values,
+          description,
           url: photoData?.imgUrl,
           width: photoData?.width,
           height: photoData?.height,
           themeColor: photoData?.themeColor,
-          place: photoData?.place?.value, // 地点信息暂时mock 直接使用value展示
+          place: values?.place?.label,
+          placeId: values?.place?.value,
+          location: values?.place?.location,
+          provincialName: values?.place?.provincialName,
+          cityName: values?.place?.cityName,
+          areaName: values?.place?.areaName,
           photoExifInfo: photoData?.photoExifInfo,
         },
       });

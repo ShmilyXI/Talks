@@ -1,3 +1,4 @@
+/* 评论 */
 import {
   AddPhotoCommentRequest,
   AddPhotoCommentResponse,
@@ -6,9 +7,7 @@ import {
   GetPhotoCommentListRequest,
   GetPhotoCommentListResponse,
 } from "@/types/CommunityTypes";
-import {} from "@/types/PhotoTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
-import { CommonReq, CommonRes } from "./";
 
 const createApi = request.createApi({ baseURL: "/api" });
 
