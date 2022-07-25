@@ -35,10 +35,7 @@ const Index = () => {
       email: _userInfo?.email,
       userName: _userInfo?.username,
       // 个人简介回显时,需要将<br/>替换为\r\n
-      individualResume: _userInfo?.individual_resume?.replace(
-        /<br\/>/g,
-        "\r\n",
-      ),
+      individualResume: _userInfo?.individual_resume?.replace(/<br\/>/g, "\r\n"),
     });
     setUserInfo(_userInfo);
   }, []);
@@ -71,10 +68,7 @@ const Index = () => {
         avatarUrl = _avatarUrl;
       }
       // 个人简介保存时,需要将\r\n替换为<br/>
-      const individualResume = values.individualResume
-        ?.replace(/\r\n/g, "<br/>")
-        .replace(/\n/g, "<br/>")
-        .replace(/\s/g, " ");
+      const individualResume = values.individualResume?.replace(/\r\n/g, "<br/>").replace(/\n/g, "<br/>").replace(/\s/g, " ");
       const { data } = await Api.updateUserInfo({
         data: {
           ...values,
@@ -132,9 +126,7 @@ const Index = () => {
       <div className="d-container p-0 md:py-32 lg:py-48 shadow-navbar md:shadow-none">
         <div className="hidden md:block">
           <div className="d-container max-w-744">
-            <h1 className="text-28 lg:text-32 leading-xs text-center">
-              Settings
-            </h1>
+            <h1 className="text-28 lg:text-32 leading-xs text-center">Settings</h1>
           </div>
         </div>
 
@@ -155,24 +147,12 @@ const Index = () => {
         <Form form={form}>
           {(values, _form) => (
             <>
-              <input
-                accept="image/jpeg,image/jpg,image/png"
-                className="hidden"
-                id="avatar"
-                type="file"
-                key={tempFile?.get("name")}
-                disabled={loading}
-                onChange={onFileChange}
-              />
+              <input accept="image/jpeg,image/jpg,image/png" className="hidden" id="avatar" type="file" key={tempFile?.get("name")} disabled={loading} onChange={onFileChange} />
               <div className="flex flex-col sm:flex-row items-center mb-24">
                 <div className="flex-none">
                   <label className="avatar" htmlFor="avatar">
                     <img
-                      src={
-                        tempImage ||
-                        userInfo?.avatar_url ||
-                        "https://tookapic.com/img/avatars/default.png"
-                      }
+                      src={tempImage || userInfo?.avatar_url || "https://tookapic.com/img/avatars/default.png"}
                       width={96}
                       height={96}
                       title="重新上传头像"
@@ -183,33 +163,20 @@ const Index = () => {
 
                 <div className="mt-24 sm:mt-0 sm:ml-32 text-center sm:text-left">
                   <div>
-                    <label
-                      htmlFor="avatar"
-                      className="button button--secondary"
-                    >
+                    <label htmlFor="avatar" className="button button--secondary">
                       上传头像
                     </label>
                   </div>
 
-                  <div className="mt-8 text-12 leading-sm">
-                    至少256x256像素的PNG或JPG文件
-                  </div>
+                  <div className="mt-8 text-12 leading-sm">至少256x256像素的PNG或JPG文件</div>
                 </div>
               </div>
 
               <div className="flex flex-wrap -mx-12">
                 <div className="mb-16 px-12 w-full sm:w-1/2">
                   <div className="text-14 leading-md mb-8">显示名称</div>
-                  <Field
-                    name="displayName"
-                    rules={[{ required: true, message: "请输入显示名称" }]}
-                  >
-                    <input
-                      className="input"
-                      disabled={loading}
-                      maxLength={64}
-                      type="text"
-                    />
+                  <Field name="displayName" rules={[{ required: true, message: "请输入显示名称" }]}>
+                    <input className="input" disabled={loading} maxLength={64} type="text" />
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -237,16 +204,8 @@ const Index = () => {
 
                 <div className="mb-16 px-12 w-full sm:w-1/2">
                   <div className="text-14 leading-md mb-8">用户名</div>
-                  <Field
-                    name="userName"
-                    rules={[{ required: true, message: "请输入用户名" }]}
-                  >
-                    <input
-                      className="input"
-                      disabled={loading}
-                      maxLength={32}
-                      type="text"
-                    />
+                  <Field name="userName" rules={[{ required: true, message: "请输入用户名" }]}>
+                    <input className="input" disabled={loading} maxLength={32} type="text" />
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -265,26 +224,15 @@ const Index = () => {
                       { required: true, message: "请输入电子邮件" },
                       {
                         validator(rule, value) {
-                          if (
-                            !/^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/.test(
-                              value,
-                            )
-                          ) {
-                            return Promise.reject(
-                              new Error("请输入正确的电子邮件"),
-                            );
+                          if (!/^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/.test(value)) {
+                            return Promise.reject(new Error("请输入正确的电子邮件"));
                           }
                           return Promise.resolve();
                         },
                       },
                     ]}
                   >
-                    <input
-                      className="input"
-                      disabled={loading}
-                      maxLength={80}
-                      type="text"
-                    />
+                    <input className="input" disabled={loading} maxLength={80} type="text" />
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -295,23 +243,14 @@ const Index = () => {
                   </div>
                 </div>
 
-                <div
-                  className="mb-16 px-12 w-full"
-                  data-controller="characters-left"
-                >
+                <div className="mb-16 px-12 w-full" data-controller="characters-left">
                   <div className="flex justify-between items-center mb-8">
                     <div className="text-14 leading-md">个人简介</div>
 
                     <div className="text-12 leading-sm italic"></div>
                   </div>
                   <Field name="individualResume">
-                    <textarea
-                      className="input"
-                      disabled={loading}
-                      maxLength={200}
-                      rows={3}
-                      cols={50}
-                    ></textarea>
+                    <textarea className="input" disabled={loading} maxLength={200} rows={3} cols={50}></textarea>
                   </Field>
                   <div
                     className={classnames("text-red text-12 leading-sm mt-8", {
@@ -332,17 +271,12 @@ const Index = () => {
                 </div> */}
 
                 <div className="mt-16 md:mt-0">
-                  <button
-                    className="button button--primary w-full md:w-auto"
-                    disabled={loading}
-                    onClick={onSubmit}
-                  >
+                  <button className="button button--primary w-full md:w-auto" disabled={loading} onClick={onSubmit}>
                     <>
                       <span
-                        className={classnames(
-                          "animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-white rounded-full mr-1",
-                          { hidden: !loading },
-                        )}
+                        className={classnames("animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-white rounded-full mr-1", {
+                          hidden: !loading,
+                        })}
                         role="status"
                         aria-label="loading"
                       ></span>

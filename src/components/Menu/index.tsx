@@ -24,21 +24,11 @@ type MenuProps = {
 };
 
 const Menu: FC<MenuProps> = (props) => {
-  const {
-    items,
-    onChange,
-    value,
-    visible,
-    children,
-    className,
-    setLeft,
-    align = "left",
-    modalClassName,
-    wrapClassName,
-  } = props;
+  const { items, onChange, value, visible, children, className, setLeft, align = "left", modalClassName, wrapClassName } = props;
   const menuRef = useRef<HTMLDivElement>(null);
 
   useClickAway(() => {
+    if (!visible) return;
     setLeft?.();
   }, menuRef);
 
@@ -53,36 +43,32 @@ const Menu: FC<MenuProps> = (props) => {
             {
               "left-0": align === "left",
               "right-0": align === "right",
-              hidden: !items?.length,
             },
             "absolute z-50 bg-black-95 rounded whitespace-no-wrap min-w-128 shadow-sm",
           )}
         >
-          <div
-            className={classnames(
-              "flex flex-col text-left py-12 text-16 leading-lg",
-              wrapClassName,
+          <div className={classnames("flex flex-col text-left py-12 text-16 leading-lg", wrapClassName)}>
+            {items?.length ? (
+              items.map((item) => (
+                <div
+                  className={classnames(
+                    "px-16 py-1 hover:bg-white-15 text-white cursor-pointer",
+                    {
+                      "font-semibold": value === item.value,
+                    },
+                    item.className,
+                  )}
+                  onClick={() => {
+                    onChange?.(item);
+                  }}
+                  key={item.value}
+                >
+                  {item.label}
+                </div>
+              ))
+            ) : (
+              <div className="h-[350px] flex justify-center items-center text-16 text-white leading-lg">No Data</div>
             )}
-          >
-            {items?.length
-              ? items.map((item) => (
-                  <div
-                    className={classnames(
-                      "px-16 py-1 hover:bg-white-15 text-white cursor-pointer",
-                      {
-                        "font-semibold": value === item.value,
-                      },
-                      item.className,
-                    )}
-                    onClick={() => {
-                      onChange?.(item);
-                    }}
-                    key={item.value}
-                  >
-                    {item.label}
-                  </div>
-                ))
-              : null}
           </div>
         </div>
       ) : null}

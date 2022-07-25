@@ -8,6 +8,8 @@ import {
   PhotoDetailInfoResponse,
   PublishPhotoRequest,
   PublishPhotoResponse,
+  UpdatePhotoRequest,
+  UpdatePhotoResponse,
   UploadPhotoResponse,
 } from "@/types/PhotoTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
@@ -17,26 +19,17 @@ const createApi = request.createApi({ baseURL: "/api" });
 
 const photoApi = {
   /** 获取画廊图片列表 **/
-  getGalleryPhotoList: createApi<
-    GetGalleryPhotoListResponse,
-    RequestPostType<GetGalleryPhotoListRequest>
-  >({
+  getGalleryPhotoList: createApi<GetGalleryPhotoListResponse, RequestPostType<GetGalleryPhotoListRequest>>({
     url: "/photo/gallery-photo-list",
     method: "POST",
   }),
   /** 获取画廊图片详情 **/
-  getPhotoDetailInfo: createApi<
-    PhotoDetailInfoResponse,
-    RequestGetType<PhotoDetailInfoRequest>
-  >({
+  getPhotoDetailInfo: createApi<PhotoDetailInfoResponse, RequestGetType<PhotoDetailInfoRequest>>({
     url: "/photo/photo-detail-info",
     method: "GET",
   }),
   /** 获取照片列表,根据用户id **/
-  getPhotoListByUserId: createApi<
-    GetPhotoListByUserIdResponse,
-    RequestGetType<GetPhotoListByUserIdRequest>
-  >({
+  getPhotoListByUserId: createApi<GetPhotoListByUserIdResponse, RequestGetType<GetPhotoListByUserIdRequest>>({
     url: "/photo/get-photo-list-by-user-id",
     method: "GET",
   }),
@@ -46,11 +39,13 @@ const photoApi = {
     method: "POST",
   }),
   /** 发布照片 **/
-  publishPhoto: createApi<
-    PublishPhotoResponse,
-    RequestPostType<PublishPhotoRequest>
-  >({
+  publishPhoto: createApi<PublishPhotoResponse, RequestPostType<PublishPhotoRequest>>({
     url: "/photo/publish-photo",
+    method: "POST",
+  }),
+  /** 编辑照片 **/
+  updatePhoto: createApi<UpdatePhotoResponse, RequestPostType<UpdatePhotoRequest>>({
+    url: "/photo/update-photo",
     method: "POST",
   }),
   /** 获取画廊图片评论列表 **/

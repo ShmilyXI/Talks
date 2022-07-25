@@ -5,7 +5,7 @@ import { useClickAway, useToggle } from "ahooks";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import _ from "lodash";
-import { UserLikedRequest } from "@/types/UserTypes";
+import { BaseUserInfo, UserLikedRequest } from "@/types/UserTypes";
 import { Storage } from "@/utils/storage";
 import swal from "sweetalert";
 
@@ -29,7 +29,7 @@ const Comments: FC<Props> = (props) => {
   const [commentContent, setCommentContent] = useState(""); // 评论内容
   const [replyContent, setReplyContent] = useState(""); // 评论回复内容
   const [replyId, setReplyId] = useState<number>(); // 评论回复id
-  const [userInfo, setUserInfo] = useState<any>();
+  const [userInfo, setUserInfo] = useState<BaseUserInfo>();
   const textareaRef = useRef(null); // 一级评论框ref
   const [isFocus, { setLeft: setIsFocusLeft, setRight: setIsFocusRight }] =
     useToggle();
@@ -278,7 +278,7 @@ const Comments: FC<Props> = (props) => {
                         <div
                           className={classnames(
                             "px-4 items-center",
-                            userInfo?.id === item.user_id ? "flex" : "hidden",
+                            +userInfo?.id === item.user_id ? "flex" : "hidden",
                           )}
                           data-tippy-content="删除"
                         >
@@ -532,7 +532,7 @@ const Comments: FC<Props> = (props) => {
                                 <div
                                   className={classnames(
                                     "px-4 items-center",
-                                    userInfo?.id === child.user_id
+                                    +userInfo?.id === child.user_id
                                       ? "flex"
                                       : "hidden",
                                   )}

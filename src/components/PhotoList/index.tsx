@@ -249,7 +249,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                   {item.title}
                                 </div>
                                 <div className="text-inherit break-words">
-                                  {item.createDate}
+                                  {item.shootingDate}
                                 </div>
                               </>
                             ) : (
@@ -356,10 +356,10 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                         <time
                           className="flex-none"
-                          dateTime={item.createDate}
-                          title={item.createDate}
+                          dateTime={item.shootingDate}
+                          title={item.shootingDate}
                         >
-                          {dayjs(item.createDate).format("YYYY-MM-DD HH:mm:ss")}
+                          {dayjs(item.shootingDate).format("YYYY-MM-DD HH:mm:ss")}
                         </time>
                       </div>
 

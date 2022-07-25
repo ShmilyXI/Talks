@@ -14,24 +14,26 @@ export interface BasePhotoInfo {
   authorName: string;
   avatarUrl: string;
   commentId: number;
-  galleryId: number;
+  galleryIds: string;
   url: string;
   width: number;
   height: number;
   title: string;
   description: string;
   viewCount: number;
+  showComments: boolean;
   themeColor: string;
   place: string;
   placeId: string;
   location: string;
-  provincialName:  string;
+  provincialName: string;
   cityName: string;
   areaName: string;
   tags: string[];
   mood: string;
   likedStatus: number;
   exifData: ExifData;
+  shootingDate: string;
   createDate: string;
   updateDate: string;
 }
@@ -47,7 +49,7 @@ export interface GalleryPhotoItem {
   id: number;
   userId: string;
   commentId: number;
-  galleryId: number;
+  galleryIds: number;
   url: string;
   width: number;
   height: number;
@@ -58,7 +60,7 @@ export interface GalleryPhotoItem {
   place: string;
   placeId: string;
   location: string;
-  provincialName:  string;
+  provincialName: string;
   cityName: string;
   areaName: string;
   tags: string;
@@ -102,20 +104,41 @@ export interface PublishPhotoRequest {
   url: string;
   width: number;
   height: number;
-  galleryList?: number[];
+  galleryIds?: string;
   shootingDate: string;
   themeColor: string;
   mood: string;
   place: string;
   placeId: string;
   location: string;
-  provincialName:  string;
+  provincialName: string;
+  showComments: boolean;
   cityName: string;
   areaName: string;
   tags: string[];
   photoExifInfo?: ExifData;
 }
 export interface PublishPhotoResponse extends common.Response {
+  data?: {
+    id: string;
+  };
+}
+export interface UpdatePhotoRequest {
+  id: number;
+  title: string;
+  description?: string;
+  galleryIds?: string;
+  shootingDate: string;
+  mood: string;
+  place: string;
+  placeId: string;
+  location: string;
+  provincialName: string;
+  showComments: boolean;
+  cityName: string;
+  areaName: string;
+}
+export interface UpdatePhotoResponse extends common.Response {
   data?: {
     id: string;
   };
