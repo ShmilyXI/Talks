@@ -14,7 +14,7 @@ export interface BasePhotoInfo {
   authorName: string;
   avatarUrl: string;
   commentId: number;
-  galleryIds: string;
+  galleryIds: number[];
   url: string;
   width: number;
   height: number;
@@ -49,7 +49,7 @@ export interface GalleryPhotoItem {
   id: number;
   userId: string;
   commentId: number;
-  galleryIds: number;
+  galleryIds: number[];
   url: string;
   width: number;
   height: number;
