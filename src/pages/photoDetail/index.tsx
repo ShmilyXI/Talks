@@ -13,7 +13,7 @@ import AddPhotoModal from "@components/AddPhotoModal";
 import toast from "react-hot-toast";
 import { CommentData, CommentItem } from "@/types/CommunityTypes";
 import { Storage } from "@/utils/storage";
-import { BaseUserInfo, UserLikedRequest } from "@/types/UserTypes";
+import { BaseUserInfo, UserLikedRequest, UserPhotoFavoriteRequest } from "@/types/UserTypes";
 import { IItem } from "@components/Menu";
 import { scrollToElement, toggleBodyOverflow } from "@/utils/common";
 
@@ -135,6 +135,23 @@ const Index = () => {
     }
   };
 
+  // 用户收藏照片
+  const onUserPhotoFavorite = async (value: UserPhotoFavoriteRequest) => {
+    try {
+      const { photoId, favoriteStatus } = value;
+      await Api.userPhotoFavorite({
+        data: {
+          photoId,
+          favoriteStatus,
+        },
+      });
+      await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
+      getPhotoInfo(curPhotoInfo.id);
+    } catch (error) {
+      await toast.error("收藏失败,请重试!");
+    }
+  };
+
   // 删除评论
   const onDeleteComment = async (id: number) => {
     if (_.isNil(id)) return;
@@ -225,14 +242,24 @@ const Index = () => {
                   </div>
 
                   <div className="px-8 leading-none">
-                    <button type="button" className="button-reset inline-flex align-top ">
-                      <span className="off">
+                    <button
+                      type="button"
+                      className="button-reset inline-flex align-top"
+                      title="收藏"
+                      onClick={_.debounce(
+                        () =>
+                          onUserPhotoFavorite({
+                            photoId: curPhotoInfo?.id,
+                            favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
+                          }),
+                        500,
+                      )}
+                    >
+                      {curPhotoInfo?.favoriteStatus === 1 ? (
+                        <Icon className="icon-favorfill" addClassName="text-22 text-yellow-400" />
+                      ) : (
                         <Icon className="icon-favor" addClassName="text-22 text-black" />
-                      </span>
-
-                      <span className="on">
-                        <Icon className="icon-favorfill" addClassName="text-22 text-red" />
-                      </span>
+                      )}
                     </button>
                   </div>
 
@@ -627,14 +654,24 @@ const Index = () => {
                 </div>
 
                 <div className="px-8 leading-none">
-                  <button type="button" className="button-reset inline-flex align-top ">
-                    <span className="off">
-                      <Icon className="icon-favor" addClassName="text-black text-22" />
-                    </span>
-
-                    <span className="on">
-                      <Icon className="icon-favorfill" addClassName="text-yellow-400 text-22" />
-                    </span>
+                  <button
+                    type="button"
+                    className="button-reset inline-flex align-top "
+                    title="收藏"
+                    onClick={_.debounce(
+                      () =>
+                        onUserPhotoFavorite({
+                          photoId: curPhotoInfo?.id,
+                          favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
+                        }),
+                      500,
+                    )}
+                  >
+                    {curPhotoInfo?.favoriteStatus === 1 ? (
+                      <Icon className="icon-favoritefill" addClassName="text-yellow-400 text-22" />
+                    ) : (
+                      <Icon className="icon-favorite" addClassName="text-black text-22" />
+                    )}
                   </button>
                 </div>
 

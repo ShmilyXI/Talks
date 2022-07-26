@@ -1,4 +1,4 @@
-import { common } from "./types";
+import { common } from './types';
 export interface BaseUserInfo {
   id: string;
   username: string;
@@ -68,5 +68,12 @@ export interface UserLikedRequest {
   likedType: number;
 }
 export interface UserLikedResponse extends common.Response {
+  data?: void;
+}
+export interface UserPhotoFavoriteRequest {
+  photoId: number;
+  favoriteStatus: number;
+}
+export interface UserPhotoFavoriteResponse extends common.Response {
   data?: void;
 }

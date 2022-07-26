@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { GalleryPhotoItem } from "@/types/PhotoTypes";
 import dayjs from "dayjs";
-import { UserLikedRequest } from "@/types/UserTypes";
+import { UserLikedRequest, UserPhotoFavoriteRequest } from "@/types/UserTypes";
 import Api from "@/service";
 import toast from "react-hot-toast";
 
@@ -93,6 +93,23 @@ const PhotoList: FC<PhotoListProps> = (props) => {
       getData();
     } catch (error) {
       await toast.error("点赞失败,请重试!");
+    }
+  };
+
+  // 用户收藏照片
+  const onUserPhotoFavorite = async (value: UserPhotoFavoriteRequest) => {
+    try {
+      const { photoId, favoriteStatus } = value;
+      await Api.userPhotoFavorite({
+        data: {
+          photoId,
+          favoriteStatus,
+        },
+      });
+      await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
+      getData();
+    } catch (error) {
+      await toast.error("收藏失败,请重试!");
     }
   };
 
@@ -234,13 +251,13 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                         <div className="mr-4 ml-4 leading-none">
                           <a
                             className="pointer-events-auto inline-flex align-top cursor-pointer"
-                            onClick={() => {
+                            onClick={_.debounce(() => {
                               onUserLiked({
                                 likedId: item?.id,
                                 likedStatus: item?.likedStatus === 1 ? 0 : 1,
                                 likedType: 0,
                               });
-                            }}
+                            }, 500)}
                           >
                             {item?.likedStatus === 1 ? (
                               <Icon className="icon-likefill" addClassName="text-16 text-red" />
@@ -253,12 +270,19 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                         <div className="mr-4 leading-none">
                           <a
                             className="pointer-events-auto inline-flex align-top cursor-pointer"
-                            onClick={() => {
-                              console.log("favor");
-                            }}
+                            onClick={_.debounce(() => {
+                              onUserPhotoFavorite({
+                                photoId: item?.id,
+                                favoriteStatus: item?.favoriteStatus === 1 ? 0 : 1,
+                              });
+                            }, 500)}
                             title="favorite"
                           >
-                            <Icon className="icon-favor" addClassName="text-white text-16" />
+                            {item?.favoriteStatus === 1 ? (
+                              <Icon className="icon-favorfill" addClassName="text-16 text-yellow-400" />
+                            ) : (
+                              <Icon className="icon-favor" addClassName="text-16 text-white" />
+                            )}
                           </a>
                         </div>
 
@@ -302,13 +326,13 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           <div className="px-8 leading-none text-14">
                             <a
                               className="inline-flex align-top cursor-pointer"
-                              onClick={() => {
+                              onClick={_.debounce(() => {
                                 onUserLiked({
                                   likedId: item?.id,
                                   likedStatus: item?.likedStatus === 1 ? 0 : 1,
                                   likedType: 0,
                                 });
-                              }}
+                              }, 500)}
                             >
                               {item?.likedStatus === 1 ? (
                                 <Icon className="icon-likefill" addClassName="text-22 text-red" />
@@ -320,8 +344,20 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                         </div>
 
                         <div className="px-8 leading-none text-14">
-                          <a className="inline-flex align-top cursor-pointer" onClick={() => console.log("favor")}>
-                            <Icon className="icon-favor" addClassName="text-black text-22" />
+                          <a
+                            className="inline-flex align-top cursor-pointer"
+                            onClick={_.debounce(() => {
+                              onUserPhotoFavorite({
+                                photoId: item?.id,
+                                favoriteStatus: item?.favoriteStatus === 1 ? 0 : 1,
+                              });
+                            }, 500)}
+                          >
+                            {item?.favoriteStatus === 1 ? (
+                              <Icon className="icon-favorfill" addClassName="text-22 text-yellow-400" />
+                            ) : (
+                              <Icon className="icon-favor" addClassName="text-22 text-black" />
+                            )}
                           </a>
                         </div>
                       </div>

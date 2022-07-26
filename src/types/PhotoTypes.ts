@@ -32,6 +32,7 @@ export interface BasePhotoInfo {
   tags: string[];
   mood: string;
   likedStatus: number;
+  favoriteStatus: number;
   exifData: ExifData;
   shootingDate: string;
   createDate: string;
@@ -70,6 +71,8 @@ export interface GalleryPhotoItem {
   commentCount: number;
   likedStatus: number;
   liked_count: number;
+  favoriteStatus: number;
+  favorite_count: number;
 }
 export interface GetGalleryPhotoListResponse extends common.Response {
   data?: {

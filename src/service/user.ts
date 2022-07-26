@@ -10,7 +10,9 @@ import {
   UpdateUserInfoRequest,
   UploadAvatarResponse,
   UserLikedRequest,
-  UserLikedResponse
+  UserLikedResponse,
+  UserPhotoFavoriteResponse,
+  UserPhotoFavoriteRequest
 } from "@/types/UserTypes";
 import request, {
   HttpJson,
@@ -62,6 +64,14 @@ const userApi = {
     RequestPostType<UserLikedRequest>
   >({
     url: "/user/user-liked",
+    method: "POST",
+  }),
+  /** 用户收藏 **/
+  userPhotoFavorite: createApi<
+    UserPhotoFavoriteResponse,
+    RequestPostType<UserPhotoFavoriteRequest>
+  >({
+    url: "/user/user-photo-favorite",
     method: "POST",
   }),
 };

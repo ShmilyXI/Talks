@@ -10,6 +10,8 @@ export type CommentItem = {
   content: string;
   likedStatus: number;
   liked_count: number;
+  favoriteStatus: number;
+  favorite_count: number;
   status: number;
   top_status: number;
   type: number;
