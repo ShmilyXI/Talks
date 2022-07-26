@@ -304,7 +304,7 @@ const Index: FC<Props> = (props) => {
                         </div>
 
                         <button className="button button--primary w-full mt-4" disabled={loading} onClick={onSubmit}>
-                          {defaultValue.id ? t("photoModal.save_change") : t("photoModal.publish_photo")}
+                          {defaultValue?.id ? t("photoModal.save_change") : t("photoModal.publish_photo")}
                         </button>
                       </div>
                     </div>

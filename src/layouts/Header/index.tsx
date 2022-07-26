@@ -11,6 +11,7 @@ import Menu from "@/components/Menu/index";
 import { useTranslation } from "react-i18next";
 import AddPhotoModal from "@components/AddPhotoModal";
 import { BaseUserInfo } from "@/types/UserTypes";
+import { toggleBodyOverflow } from "@/utils/common";
 
 const Index = () => {
   const router = useRouter();
@@ -42,6 +43,10 @@ const Index = () => {
       setUserInfo(_userInfo);
     }
   }, []);
+
+  useEffect(() => {
+    toggleBodyOverflow(showAddPhotoModal);
+  }, [showAddPhotoModal]);
 
   useEffect(() => {
     if (showWrap) {

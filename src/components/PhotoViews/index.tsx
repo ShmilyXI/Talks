@@ -36,7 +36,7 @@ const PhotoViews: FC<Props> = (props) => {
     ],
   }));
   return (
-    <div className="bg-black w-full h-[70vh] photo-views">
+    <div className="bg-black w-full h-[50vh] md:h-[70vh] photo-views">
       <Lightbox
         open
         key={defaultIndex}

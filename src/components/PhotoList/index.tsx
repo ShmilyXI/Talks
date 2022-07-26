@@ -2,12 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import PhotoAlbum from "react-photo-album";
 import classnames from "classnames";
 import { Icon, PlaceholderSvg } from "@components";
-import {
-  useRequest,
-  configResponsive,
-  useResponsive,
-  useUpdateLayoutEffect,
-} from "ahooks";
+import { useRequest, configResponsive, useResponsive, useUpdateLayoutEffect } from "ahooks";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
@@ -112,12 +107,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
           }}
           breakpoints={[352, 576, 696, 768, 992, 1200, 1304, 1440]}
           photos={photoList}
-          renderPhoto={(data: {
-            photo: any;
-            imageProps: JSX.IntrinsicAttributes &
-              React.ClassAttributes<HTMLImageElement> &
-              React.ImgHTMLAttributes<HTMLImageElement>;
-          }) => {
+          renderPhoto={(data: { photo: any; imageProps: JSX.IntrinsicAttributes & React.ClassAttributes<HTMLImageElement> & React.ImgHTMLAttributes<HTMLImageElement> }) => {
             const item = data.photo;
             return (
               <div
@@ -133,12 +123,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
               >
                 <div className="relative bg-white w-full h-full">
                   {/* 小屏 */}
-                  <div
-                    className={classnames(
-                      "grid:hidden justify-between items-center px-16 py-8 story-list__header",
-                      isDetail ? "hidden" : "flex",
-                    )}
-                  >
+                  <div className={classnames("grid:hidden justify-between items-center px-16 py-8 story-list__header", isDetail ? "hidden" : "flex")}>
                     <div className="flex items-center min-w-0">
                       <div
                         className={classnames("flex-none mr-16", {
@@ -146,25 +131,12 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                         })}
                       >
                         <div className="avatar">
-                          <img
-                            src={item.avatarUrl}
-                            width="32"
-                            height="32"
-                            alt=""
-                            className="avatar__photo w-[32px] h-[32px] object-cover rounded-full"
-                          />
+                          <img src={item.avatarUrl} width="32" height="32" alt="" className="avatar__photo w-[32px] h-[32px] object-cover rounded-full" />
                         </div>
                       </div>
                       <div className="min-w-0 truncate">
-                        <a
-                          className="font-medium story-list__user block text-14 leading-md cursor-pointer"
-                          onClick={() =>
-                            goRoute(`/userDetail?id=${item.userId}`)
-                          }
-                        >
-                          <span className="block truncate">
-                            {item.authorName}
-                          </span>
+                        <a className="font-medium story-list__user block text-14 leading-md cursor-pointer" onClick={() => goRoute(`/userDetail?id=${item.userId}`)}>
+                          <span className="block truncate">{item.authorName}</span>
                         </a>
                       </div>
 
@@ -196,10 +168,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                       backgroundColor: item.themeColor,
                     }}
                   >
-                    <a
-                      className="block absolute pin z-3 cursor-pointer"
-                      onClick={() => goRoute(`/photoDetail?id=${item.id}`)}
-                    ></a>
+                    <a className="block absolute pin z-3 cursor-pointer" onClick={() => goRoute(`/photoDetail?id=${item.id}`)}></a>
                     {/* 图片 */}
                     <img
                       {..._.omit(data.imageProps, "src")}
@@ -209,10 +178,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                         ..._.omit(data.imageProps.style, ["width", "height"]),
                         maxHeight: "80vh",
                       }}
-                      className={classnames(
-                        "photo-item is-loaded hidden grid:block w-full h-full object-cover",
-                        data.imageProps.className,
-                      )}
+                      className={classnames("photo-item is-loaded hidden grid:block w-full h-full object-cover", data.imageProps.className)}
                       loading="lazy"
                     />
                     {/* 小屏图片 */}
@@ -232,12 +198,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           })}
                         >
                           <div className="avatar bg-black">
-                            <img
-                              src={item.avatarUrl}
-                              width="32"
-                              height="32"
-                              className="avatar__photo is-loaded w-[32px] h-[32px] object-cover rounded-full"
-                            />
+                            <img src={item.avatarUrl} width="32" height="32" className="avatar__photo is-loaded w-[32px] h-[32px] object-cover rounded-full" />
                           </div>
                         </div>
 
@@ -245,20 +206,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           <div className="font-medium">
                             {isDetail ? (
                               <>
-                                <div className="text-inherit break-words text-18">
-                                  {item.title}
-                                </div>
-                                <div className="text-inherit break-words">
-                                  {item.shootingDate}
-                                </div>
+                                <div className="text-inherit break-words text-18">{item.title}</div>
+                                <div className="text-inherit break-words">{item.shootingDate}</div>
                               </>
                             ) : (
-                              <a
-                                className="pointer-events-auto text-inherit break-words cursor-pointer text-18"
-                                onClick={() =>
-                                  goRoute(`/userDetail?id=${item.userId}`)
-                                }
-                              >
+                              <a className="pointer-events-auto text-inherit break-words cursor-pointer text-18" onClick={() => goRoute(`/userDetail?id=${item.userId}`)}>
                                 {item.authorName}
                               </a>
                             )}
@@ -291,15 +243,9 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             }}
                           >
                             {item?.likedStatus === 1 ? (
-                              <Icon
-                                className="icon-likefill"
-                                addClassName="text-16 text-red"
-                              />
+                              <Icon className="icon-likefill" addClassName="text-16 text-red" />
                             ) : (
-                              <Icon
-                                className="icon-like"
-                                addClassName="text-16 text-white"
-                              />
+                              <Icon className="icon-like" addClassName="text-16 text-white" />
                             )}
                           </a>
                         </div>
@@ -312,10 +258,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             }}
                             title="favorite"
                           >
-                            <Icon
-                              className="icon-favor"
-                              addClassName="text-white text-16"
-                            />
+                            <Icon className="icon-favor" addClassName="text-white text-16" />
                           </a>
                         </div>
 
@@ -327,15 +270,10 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             }}
                             title="comment"
                           >
-                            <Icon
-                              className="icon-message"
-                              addClassName="text-white text-16"
-                            />
+                            <Icon className="icon-message" addClassName="text-white text-16" />
                           </a>
 
-                          <span className="font-medium text-12 ml-3 leading-none text-white">
-                            {item.commentCount || 0}
-                          </span>
+                          <span className="font-medium text-12 ml-3 leading-none text-white">{item.commentCount || 0}</span>
                         </div>
                       </div>
                     </div>
@@ -354,11 +292,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                           {item.workCount}
                         </span>
 
-                        <time
-                          className="flex-none"
-                          dateTime={item.shootingDate}
-                          title={item.shootingDate}
-                        >
+                        <time className="flex-none" dateTime={item.shootingDate} title={item.shootingDate}>
                           {dayjs(item.shootingDate).format("YYYY-MM-DD HH:mm:ss")}
                         </time>
                       </div>
@@ -377,53 +311,27 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               }}
                             >
                               {item?.likedStatus === 1 ? (
-                                <Icon
-                                  className="icon-likefill"
-                                  addClassName="text-22 text-red"
-                                />
+                                <Icon className="icon-likefill" addClassName="text-22 text-red" />
                               ) : (
-                                <Icon
-                                  className="icon-like"
-                                  addClassName="text-22 text-black"
-                                />
+                                <Icon className="icon-like" addClassName="text-22 text-black" />
                               )}
                             </a>
                           </div>
                         </div>
 
                         <div className="px-8 leading-none text-14">
-                          <a
-                            className="inline-flex align-top cursor-pointer"
-                            onClick={() => console.log("favor")}
-                          >
-                            <Icon
-                              className="icon-favor"
-                              addClassName="text-black text-22"
-                            />
+                          <a className="inline-flex align-top cursor-pointer" onClick={() => console.log("favor")}>
+                            <Icon className="icon-favor" addClassName="text-black text-22" />
                           </a>
                         </div>
                       </div>
                     </div>
 
-                    <div className="story-list__title text-black font-medium mb-8 text-14 leading-md grid:text-16 grid:leading-normal">
-                      {item.title}
-                    </div>
-
-                    <div className="story-list__excerpt text-grey-27 text-14 leading-md grid:text-16 grid:leading-normal">
-                      {item.description}
-                    </div>
+                    <div className="story-list__title text-black font-medium mb-8 text-14 leading-md grid:text-16 grid:leading-normal">{item.title}</div>
 
                     <div className="flex items-center -mx-6 mt-8 text-14 leading-md grid:text-16 grid:leading-normal">
-                      <div
-                        className="px-6"
-                        data-controller="popovers--comments"
-                      >
-                        <a
-                          className="text-grey-53 cursor-pointer"
-                          onClick={() =>
-                            goRoute(`/photoDetail?id=${item.id}#comment`)
-                          }
-                        >
+                      <div className="px-6" data-controller="popovers--comments">
+                        <a className="text-grey-53 cursor-pointer" onClick={() => goRoute(`/photoDetail?id=${item.id}#comment`)}>
                           {item.commentCount || 0}
                           &nbsp;
                           {t("common.comments")}
@@ -437,14 +345,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
           }}
           renderRowContainer={(data) => {
             return (
-              <div
-                {...data.rowContainerProps}
-                className={classnames(
-                  "story-list",
-                  "mt-8 grid:mt-0",
-                  data.rowContainerProps.className,
-                )}
-              >
+              <div {...data.rowContainerProps} className={classnames("story-list", "mt-8 grid:mt-0", data.rowContainerProps.className)}>
                 {data.children}
               </div>
             );

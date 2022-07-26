@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useRouter } from "next/router";
 import { Icon, Menu, PlaceholderSvg, PhotoViews, Comments } from "@components";
 import classnames from "classnames";
@@ -15,6 +15,7 @@ import { CommentData, CommentItem } from "@/types/CommunityTypes";
 import { Storage } from "@/utils/storage";
 import { BaseUserInfo, UserLikedRequest } from "@/types/UserTypes";
 import { IItem } from "@components/Menu";
+import { scrollToElement, toggleBodyOverflow } from "@/utils/common";
 
 type Mood = Record<string, { text: string; icon: string }>;
 
@@ -47,6 +48,10 @@ const Index = () => {
     setUserInfo(_userInfo);
   }, []);
 
+  useEffect(() => {
+    toggleBodyOverflow(showAddPhotoModal);
+  }, [showAddPhotoModal]);
+
   // 更多菜单change事件
   const onMoreMenuChange = ({ value }: IItem) => {
     if (!value) return;
@@ -73,6 +78,15 @@ const Index = () => {
     const { data } = await Api.getPhotoCommentList({ params: { id } });
     setCommentList(data?.list || []);
   };
+
+  useLayoutEffect(() => {
+    if (!commentList?.length) return;
+    const routerPath = router.asPath;
+    const commentId = routerPath?.split("#")?.[1];
+    if (commentId) {
+      scrollToElement(document.getElementById(commentId));
+    }
+  }, [commentList]);
 
   useEffect(() => {
     const _id = +id;
