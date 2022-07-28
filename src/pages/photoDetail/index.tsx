@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useRouter } from "next/router";
-import { Icon, Menu, PlaceholderSvg, PhotoViews, Comments } from "@components";
+import { Icon, Menu, PhotoViews, Comments } from "@components";
 import classnames from "classnames";
 import dayjs from "dayjs";
-import { useToggle, useRequest } from "ahooks";
+import { useToggle } from "ahooks";
 import { useTranslation } from "react-i18next";
 import Api from "@/service";
-import { BasePhotoInfo, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
+import { PhotoList, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
 import classNames from "classnames";
 import _ from "lodash";
 import AddPhotoModal from "@components/AddPhotoModal";
 import toast from "react-hot-toast";
-import { CommentData, CommentItem } from "@/types/CommunityTypes";
+import { CommentData, CommentItem } from "@/types/CommentTypes";
 import { Storage } from "@/utils/storage";
 import { BaseUserInfo, UserLikedRequest, UserPhotoFavoriteRequest } from "@/types/UserTypes";
 import { IItem } from "@components/Menu";
@@ -32,8 +32,8 @@ const Index = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const { t } = useTranslation();
-  const [curPhotoInfo, setCurPhotoInfo] = useState<BasePhotoInfo>(); // 当前图片信息
-  const [photoList, setPhotoList] = useState<BasePhotoInfo[]>(); // 图片列表
+  const [curPhotoInfo, setCurPhotoInfo] = useState<PhotoList>(); // 当前图片信息
+  const [photoList, setPhotoList] = useState<PhotoList[]>(); // 图片列表
   const [commentList, setCommentList] = useState<CommentItem[]>([]); // 评论列表
   const [userInfo, setUserInfo] = useState<BaseUserInfo>();
   const [photoDetailInfo, setPhotoDetailInfo] = useState<PhotoDetailInfoResponse["data"]>(); // 图片详情信息
@@ -68,6 +68,7 @@ const Index = () => {
     const { data } = await Api.getPhotoDetailInfo({ params: { id } });
     const list = data?.list || [];
     const index = data?.index || 0;
+    console.log('data', data)
     setCurPhotoInfo(list?.[index]);
     setPhotoList(list);
     setPhotoDetailInfo(data);
@@ -172,20 +173,20 @@ const Index = () => {
           <div className="flex items-center min-w-0">
             <div className="flex-none">
               <div className="avatar">
-                <img src={curPhotoInfo?.avatarUrl} width="32" height="32" alt="" className="avatar__photo w-[32px] h-[32px] object-cover rounded-full" />
+                <img src={curPhotoInfo?.user?.avatar_url} width="32" height="32" alt="" className="avatar__photo w-[32px] h-[32px] object-cover rounded-full" />
               </div>
             </div>
 
             <div className="ml-16 min-w-0 truncate">
-              <a className="font-medium text-black block text-14 leading-md cursor-pointer" href={`/userDetail?id=${curPhotoInfo?.userId}`}>
-                <span className="block truncate">{curPhotoInfo?.authorName}</span>
+              <a className="font-medium text-black block text-14 leading-md cursor-pointer" href={`/userDetail?id=${curPhotoInfo?.user_id}`}>
+                <span className="block truncate">{curPhotoInfo?.user?.display_name || curPhotoInfo?.user?.username}</span>
               </a>
             </div>
           </div>
 
           <div className="ml-16 flex items-center flex-none text-12 leading-sm">
-            <time dateTime={curPhotoInfo?.updateDate} title={curPhotoInfo?.updateDate}>
-              {dayjs(curPhotoInfo?.updateDate).fromNow()}
+            <time dateTime={`${curPhotoInfo?.update_time || ""}`} title={`${curPhotoInfo?.update_time || ""}`}>
+              {dayjs(curPhotoInfo?.update_time).fromNow()}
             </time>
           </div>
         </div>
@@ -195,7 +196,6 @@ const Index = () => {
             list={photoList || []}
             index={photoDetailInfo?.index}
             onChange={(index) => {
-              console.log("index", index);
               const item = photoList?.[index];
               if (+item?.id) {
                 getCommentList(+item?.id);
@@ -209,10 +209,10 @@ const Index = () => {
               <div className="flex items-center text-12 leading-sm lg:text-14 lg:leading-md">
                 {/* <div className="mr-8 text-grey-53">Day 23</div> */}
 
-                <time className="lg:hidden" dateTime={curPhotoInfo?.updateDate} title={curPhotoInfo?.updateDate}>
-                  <span className="sm:hidden">{dayjs(curPhotoInfo?.updateDate).format("YYYY-MM-DD HH:mm")}</span>
+                <time className="lg:hidden" dateTime={`${curPhotoInfo?.update_time || ""}`} title={`${curPhotoInfo?.update_time || ""}`}>
+                  <span className="sm:hidden">{dayjs(curPhotoInfo?.update_time).format("YYYY-MM-DD HH:mm")}</span>
 
-                  <span className="hidden sm:block">{dayjs(curPhotoInfo?.updateDate).format("YYYY-MM-DD HH:mm")}</span>
+                  <span className="hidden sm:block">{dayjs(curPhotoInfo?.update_time).format("YYYY-MM-DD HH:mm")}</span>
                 </time>
               </div>
 
@@ -306,8 +306,7 @@ const Index = () => {
                       </span>
                     </button>
                   </div> */}
-
-                  {userInfo?.id === curPhotoInfo?.userId ? (
+                  {+userInfo?.id === +curPhotoInfo?.user_id ? (
                     <div className="pl-12 pr-8 leading-none lg:hidden relative">
                       <Menu
                         items={[
@@ -342,7 +341,7 @@ const Index = () => {
             {/* 图片详情 */}
             <div className="wysiwyg wysiwyg--story mb-8 sm:mb-16" data-target="translations.body">
               <div dangerouslySetInnerHTML={{ __html: curPhotoInfo?.description }}></div>
-              <p>
+              {/* <p>
                 {curPhotoInfo?.tags?.length
                   ? curPhotoInfo?.tags.map((tag) => (
                       <a className="autolink notranslate autolink--tag mr-1" href={tag} key={`${tag}-${_.random(1, 99)}`}>
@@ -350,7 +349,7 @@ const Index = () => {
                       </a>
                     ))
                   : null}
-              </p>
+              </p> */}
             </div>
 
             {/* 图片扩展信息 */}
@@ -366,11 +365,11 @@ const Index = () => {
                   <span className="block lg:truncate lg:max-w-200">{curPhotoInfo?.place}</span>
                 </a>
               </div>
-
-              <div className={classNames("items-center px-8", curPhotoInfo?.viewCount ? "flex" : "hidden")}>
+              {/* 
+              <div className={classNames("items-center px-8", curPhotoInfo?.view_count ? "flex" : "hidden")}>
                 <Icon className="icon-browse" addClassName="text-14 lg:text-16" />
-                <span className="ml-4">{curPhotoInfo?.viewCount}</span>
-              </div>
+                <span className="ml-4">{curPhotoInfo?.view_count}</span>
+              </div> */}
             </div>
 
             {/* 画廊状态 */}
@@ -540,37 +539,37 @@ const Index = () => {
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                   <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.brand")}</div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.brand || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_brand || "无"}</div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                   <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.model")}</div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.model || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_model || "无"}</div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                   <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.aperture")}</div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.aperture || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_aperture || "无"}</div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                   <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.focalLength")}</div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.focalLength || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_focal_length || "无"}</div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                   <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.shutterSpeed")}</div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.shutterSpeed || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_shutter_speed || "无"}</div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                   <div className="text-12 lg:text-14 leading-md lg:mb-8">ISO</div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.iso || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_iso || "无"}</div>
                 </div>
               </div>
             </div>
@@ -583,15 +582,15 @@ const Index = () => {
             <div className="flex items-center">
               <div className="flex-none">
                 <div className="avatar">
-                  <img src={curPhotoInfo?.avatarUrl} width="48" height="48" alt="" className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full" />
+                  <img src={curPhotoInfo?.user?.avatar_url} width="48" height="48" alt="" className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full" />
                 </div>
               </div>
 
               <div className="ml-16 flex-grow min-w-0">
                 <div className="flex items-center">
                   <div className="text-16 min-w-0">
-                    <a href={`/${curPhotoInfo?.userId}`} className="text-black font-medium block truncate">
-                      <span className="block">{curPhotoInfo?.authorName}</span>
+                    <a href={`/userDetail?id=${curPhotoInfo?.user_id}`} className="text-black font-medium block truncate">
+                      <span className="block">{curPhotoInfo?.user?.display_name || curPhotoInfo?.user?.username}</span>
                     </a>
                   </div>
                 </div>
@@ -599,11 +598,11 @@ const Index = () => {
                 <div className="text-14 leading-md truncate">
                   <time dateTime="2022-06-07T13:46:45+00:00" title="2022-06-07T13:46:45+00:00">
                     {t("common.published")}&nbsp;
-                    {dayjs(curPhotoInfo?.updateDate).fromNow()}
+                    {dayjs(curPhotoInfo?.update_time).fromNow()}
                   </time>
                 </div>
               </div>
-              {userInfo?.id === curPhotoInfo?.userId ? (
+              {+userInfo?.id === +curPhotoInfo?.user_id ? (
                 <div className="flex-none self-start">
                   <Menu
                     items={[
@@ -633,7 +632,7 @@ const Index = () => {
                 <div className="px-8 leading-none">
                   <button
                     type="button"
-                    className="button-reset inline-flex align-top "
+                    className="button-reset inline-flex align-top"
                     title="喜欢"
                     onClick={_.debounce(
                       () =>
@@ -656,7 +655,7 @@ const Index = () => {
                 <div className="px-8 leading-none">
                   <button
                     type="button"
-                    className="button-reset inline-flex align-top "
+                    className="button-reset inline-flex align-top"
                     title="收藏"
                     onClick={_.debounce(
                       () =>
@@ -668,9 +667,9 @@ const Index = () => {
                     )}
                   >
                     {curPhotoInfo?.favoriteStatus === 1 ? (
-                      <Icon className="icon-favoritefill" addClassName="text-yellow-400 text-22" />
+                      <Icon className="icon-favorfill" addClassName="text-yellow-400 text-22" />
                     ) : (
-                      <Icon className="icon-favorite" addClassName="text-black text-22" />
+                      <Icon className="icon-favor" addClassName="text-black text-22" />
                     )}
                   </button>
                 </div>
@@ -755,12 +754,12 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="text-14 leading-none flex -mr-8 cursor-default">
+              {/* <div className="text-14 leading-none flex -mr-8 cursor-default">
                 <div className={classNames("items-center px-8", curPhotoInfo?.viewCount ? "flex" : "hidden")}>
                   <Icon className="icon-browse" addClassName="text-22 text-black" />
                   <span className="ml-8">{curPhotoInfo?.viewCount}</span>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -793,37 +792,37 @@ const Index = () => {
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.brand")}</div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.brand || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_brand || "无"}</div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.model")}</div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.model || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_model || "无"}</div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.aperture")}</div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.aperture || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_aperture || "无"}</div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.focalLength")}</div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.focalLength || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_focal_length || "无"}</div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.shutterSpeed")}</div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.shutterSpeed || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_shutter_speed || "无"}</div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">ISO</div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exifData?.iso || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_iso || "无"}</div>
               </div>
             </div>
           </div>

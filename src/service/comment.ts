@@ -6,7 +6,7 @@ import {
   DeletePhotoCommentResponse,
   GetPhotoCommentListRequest,
   GetPhotoCommentListResponse,
-} from "@/types/CommunityTypes";
+} from "@/types/CommentTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
 
 const createApi = request.createApi({ baseURL: "/api" });

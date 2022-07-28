@@ -1,14 +1,11 @@
+import React from "react";
 import Filter from "@/components/Filter";
 import Api from "@/service/index";
-import { useRequest, usePagination } from "ahooks";
-import React, { useEffect, useState } from "react";
+import { usePagination } from "ahooks";
 import { useRouter } from "next/router";
-import classnames from "classnames";
 import { PhotoList } from "@components";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
-import toast from "react-hot-toast";
-import { formatPrice } from "@/utils/common";
 import { IItem } from "@components/Menu";
 
 const Browse = () => {

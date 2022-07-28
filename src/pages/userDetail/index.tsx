@@ -6,14 +6,14 @@ import { PhotoList, Filter, Icon } from "@components";
 import _ from "lodash";
 import { BaseUserInfo } from "@/types/UserTypes";
 import classnames from "classnames";
-import { GalleryPhotoItem } from "@/types/PhotoTypes";
+import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
 
 const UserDetail = () => {
   const router = useRouter();
   const { id } = router.query;
 
   const [userInfo, setUserInfo] = useState<BaseUserInfo>(); // 用户信息
-  const [photoList, setPhotoList] = useState<GalleryPhotoItem[]>(); // 用户照片列表
+  const [photoList, setPhotoList] = useState<PhotoListType[]>(); // 用户照片列表
 
   const getUserInfo = async (id: number) => {
     const { data = {} }: any = await Api.getUserInfo({
@@ -42,10 +42,7 @@ const UserDetail = () => {
           <div className="relative w-[128px] h-[128px]">
             <div className="avatar">
               <img
-                src={
-                  userInfo?.avatar_url ||
-                  "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'128' height%3D'128'%2F%3E"
-                }
+                src={userInfo?.avatar_url || "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'128' height%3D'128'%2F%3E"}
                 width="128"
                 height="128"
                 alt=""
@@ -55,43 +52,22 @@ const UserDetail = () => {
             {/* 个人徽章 */}
             <div className="absolute flex flex-col items-end grid:items-start grid:flex-row pin-r top-[32px] grid:pin-b grid:pin-t-auto grid:pin-r-center grid:h-auto w-36 grid:w-108 -mr-16 grid:mr-0 grid:-mb-18 z-1">
               <div className="flex-none grid:px-2 order-1 w-24 grid:w-36 cursor-pointer">
-                <img
-                  src="https://tookapic.com/img/badges/1000-photo-club.svg"
-                  width="32"
-                  height="32"
-                  alt=""
-                  className="block is-loaded"
-                />
+                <img src="https://tookapic.com/img/badges/1000-photo-club.svg" width="32" height="32" alt="" className="block is-loaded" />
               </div>
 
               <div className="flex-none pr-11 grid:px-2 grid:-mt-8 order-0 w-35 grid:w-36 cursor-pointer">
-                <img
-                  src="https://tookapic.com/img/badges/motor-mouth.svg"
-                  width="32"
-                  height="32"
-                  alt=""
-                  className="block is-loaded"
-                />
+                <img src="https://tookapic.com/img/badges/motor-mouth.svg" width="32" height="32" alt="" className="block is-loaded" />
               </div>
 
               <div className="flex-none pr-11 grid:px-2 grid:-mt-8 order-2 w-35 grid:w-36 cursor-pointer">
-                <img
-                  src="https://tookapic.com/img/badges/senior.svg"
-                  width="32"
-                  height="32"
-                  alt=""
-                  className="block is-loaded"
-                />
+                <img src="https://tookapic.com/img/badges/senior.svg" width="32" height="32" alt="" className="block is-loaded" />
               </div>
             </div>
-
           </div>
 
           <div className="grid:ml-24 md:ml-48 flex-grow mt-24 grid:mt-0 min-w-0">
             <div className="flex items-center">
-              <h1 className="text-20 grid:text-28 lg:text-32 leading-xs break-words min-w-0">
-                {userInfo?.display_name || userInfo?.username}
-              </h1>
+              <h1 className="text-20 grid:text-28 lg:text-32 leading-xs break-words min-w-0">{userInfo?.display_name || userInfo?.username}</h1>
 
               {/* <div
                 className="flex-none leading-none ml-8 grid:ml-12"
@@ -149,44 +125,21 @@ const UserDetail = () => {
             </div>
 
             <div className="mt-8 grid:mt-12 flex flex-wrap items-center -mx-8 text-14 grid:text-16">
-              <div
-                className={classnames(
-                  "items-center px-8",
-                  userInfo?.place ? "flex" : "hidden",
-                )}
-              >
-                <Icon
-                  className="icon-map"
-                  addClassName="text-grey mr-4 flex-none text-20"
-                />
+              <div className={classnames("items-center px-8", userInfo?.place ? "flex" : "hidden")}>
+                <Icon className="icon-map" addClassName="text-grey mr-4 flex-none text-20" />
                 <a className="text-grey-53 cursor-pointer">{userInfo?.place}</a>
               </div>
 
-              <div
-                className={classnames(
-                  "items-center px-8",
-                  userInfo?.email ? "flex" : "hidden",
-                )}
-              >
-                <Icon
-                  className="icon-email"
-                  addClassName="text-grey mr-4 flex-none text-20"
-                />
-                <a
-                  href={`mailto:${userInfo?.email}`}
-                  target="_blank"
-                  className="text-grey-53 min-w-0"
-                >
+              <div className={classnames("items-center px-8", userInfo?.email ? "flex" : "hidden")}>
+                <Icon className="icon-email" addClassName="text-grey mr-4 flex-none text-20" />
+                <a href={`mailto:${userInfo?.email}`} target="_blank" className="text-grey-53 min-w-0">
                   {userInfo?.email}
                 </a>
               </div>
             </div>
 
             <div
-              className={classnames(
-                "mt-8 grid:mt-16 text-grey-27 break-words text-14 grid:text-16 xl:max-w-568",
-                { hidden: !userInfo?.individual_resume },
-              )}
+              className={classnames("mt-8 grid:mt-16 text-grey-27 break-words text-14 grid:text-16 xl:max-w-568", { hidden: !userInfo?.individual_resume })}
               dangerouslySetInnerHTML={{ __html: userInfo?.individual_resume }}
             >
               {/* {userInfo?.individual_resume} */}
@@ -244,11 +197,7 @@ const UserDetail = () => {
           </div>
         </div>
       </div> */}
-      <PhotoList
-        getData={() => getPhotoListByUserId(+id)}
-        list={photoList}
-        isDetail
-      />
+      <PhotoList getData={() => getPhotoListByUserId(+id)} list={photoList} isDetail />
     </div>
   );
 };

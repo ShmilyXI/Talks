@@ -6,7 +6,7 @@ import { useRequest, configResponsive, useResponsive, useUpdateLayoutEffect } fr
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
-import { GalleryPhotoItem } from "@/types/PhotoTypes";
+import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
 import dayjs from "dayjs";
 import { UserLikedRequest, UserPhotoFavoriteRequest } from "@/types/UserTypes";
 import Api from "@/service";
@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 
 type PhotoListProps = {
   getData: () => void;
-  list: GalleryPhotoItem[];
+  list: PhotoListType[];
   total?: number;
   isDetail?: boolean;
 };
@@ -35,7 +35,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
   const { getData = () => {}, list, total, isDetail } = props;
   const router = useRouter();
   const { t } = useTranslation();
-  const [photoList, setPhotoList] = useState<GalleryPhotoItem[]>([]); // 图片列表
+  const [photoList, setPhotoList] = useState<PhotoListType[]>([]); // 图片列表
   const [isMobile, setIsMobile] = useState(false);
   const [nowPointWidth, setNowPointWidth] = useState(800);
   const responsive = useResponsive();
@@ -125,7 +125,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
           breakpoints={[352, 576, 696, 768, 992, 1200, 1304, 1440]}
           photos={photoList}
           renderPhoto={(data: { photo: any; imageProps: JSX.IntrinsicAttributes & React.ClassAttributes<HTMLImageElement> & React.ImgHTMLAttributes<HTMLImageElement> }) => {
-            const item = data.photo;
+            const item: PhotoListType = data.photo;
             return (
               <div
                 style={{
@@ -144,16 +144,16 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     <div className="flex items-center min-w-0">
                       <div
                         className={classnames("flex-none mr-16", {
-                          hidden: !item.avatarUrl,
+                          hidden: !item?.user?.avatar_url,
                         })}
                       >
                         <div className="avatar">
-                          <img src={item.avatarUrl} width="32" height="32" alt="" className="avatar__photo w-[32px] h-[32px] object-cover rounded-full" />
+                          <img src={item?.user?.avatar_url} width="32" height="32" alt="" className="avatar__photo w-[32px] h-[32px] object-cover rounded-full" />
                         </div>
                       </div>
                       <div className="min-w-0 truncate">
-                        <a className="font-medium story-list__user block text-14 leading-md cursor-pointer" onClick={() => goRoute(`/userDetail?id=${item.userId}`)}>
-                          <span className="block truncate">{item.authorName}</span>
+                        <a className="font-medium story-list__user block text-14 leading-md cursor-pointer" onClick={() => goRoute(`/userDetail?id=${item.user_id}`)}>
+                          <span className="block truncate">{item?.user?.display_name || item?.user?.username}</span>
                         </a>
                       </div>
 
@@ -173,8 +173,8 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     </div>
 
                     <div className="ml-16 flex items-center flex-none text-12 leading-sm">
-                      <time dateTime={item.createDate} title={item.createDate}>
-                        {dayjs(item?.createDate).fromNow()}
+                      <time dateTime={`${item.create_time || ""}`} title={`${item.create_time || ""}`}>
+                        {dayjs(item?.create_time).fromNow()}
                       </time>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                   <div
                     className="overflow-hidden w-full h-full relative story-list__photo grid:rounded-3"
                     style={{
-                      backgroundColor: item.themeColor,
+                      backgroundColor: item.theme_color,
                     }}
                   >
                     <a className="block absolute pin z-3 cursor-pointer" onClick={() => goRoute(`/photoDetail?id=${item.id}`)}></a>
@@ -211,11 +211,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                       <div className="flex items-center">
                         <div
                           className={classnames("flex-none mr-8", {
-                            hidden: !item.avatarUrl || isDetail,
+                            hidden: !item?.user?.avatar_url || isDetail,
                           })}
                         >
                           <div className="avatar bg-black">
-                            <img src={item.avatarUrl} width="32" height="32" className="avatar__photo is-loaded w-[32px] h-[32px] object-cover rounded-full" />
+                            <img src={item?.user?.avatar_url} width="32" height="32" className="avatar__photo is-loaded w-[32px] h-[32px] object-cover rounded-full" />
                           </div>
                         </div>
 
@@ -224,22 +224,22 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             {isDetail ? (
                               <>
                                 <div className="text-inherit break-words text-18">{item.title}</div>
-                                <div className="text-inherit break-words">{item.shootingDate}</div>
+                                <div className="text-inherit break-words">{item.shooting_date}</div>
                               </>
                             ) : (
-                              <a className="pointer-events-auto text-inherit break-words cursor-pointer text-18" onClick={() => goRoute(`/userDetail?id=${item.userId}`)}>
-                                {item.authorName}
+                              <a className="pointer-events-auto text-inherit break-words cursor-pointer text-18" onClick={() => goRoute(`/userDetail?id=${item.user_id}`)}>
+                                {item?.user?.display_name || item?.user?.username}
                               </a>
                             )}
                           </div>
 
                           <div
                             className={classnames("opacity-75", {
-                              hidden: !item.workCount,
+                              hidden: !item.commentCount,
                             })}
                           >
                             #&nbsp;
-                            {item.workCount || 0}
+                            {item.commentCount || 0}
                           </div>
                         </div>
                       </div>
@@ -309,15 +309,15 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                       <div className="flex items-center text-12 leading-sm grid:text-14 grid:leading-md">
                         <span
                           className={classnames("flex-none mr-8", {
-                            hidden: !item.workCount,
+                            hidden: !item.commentCount,
                           })}
                         >
                           #&nbsp;
-                          {item.workCount}
+                          {item.commentCount}
                         </span>
 
-                        <time className="flex-none" dateTime={item.shootingDate} title={item.shootingDate}>
-                          {dayjs(item.shootingDate).format("YYYY-MM-DD HH:mm:ss")}
+                        <time className="flex-none" dateTime={item.shooting_date} title={item.shooting_date}>
+                          {dayjs(item.shooting_date).format("YYYY-MM-DD HH:mm:ss")}
                         </time>
                       </div>
 

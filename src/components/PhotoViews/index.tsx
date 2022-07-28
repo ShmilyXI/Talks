@@ -4,7 +4,7 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Inline from "yet-another-react-lightbox/plugins/inline";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
-import { BasePhotoInfo } from "@/types/PhotoTypes";
+import { PhotoList } from "@/types/PhotoTypes";
 import _ from "lodash";
 
 import "yet-another-react-lightbox/styles.css";
@@ -14,7 +14,7 @@ import './index.less'
 
 
 type Props = {
-  list: BasePhotoInfo[];
+  list: PhotoList[];
   index: number;
   onChange?: (index: number) => void;
 };

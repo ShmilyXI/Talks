@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from "react";
-import { CommentData, CommentItem } from "@/types/CommunityTypes";
+import { CommentData, CommentItem } from "@/types/CommentTypes";
 import { Icon } from "@components";
 import { useClickAway, useToggle } from "ahooks";
 import classnames from "classnames";
@@ -136,8 +136,8 @@ const Comments: FC<Props> = (props) => {
                     <div className="comment__details bg-inherit flex-grow">
                       <div className="text-14 leading-md pt-2 text-grey-27 wysiwyg">
                         <div>
-                          <a href={`/${item.user_id}`} className="autolink notranslate">
-                            {item.display_name || item.username}
+                          <a href={`/userDetail?id=${item.user_id}`} className="autolink notranslate">
+                            {item?.user?.display_name || item.username}
                           </a>
                           <div className="break-all">{item.content}</div>
                         </div>
@@ -152,8 +152,8 @@ const Comments: FC<Props> = (props) => {
                           </a>
                         </div>
 
-                        <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !item.liked_count })}>
-                          {item.liked_count}like
+                        <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !item.likedCount })}>
+                          {item.likedCount}like
                         </button>
 
                         <div className="px-4 flex items-center">
@@ -313,17 +313,17 @@ const Comments: FC<Props> = (props) => {
                                 <div>
                                   {child?.replyUserInfo?.id ? (
                                     <>
-                                      <a href={`/${child.user_id}`} className="autolink notranslate">
-                                        {child.display_name || child.username}
+                                      <a href={`/userDetail?id=${child.user_id}`} className="autolink notranslate">
+                                        {child?.user?.display_name || child.username}
                                       </a>
                                       &nbsp; 回复 &nbsp;
-                                      <a href={`/${child?.replyUserInfo?.id}`} className="autolink notranslate">
+                                      <a href={`/userDetail?id=${child?.replyUserInfo?.id}`} className="autolink notranslate">
                                         {child?.replyUserInfo?.display_name || child?.replyUserInfo?.username}
                                       </a>
                                     </>
                                   ) : (
-                                    <a href={`/${child.user_id}`} className="autolink notranslate">
-                                      {child.display_name || child.username}
+                                    <a href={`/userDetail?id=${child.user_id}`} className="autolink notranslate">
+                                      {child?.user?.display_name || child.username}
                                     </a>
                                   )}
                                   <div className="break-all">{child.content}</div>
@@ -339,8 +339,8 @@ const Comments: FC<Props> = (props) => {
                                   </a>
                                 </div>
 
-                                <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !child.liked_count })}>
-                                  {child.liked_count}like
+                                <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !child.likedCount })}>
+                                  {child.likedCount}like
                                 </button>
 
                                 <div className="px-4 flex items-center">

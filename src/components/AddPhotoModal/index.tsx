@@ -11,12 +11,12 @@ import toast from "react-hot-toast";
 import Form, { Field } from "rc-field-form";
 import { Checked } from "@/components";
 import { useRouter } from "next/router";
-import { BasePhotoInfo } from "@/types/PhotoTypes";
+import { PhotoList } from "@/types/PhotoTypes";
 
 type Props = {
   visible: boolean;
   setModalLeft: () => void;
-  value?: BasePhotoInfo;
+  value?: PhotoList;
 };
 
 const Input = ({ value = "", ...props }) => <input value={value} {...props} />;
@@ -38,7 +38,10 @@ const Index: FC<Props> = (props) => {
     setIsEdit(true);
     // 照片描述回显时,需要将<br/>替换为\r\n
     form.setFieldsValue({
-      ..._.pick(defaultValue, ["title", "description", "mood", "shootingDate", "galleryIds", "showComments"]),
+      ..._.pick(defaultValue, ["title", "mood"]),
+      shootingDate: defaultValue.shooting_date,
+      galleryIds: defaultValue.gallery_ids,
+      showComments: defaultValue.show_comments,
       description: defaultValue?.description?.replace(/<br\/>/g, "\r\n"),
       place: {
         label: defaultValue.place,
@@ -54,10 +57,10 @@ const Index: FC<Props> = (props) => {
       const values = await form.validateFields();
       // 照片描述保存时,需要将\r\n替换为<br/>
       const description = values.description?.replace(/\r\n/g, "<br/>").replace(/\n/g, "<br/>").replace(/\s/g, " ");
+      console.log("values", values);
       let params = {
         ...values,
         description,
-        galleryIds: values?.galleryIds?.join(",") || "",
         place: values?.place?.label,
         placeId: values?.place?.value,
         location: values?.place?.location,
@@ -66,8 +69,8 @@ const Index: FC<Props> = (props) => {
         areaName: values?.place?.areaName,
         showComments: values?.showComments ? 0 : 1,
       };
-
-      if (defaultValue.id) {
+      console.log("123", 123);
+      if (defaultValue?.id) {
         params.id = defaultValue.id;
         await Api.updatePhoto({ data: params });
         await toast.success("修改成功!");
@@ -82,6 +85,7 @@ const Index: FC<Props> = (props) => {
           width: photoData?.width,
           height: photoData?.height,
           themeColor: photoData?.themeColor,
+          galleryIds: (values?.galleryIds || [])?.join(",") || "",
           photoExifInfo: photoData?.photoExifInfo,
         };
         await Api.publishPhoto({ data: params });
@@ -92,9 +96,7 @@ const Index: FC<Props> = (props) => {
       setTempFile(undefined);
       setTempImage(undefined);
       setModalLeft();
-      if (!defaultValue.id) {
-        router.push("/");
-      }
+      router.reload();
     } catch (error) {
       setLoading(false);
     }
