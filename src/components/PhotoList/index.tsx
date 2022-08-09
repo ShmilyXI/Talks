@@ -221,26 +221,25 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                         <div>
                           <div className="font-medium">
+                            <div className="text-inherit break-words text-18">{item.title}</div>
                             {isDetail ? (
-                              <>
-                                <div className="text-inherit break-words text-18">{item.title}</div>
-                                <div className="text-inherit break-words">{item.shooting_date}</div>
-                              </>
+                              <div className="text-inherit break-words">{item.shooting_date}</div>
                             ) : (
-                              <a className="pointer-events-auto text-inherit break-words cursor-pointer text-18" onClick={() => goRoute(`/userDetail?id=${item.user_id}`)}>
-                                {item?.user?.display_name || item?.user?.username}
-                              </a>
+                              <div className="text-inherit break-words">{item?.user?.display_name || item?.user?.username}</div>
+                              // <a className="text-inherit break-words cursor-pointer" onClick={() => goRoute(`/userDetail?id=${item.user_id}`)}>
+                              //   {item?.user?.display_name || item?.user?.username}
+                              // </a>
                             )}
                           </div>
 
-                          <div
+                          {/* <div
                             className={classnames("opacity-75", {
-                              hidden: !item.commentCount,
+                              hidden: !item.comment_count,
                             })}
                           >
                             #&nbsp;
-                            {item.commentCount || 0}
-                          </div>
+                            {item.comment_count || 0}
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -248,7 +247,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     {/* 遮罩 底部*/}
                     <div className="story-list__overlay-item absolute pin-b pin-x z-5 px-8 pb-8 text-white text-12 leading-sm pointer-events-none flex justify-between">
                       <div className="flex items-center -mx-6">
-                        <div className="mr-4 ml-4 leading-none">
+                        <div className="mr-4 ml-4 leading-none flex items-center">
                           <a
                             className="pointer-events-auto inline-flex align-top cursor-pointer"
                             onClick={_.debounce(() => {
@@ -265,9 +264,10 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               <Icon className="icon-like" addClassName="text-16 text-white" />
                             )}
                           </a>
+                          <span className={classnames("font-medium text-12 ml-3 leading-none text-white", { hidden: !item.liked_count })}>{item.liked_count}</span>
                         </div>
 
-                        <div className="mr-4 leading-none">
+                        <div className="mr-4 leading-none flex items-center">
                           <a
                             className="pointer-events-auto inline-flex align-top cursor-pointer"
                             onClick={_.debounce(() => {
@@ -284,6 +284,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               <Icon className="icon-favor" addClassName="text-16 text-white" />
                             )}
                           </a>
+                          <span className={classnames("font-medium text-12 ml-3 leading-none text-white", { hidden: !item.favorite_count })}>{item.favorite_count}</span>
                         </div>
 
                         <div className="mr-4 leading-none flex items-center">
@@ -297,7 +298,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             <Icon className="icon-message" addClassName="text-white text-16" />
                           </a>
 
-                          <span className="font-medium text-12 ml-3 leading-none text-white">{item.commentCount || 0}</span>
+                          <span className={classnames("font-medium text-12 ml-3 leading-none text-white", { hidden: !item.comment_count })}>{item.comment_count || 0}</span>
                         </div>
                       </div>
                     </div>
@@ -309,11 +310,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                       <div className="flex items-center text-12 leading-sm grid:text-14 grid:leading-md">
                         <span
                           className={classnames("flex-none mr-8", {
-                            hidden: !item.commentCount,
+                            hidden: !item.comment_count,
                           })}
                         >
                           #&nbsp;
-                          {item.commentCount}
+                          {item.comment_count}
                         </span>
 
                         <time className="flex-none" dateTime={item.shooting_date} title={item.shooting_date}>
@@ -323,7 +324,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
 
                       <div className="flex items-center -mx-8">
                         <div className="px-8 leading-none text-14">
-                          <div className="px-8 leading-none text-14">
+                          <div className="px-8 leading-none text-14 flex items-center">
                             <a
                               className="inline-flex align-top cursor-pointer"
                               onClick={_.debounce(() => {
@@ -340,10 +341,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                                 <Icon className="icon-like" addClassName="text-22 text-black" />
                               )}
                             </a>
+                            <span className={classnames("font-medium text-16 ml-3 leading-none text-black", { hidden: !item.liked_count })}>{item.liked_count}</span>
                           </div>
                         </div>
 
-                        <div className="px-8 leading-none text-14">
+                        <div className="px-8 leading-none text-14 flex items-center">
                           <a
                             className="inline-flex align-top cursor-pointer"
                             onClick={_.debounce(() => {
@@ -359,6 +361,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               <Icon className="icon-favor" addClassName="text-22 text-black" />
                             )}
                           </a>
+                          <span className={classnames("font-medium text-16 ml-3 leading-none text-black", { hidden: !item.favorite_count })}>{item.favorite_count}</span>
                         </div>
                       </div>
                     </div>
@@ -368,7 +371,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                     <div className="flex items-center -mx-6 mt-8 text-14 leading-md grid:text-16 grid:leading-normal">
                       <div className="px-6" data-controller="popovers--comments">
                         <a className="text-grey-53 cursor-pointer" onClick={() => goRoute(`/photoDetail?id=${item.id}#comment`)}>
-                          {item.commentCount || 0}
+                          {item.comment_count}
                           &nbsp;
                           {t("common.comments")}
                         </a>

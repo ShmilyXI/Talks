@@ -68,7 +68,7 @@ const Index = () => {
     const { data } = await Api.getPhotoDetailInfo({ params: { id } });
     const list = data?.list || [];
     const index = data?.index || 0;
-    console.log('data', data)
+    console.log("data", data);
     setCurPhotoInfo(list?.[index]);
     setPhotoList(list);
     setPhotoDetailInfo(data);
@@ -155,9 +155,9 @@ const Index = () => {
 
   // 删除评论
   const onDeleteComment = async (id: number) => {
-    if (_.isNil(id)) return;
+    if (_.isNil(id) || _.isNil(curPhotoInfo?.id)) return;
     try {
-      await Api.deletePhotoComment({ data: { id } });
+      await Api.deletePhotoComment({ data: { id, photoId: curPhotoInfo?.id } });
       await toast.success("删除成功!");
       getCommentList(curPhotoInfo.id);
     } catch (error) {
@@ -185,8 +185,8 @@ const Index = () => {
           </div>
 
           <div className="ml-16 flex items-center flex-none text-12 leading-sm">
-            <time dateTime={`${curPhotoInfo?.update_time || ""}`} title={`${curPhotoInfo?.update_time || ""}`}>
-              {dayjs(curPhotoInfo?.update_time).fromNow()}
+            <time dateTime={`${curPhotoInfo?.create_time || ""}`} title={`${curPhotoInfo?.create_time || ""}`}>
+              {dayjs(curPhotoInfo?.create_time).fromNow()}
             </time>
           </div>
         </div>
@@ -209,10 +209,10 @@ const Index = () => {
               <div className="flex items-center text-12 leading-sm lg:text-14 lg:leading-md">
                 {/* <div className="mr-8 text-grey-53">Day 23</div> */}
 
-                <time className="lg:hidden" dateTime={`${curPhotoInfo?.update_time || ""}`} title={`${curPhotoInfo?.update_time || ""}`}>
-                  <span className="sm:hidden">{dayjs(curPhotoInfo?.update_time).format("YYYY-MM-DD HH:mm")}</span>
+                <time className="lg:hidden" dateTime={`${curPhotoInfo?.create_time || ""}`} title={`${curPhotoInfo?.create_time || ""}`}>
+                  <span className="sm:hidden">{dayjs(curPhotoInfo?.create_time).format("YYYY-MM-DD HH:mm")}</span>
 
-                  <span className="hidden sm:block">{dayjs(curPhotoInfo?.update_time).format("YYYY-MM-DD HH:mm")}</span>
+                  <span className="hidden sm:block">{dayjs(curPhotoInfo?.create_time).format("YYYY-MM-DD HH:mm")}</span>
                 </time>
               </div>
 
@@ -598,7 +598,7 @@ const Index = () => {
                 <div className="text-14 leading-md truncate">
                   <time dateTime="2022-06-07T13:46:45+00:00" title="2022-06-07T13:46:45+00:00">
                     {t("common.published")}&nbsp;
-                    {dayjs(curPhotoInfo?.update_time).fromNow()}
+                    {dayjs(curPhotoInfo?.create_time).fromNow()}
                   </time>
                 </div>
               </div>

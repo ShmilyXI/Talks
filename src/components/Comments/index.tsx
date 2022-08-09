@@ -119,7 +119,7 @@ const Comments: FC<Props> = (props) => {
           <div className={classnames("bg-inherit md:pt-0", addClassName)}>
             <div className="bg-inherit my-3">
               {list?.map((item) => (
-                <div className="bg-inherit thread thread--has-replies" key={item.create_time}>
+                <div className="bg-inherit thread thread--has-replies" key={`${item.create_time}`}>
                   <div className="comment bg-inherit flex py-6 relative" id={`comment-${item.id}`}>
                     <div className="flex-none mr-12 relative z-10">
                       <div className="avatar relative">
@@ -146,14 +146,14 @@ const Comments: FC<Props> = (props) => {
                       <div className={classnames("flex-wrap mt-8 -mx-4 text-12 leading-sm", replyId && replyId === item.id ? "hidden" : "flex")}>
                         <div className="px-4">
                           <a href="https://tookapic.com/photos/661007#comment-460388" className="text-grey-53">
-                            <time dateTime={item.create_time} title={item.create_time}>
+                            <time dateTime={`${item.create_time || ""}`} title={`${item.create_time || ""}`}>
                               {dayjs(item.create_time).fromNow()}
                             </time>
                           </a>
                         </div>
 
-                        <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !item.likedCount })}>
-                          {item.likedCount}like
+                        <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !item.liked_count })}>
+                          {item.liked_count}like
                         </button>
 
                         <div className="px-4 flex items-center">
@@ -295,7 +295,7 @@ const Comments: FC<Props> = (props) => {
                     <div className="thread__previous-replies hidden"></div>
                     {item?.children?.length
                       ? item?.children?.map((child) => (
-                          <div className="comment bg-inherit flex py-6 relative" id={`comment-${child.id}`} key={child.create_time}>
+                          <div className="comment bg-inherit flex py-6 relative" id={`comment-${child.id}`} key={`${child.create_time}`}>
                             <div className="flex-none mr-12 relative z-10">
                               <div className="avatar relative">
                                 <img
@@ -333,14 +333,14 @@ const Comments: FC<Props> = (props) => {
                               <div className={classnames("flex-wrap mt-8 -mx-4 text-12 leading-sm", replyId && replyId === child.id ? "hidden" : "flex")}>
                                 <div className="px-4">
                                   <a className="text-grey-53 cursor-pointer">
-                                    <time dateTime={child.create_time} title={child.create_time}>
+                                    <time dateTime={`${child.create_time || ""}`} title={`${child.create_time || ""}`}>
                                       {dayjs(child.create_time).fromNow()}
                                     </time>
                                   </a>
                                 </div>
 
-                                <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !child.likedCount })}>
-                                  {child.likedCount}like
+                                <button type="button" className={classnames("button-reset px-4 hover:underline", { hidden: !child.liked_count })}>
+                                  {child.liked_count}like
                                 </button>
 
                                 <div className="px-4 flex items-center">

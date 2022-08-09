@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Filter from "@/components/Filter";
 import Api from "@/service/index";
 import { usePagination } from "ahooks";
@@ -12,37 +12,49 @@ const Browse = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
+  const [selectItem, setSelectItem] = useState<IItem>();
+
+  useEffect(() => {
+    if (selectItem?.value) {
+      getData(selectItem.value);
+    }
+    return () => {
+      setSelectItem(undefined);
+    };
+  }, [selectItem]);
+
   const {
     data: photoData,
     loading: getGalleryPhotoListLoading,
     run: runGetGalleryPhotoList,
     pagination,
   } = usePagination(
-    ({ current, pageSize }) =>
+    ({ current, pageSize, type = "all" }) =>
       new Promise(async (resolve) => {
         const { data } = await Api.getGalleryPhotoList({
-          data: { pageIndex: current, pageSize },
+          data: { pageIndex: current, pageSize, type },
         });
         resolve(data);
       }) as any,
   );
 
   const items: IItem[] = [
-    { label: "全部", value: "1" },
-    // { label: t("common.popular"), value: "2" },
-    // { label: t("common.recent"), value: "3" },
+    { label: "全部", value: "all" },
+    { label: t("common.popular"), value: "popular" },
+    { label: t("common.recent"), value: "recent" },
     // { label: t("common.debuts"), value: "4" },
     // { label: t("common.finishers"), value: "5" },
-    // { label: t("common.photosOfTheDay"), value: "6" },
-    // { label: t("common.favorites"), value: "7" },
-    // { label: t("common.liked"), value: "8" },
+    { label: t("common.photosOfTheDay"), value: "today" },
+    { label: t("common.favorites"), value: "favorites" },
+    { label: t("common.liked"), value: "liked" },
   ];
 
   // 获取列表数据
-  const getData = () => {
+  const getData = (type?: string) => {
     runGetGalleryPhotoList({
       current: pagination.current,
       pageSize: pagination.pageSize,
+      type,
     });
   };
 
@@ -55,7 +67,7 @@ const Browse = () => {
               breakPoint="md"
               items={items}
               onChange={(item) => {
-                console.log("item", item);
+                setSelectItem(item);
               }}
             />
           </div>

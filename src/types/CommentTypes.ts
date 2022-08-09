@@ -4,23 +4,25 @@ export type CommentItem = {
   id: number;
   user_id: number;
   username: string;
+  user_avatar_url?: string;
+  photo_id: number;
+  parent_comment_id?: number;
+  parent_comment_user_id?: number;
+  reply_comment_id?: number;
+  reply_comment_user_id?: number;
+  content: string;
+  comment_level: number;
+  liked_count: number;
+  status: number;
+  type: number;
+  is_delete: number;
+  top_status: number;
+  update_time: Date;
+  create_time: Date;
+  likedStatus: number;
   user: {
     display_name: string;
   };
-  user_avatar_url: string;
-  photo_id: number;
-  content: string;
-  likedStatus: number;
-  likedCount: number;
-  status: number;
-  top_status: number;
-  type: number;
-  comment_level: number;
-  parent_comment_id: number;
-  parent_comment_user_id: number;
-  reply_comment_id: number;
-  reply_comment_user_id: number;
-  create_time: string;
   replyUserInfo?: {
     id: number;
     username: string;
@@ -59,4 +61,5 @@ export interface AddPhotoCommentRequest {
 export interface DeletePhotoCommentResponse extends common.Response {}
 export interface DeletePhotoCommentRequest {
   id?: number;
+  photoId?: number;
 }

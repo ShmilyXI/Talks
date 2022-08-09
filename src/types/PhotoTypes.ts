@@ -1,4 +1,4 @@
-import { common } from './types';
+import { common } from "./types";
 
 // model类型
 export interface photosType {
@@ -27,12 +27,14 @@ export interface photosType {
   exif_focal_length?: string;
   exif_shutter_speed?: string;
   exif_iso?: string;
+  comment_count: number;
+  liked_count: number;
+  favorite_count: number;
   shooting_date: string;
   is_delete: number;
   create_time: Date;
   update_time: Date;
 }
-
 
 type ExifData = {
   brand: string;
@@ -45,10 +47,7 @@ type ExifData = {
 
 export interface PhotoList extends photosType {
   likedStatus?: number;
-  likedCount?: number;
   favoriteStatus?: number;
-  favoriteCount?: number;
-  commentCount?: number;
   user?: {
     display_name?: string;
     username?: string;
@@ -73,6 +72,7 @@ export interface GetGalleryPhotoListResponse extends common.Response {
 export interface GetGalleryPhotoListRequest {
   pageIndex: number;
   pageSize: number;
+  type: string;
 }
 export interface UploadPhotoResponse extends common.Response {
   data?: {
