@@ -61,7 +61,7 @@ request.middlewares.request.use(axiosFormDataMiddleware());
 request.middlewares.response.use(serializedResponseMiddleware());
 request.middlewares.request.use(async (ctx, next) => {
   const { config } = ctx;
-  config.params = { ...config.data, ...config.params };
+  // config.params = { ...config.data, ...config.params };
   const storage = new Storage(sessionStorage, "Talks");
   const token = storage.getItem("token");
   if (config.headers) config.headers.Authorization = `Bearer ${token}`;
