@@ -9,6 +9,7 @@ import {
 } from "@/types/CommentTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
 
+
 const createApi = request.createApi({ baseURL: "/api" });
 
 const commentApi = {

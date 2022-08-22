@@ -14,11 +14,8 @@ import {
   UserPhotoFavoriteResponse,
   UserPhotoFavoriteRequest
 } from "@/types/UserTypes";
-import request, {
-  HttpJson,
-  RequestGetType,
-  RequestPostType,
-} from "@/utils/request";
+import request, { RequestGetType, RequestPostType } from "@/utils/request";
+
 import { CommonRes } from ".";
 
 const createApi = request.createApi({ baseURL: "/api" });

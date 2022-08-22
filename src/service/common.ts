@@ -1,6 +1,6 @@
 /* 公共 */
 import {} from "@/types/PhotoTypes";
-import { axiosCreateRequest } from "@/utils/baseRequest";
+import { axiosCreateRequest } from "@/utils/request/axiosCreateRequest";
 import { CommonReq, CommonRes } from "./";
 
 const request = axiosCreateRequest();

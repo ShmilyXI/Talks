@@ -1,19 +1,8 @@
-import { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import toast from "react-hot-toast";
 import { Storage } from "@/utils/storage";
-import {
-  createRequest,
-  loadingMiddleware,
-  axiosFormDataMiddleware,
-  LoadingOption,
-  SerializedError,
-  serializedErrorMiddleware,
-  serializedResponseMiddleware,
-  showErrorMiddleware,
-  ShowErrorOption,
-  AxiosFormDataOption,
-  axiosCreateRequest,
-} from "../baseRequest";
+import { axiosFormDataMiddleware, LoadingOption, SerializedError, serializedResponseMiddleware, showErrorMiddleware, ShowErrorOption, AxiosFormDataOption } from "./middleware";
+import { axiosCreateRequest } from "./axiosCreateRequest";
 
 export interface HttpJson<T = any> {
   retCode: string;
@@ -26,10 +15,11 @@ export type RequestType<T extends RequestConfig> = Omit<RequestConfig, keyof T> 
 export type RequestGetType<T = Record<string, any>> = RequestType<{ params: T }>;
 export type RequestPostType<T = Record<string, any>> = RequestType<{ data: T }>;
 
-export type RequestConfig = AxiosRequestConfig &
-  LoadingOption &
-  ShowErrorOption &
-  AxiosFormDataOption;
+export type RequestConfig = AxiosRequestConfig & LoadingOption & ShowErrorOption & AxiosFormDataOption;
+
+let controller;
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
 
 const request = axiosCreateRequest<RequestConfig, HttpJson>({
   timeout: 60000,
@@ -47,8 +37,24 @@ const request = axiosCreateRequest<RequestConfig, HttpJson>({
 // );
 request.middlewares.request.use(
   showErrorMiddleware({
-    showError: (err: SerializedError<"retCode", "message">) =>
-      void toast.error(err?.message || "系统繁忙，请稍后再试"),
+    showError: (err: SerializedError<"retCode", "message">) => void toast.error(err?.message || "系统繁忙，请稍后再试"),
+    handleError: (ctx, { config }) => {
+      const err = ctx.response.data;
+      ctx.message = err.message;
+      ctx.retCode = err.retCode;
+      if (err.retCode === "-3" || err.retCode === "-4") {
+        toast.error("登录态过期，请重新登录！", { id: "1" });
+        const storage = new Storage(sessionStorage, "Talks");
+        storage.removeItem("token");
+        storage.removeItem("userInfo");
+        // window.location.replace("/login?signIn=1");
+        return false;
+      }
+      // if (err.retCode === "0801001") {
+      //   err.message = "没有权限";
+      //   return false;
+      // }
+    },
   }),
 );
 request.middlewares.request.use(axiosFormDataMiddleware());
@@ -57,8 +63,8 @@ request.middlewares.request.use(async (ctx, next) => {
   const { config } = ctx;
   config.params = { ...config.data, ...config.params };
   const storage = new Storage(sessionStorage, "Talks");
-  if (config.headers)
-    config.headers.Authorization = `Bearer ${storage.getItem("token")}`;
+  const token = storage.getItem("token");
+  if (config.headers) config.headers.Authorization = `Bearer ${token}`;
   await next();
 });
 export default request;

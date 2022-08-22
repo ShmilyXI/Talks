@@ -31,6 +31,7 @@ const Browse = () => {
   } = usePagination(
     ({ current, pageSize, type = "all" }) =>
       new Promise(async (resolve) => {
+        if (!selectItem) return;
         const { data } = await Api.getGalleryPhotoList({
           data: { pageIndex: current, pageSize, type },
         });
@@ -67,6 +68,7 @@ const Browse = () => {
               breakPoint="md"
               items={items}
               onChange={(item) => {
+                console.log("item", item);
                 setSelectItem(item);
               }}
             />
