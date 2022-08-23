@@ -13,6 +13,8 @@ const Browse = () => {
   const { t } = useTranslation();
 
   const [selectItem, setSelectItem] = useState<IItem>();
+  const [isFirst, setIsFirst] = useState(true);
+  const [dataType, setDataType] = useState('all')
 
   useEffect(() => {
     if (selectItem?.value) {
@@ -28,16 +30,18 @@ const Browse = () => {
     loading: getGalleryPhotoListLoading,
     run: runGetGalleryPhotoList,
     pagination,
-  } = usePagination(
-    ({ current, pageSize, type = "all" }) =>
-      new Promise(async (resolve) => {
-        if (!selectItem) return;
-        const { data } = await Api.getGalleryPhotoList({
-          data: { pageIndex: current, pageSize, type },
-        });
-        resolve(data);
-      }) as any,
-  );
+  } = usePagination(({ current, pageSize, type = dataType }) => {
+    if (isFirst) {
+      setIsFirst(false);
+      return;
+    }
+    return new Promise(async (resolve) => {
+      const { data } = await Api.getGalleryPhotoList({
+        data: { pageIndex: current, pageSize, type },
+      });
+      resolve(data);
+    }) as any;
+  });
 
   const items: IItem[] = [
     { label: "全部", value: "all" },
@@ -51,7 +55,8 @@ const Browse = () => {
   ];
 
   // 获取列表数据
-  const getData = (type?: string) => {
+  const getData = (type: string = dataType) => {
+    setDataType(type)
     runGetGalleryPhotoList({
       current: pagination.current,
       pageSize: pagination.pageSize,

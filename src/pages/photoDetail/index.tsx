@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Icon, Menu, PhotoViews, Comments } from "@components";
 import classnames from "classnames";
 import dayjs from "dayjs";
-import { useToggle } from "ahooks";
+import { useIsomorphicLayoutEffect, useToggle } from "ahooks";
 import { useTranslation } from "react-i18next";
 import Api from "@/service";
 import { PhotoList, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
@@ -80,7 +80,7 @@ const Index = () => {
     setCommentList(data?.list || []);
   };
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!commentList?.length) return;
     const routerPath = router.asPath;
     const commentId = routerPath?.split("#")?.[1];

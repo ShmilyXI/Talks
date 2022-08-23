@@ -50,10 +50,10 @@ request.middlewares.request.use(
         // window.location.replace("/login?signIn=1");
         return false;
       }
-      // if (err.retCode === "0801001") {
-      //   err.message = "没有权限";
-      //   return false;
-      // }
+      if (err.retCode === "-5") {
+        toast.error("无权限,请登录后查看!");
+        return false;
+      }
     },
   }),
 );
