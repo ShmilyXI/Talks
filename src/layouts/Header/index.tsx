@@ -401,7 +401,7 @@ const Index = () => {
       {/* pc navbar */}
       <div className="hidden md:flex items-center py-16">
         <a
-          className="flex-none text-black"
+          className="flex-none text-black cursor-pointer"
           title="go home"
           onClick={() => {
             goRoute("/");
