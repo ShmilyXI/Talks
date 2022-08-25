@@ -10,152 +10,154 @@
 
 @purple: #7e84ff;
 
-@transition: 1s;
+@transition: 0.8s;
 
 /* Generic */
 .login-wrap {
+  background-color: @neu-1;
+  color: @gray;
+  transform: translate3d(0, 0, 0);
+  .main {
     background-color: @neu-1;
-    color: @gray;
-    transform: translate3d(0, 0, 0);
-    .main {
-        background-color: @neu-1;
-        box-shadow: 10px 10px 10px @neu-2, -10px -10px 10px @white;
+    box-shadow: 10px 10px 10px @neu-2, -10px -10px 10px @white;
+  }
+  .d-container {
+    background-color: @neu-1;
+    transition: @transition;
+  }
+  .form {
+    &__icon {
+      transition: 0.15s;
+      cursor: pointer;
+      &:hover {
+        opacity: 1;
+      }
     }
-    .d-container {
-        background-color: @neu-1;
-        transition: @transition;
-    }
-    .form {
-        &__icon {
-            transition: 0.15s;
-            cursor: pointer;
-            &:hover {
-                opacity: 1;
-            }
-        }
-        &__input {
-            background-color: @neu-1;
-            transition: 0.25s ease;
-            box-shadow: inset 2px 2px 4px @neu-2, inset -2px -2px 4px @white;
-            color: @main;
+    &__input {
+      background-color: @neu-1;
+      transition: 0.25s ease;
+      -webkit-appearance: none;
+      box-shadow: inset 2px 2px 4px @neu-2, inset -2px -2px 4px @white;
+      -webkit-box-shadow: inset 2px 2px 4px @neu-2, inset -2px -2px 4px @white;
+      color: @main;
 
-            &:focus {
-                box-shadow: inset 4px 4px 4px @neu-2, inset -4px -4px 4px @white;
-            }
-        }
-        &__link {
-            color: @black;
-            border-bottom: 1px solid @gray;
-            line-height: 2;
-        }
+      &:focus {
+        box-shadow: inset 4px 4px 4px @neu-2, inset -4px -4px 4px @white;
+      }
     }
-    .title {
-        color: @black;
+    &__link {
+      color: @black;
+      border-bottom: 1px solid @gray;
+      line-height: 2;
     }
-    .login-button {
-        background-color: @purple;
-        color: @white;
-        box-shadow: 8px 8px 16px @neu-2, -8px -8px 16px @white;
-    }
-    /**/
+  }
+  .title {
+    color: @black;
+  }
+  .login-button {
+    background-color: @purple;
+    color: @white;
+    box-shadow: 8px 8px 16px @neu-2, -8px -8px 16px @white;
+  }
+  /**/
 
-    .a-container {
-        z-index: 100;
-        left: calc(100% - 600px);
-    }
-    .b-container {
-        left: calc(100% - 600px);
-        z-index: 0;
-    }
+  .a-container {
+    z-index: 100;
+    left: calc(100% - 600px);
+  }
+  .b-container {
+    left: calc(100% - 600px);
+    z-index: 0;
+  }
 
-    .switch {
+  .switch {
+    transition: @transition;
+    background-color: @neu-1;
+    box-shadow: 4px 4px 10px @neu-2, -4px -4px 10px @white;
+    &__circle {
+      background-color: @neu-1;
+      box-shadow: inset 8px 8px 12px @neu-2, inset -8px -8px 12px @white;
+      transition: @transition;
+      &--t {
         transition: @transition;
-        background-color: @neu-1;
-        box-shadow: 4px 4px 10px @neu-2, -4px -4px 10px @white;
-        &__circle {
-            background-color: @neu-1;
-            box-shadow: inset 8px 8px 12px @neu-2, inset -8px -8px 12px @white;
-            transition: @transition;
-            &--t {
-                transition: @transition;
-            }
-        }
-
-        &__container {
-            transition: @transition;
-        }
-
-        &__button {
-            cursor: pointer;
-            &:hover {
-                box-shadow: 6px 6px 10px @neu-2, -6px -6px 10px @white;
-                transform: scale(0.985);
-                transition: 0.25s;
-            }
-            &:active,
-            &:focus {
-                box-shadow: 2px 2px 6px @neu-2, -2px -2px 6px @white;
-                transform: scale(0.97);
-                transition: 0.25s;
-            }
-        }
-    }
-    /**/
-    .is-txr {
-        left: calc(100% - 400px);
-        transition: @transition;
-        transform-origin: left;
-    }
-    .is-txl {
-        left: 0;
-        transition: @transition;
-        transform-origin: right;
-    }
-    .is-z200 {
-        z-index: 200;
-        transition: @transition;
-    }
-    .is-hidden {
-        visibility: hidden;
-        opacity: 0;
-        position: absolute;
-        transition: @transition;
-    }
-    .is-gx {
-        animation: is-gx @transition;
-    }
-    .is-m-left {
-        left: calc(100% - 40px);
-    }
-    .mobile-toggle {
-        width: 40px;
-        background-color: @neu-1;
-        transition: @transition;
-        box-shadow: 10px 0 10px @neu-2, -10px 0 10px @white;
-        .arrow-icon {
-            animation: arrow-icons @transition infinite;
-            // transform: translateX(5px);
-        }
+      }
     }
 
-    @keyframes arrow-icons {
-        0%,
-        100% {
-            transform: translateX(3px);
-        }
-        50% {
-            transform: translateX(-3px);
-        }
+    &__container {
+      transition: @transition;
     }
-    @keyframes is-gx {
-        0%,
-        10%,
-        100% {
-            width: 400px;
-        }
-        30%,
-        50% {
-            width: 500px;
-        }
+
+    &__button {
+      cursor: pointer;
+      &:hover {
+        box-shadow: 6px 6px 10px @neu-2, -6px -6px 10px @white;
+        transform: scale(0.985);
+        transition: 0.25s;
+      }
+      &:active,
+      &:focus {
+        box-shadow: 2px 2px 6px @neu-2, -2px -2px 6px @white;
+        transform: scale(0.97);
+        transition: 0.25s;
+      }
     }
+  }
+  /**/
+  .is-txr {
+    left: calc(100% - 400px);
+    transition: @transition;
+    transform-origin: left;
+  }
+  .is-txl {
+    left: 0;
+    transition: @transition;
+    transform-origin: right;
+  }
+  .is-z200 {
+    z-index: 200;
+    transition: @transition;
+  }
+  .is-hidden {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    transition: @transition;
+  }
+  .is-gx {
+    animation: is-gx @transition;
+  }
+  .is-m-left {
+    left: calc(100% - 32px);
+  }
+  .mobile-toggle {
+    width: 32px;
+    background-color: @neu-1;
+    transition: @transition;
+    box-shadow: 10px 0 10px @neu-2, -10px 0 10px @white;
+    .arrow-icon {
+      animation: arrow-icons @transition infinite;
+      // transform: translateX(5px);
+    }
+  }
+
+  @keyframes arrow-icons {
+    0%,
+    100% {
+      transform: translateX(3px);
+    }
+    50% {
+      transform: translateX(-3px);
+    }
+  }
+  @keyframes is-gx {
+    0%,
+    10%,
+    100% {
+      width: 400px;
+    }
+    30%,
+    50% {
+      width: 500px;
+    }
+  }
 }

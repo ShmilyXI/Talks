@@ -47,7 +47,7 @@ request.middlewares.request.use(
         const storage = new Storage(sessionStorage, "Talks");
         storage.removeItem("token");
         storage.removeItem("userInfo");
-        // window.location.replace("/login?signIn=1");
+        window.location.replace("/login?signIn=1");
         return false;
       }
       if (err.retCode === "-5") {
