@@ -19,9 +19,9 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   }, [router.pathname]);
 
   return (
-    <div className="overflow-hidden h-screen">
+    <div>
       {!hideHeader ? <Header /> : null}
-      <div className="h-full overflow-auto bg-white text-grey-53 font-sans text-16 leading-normal antialiased box-border">
+      <div className={`bg-white text-grey-53 font-sans text-16 leading-normal antialiased box-border ${!hideHeader ? "mt-[65px] md:mt-[80px]" : ""}`}>
         {children}
         {!hideFooter ? <Footer /> : null}
       </div>

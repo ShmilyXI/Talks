@@ -120,7 +120,7 @@ const Index = () => {
   };
 
   return (
-    <div className="d-container navbar bg-white px-0 md:px-32 z-60 shadow-navbar sticky pin-t md:relative md:shadow-none" id="top">
+    <div className="d-container navbar bg-white px-0 md:px-32 z-60 shadow-navbar fixed w-full pin-t md:shadow-none" id="top">
       {/* mobile 弹窗 */}
       <div className={classnames("bg-black shadow-navbar pin-t pin-x absolute lg:hidden z-1", { hidden: !showWrap })} ref={wrapRef}>
         <div className="d-container px-0 flex items-center shadow-navbar-inner">
