@@ -139,10 +139,10 @@ const Index = () => {
   // 用户收藏照片
   const onUserPhotoFavorite = async (value: UserPhotoFavoriteRequest) => {
     try {
-      const { photoId, favoriteStatus } = value;
+      const { favoriteId, favoriteStatus } = value;
       await Api.userPhotoFavorite({
         data: {
-          photoId,
+          favoriteId,
           favoriteStatus,
         },
       });
@@ -249,7 +249,7 @@ const Index = () => {
                       onClick={_.debounce(
                         () =>
                           onUserPhotoFavorite({
-                            photoId: curPhotoInfo?.id,
+                            favoriteId: curPhotoInfo?.id,
                             favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
                           }),
                         500,
@@ -660,7 +660,7 @@ const Index = () => {
                     onClick={_.debounce(
                       () =>
                         onUserPhotoFavorite({
-                          photoId: curPhotoInfo?.id,
+                          favoriteId: curPhotoInfo?.id,
                           favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
                         }),
                       500,

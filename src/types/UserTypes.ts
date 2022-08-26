@@ -1,9 +1,9 @@
-import { common } from "./types";
+import { common } from './types';
 
-export interface photo_favoritesAttributes {
+export interface user_favoritesAttributes {
   id: number;
   user_id: number;
-  photo_id: number;
+  favorite_id: number;
   favorite_status: number;
   is_delete: number;
   update_time: Date;
@@ -94,9 +94,9 @@ export interface UserLikedResponse extends common.Response {
   data?: user_likesAttributes;
 }
 export interface UserPhotoFavoriteRequest {
-  photoId: number;
+  favoriteId: number;
   favoriteStatus: number;
 }
 export interface UserPhotoFavoriteResponse extends common.Response {
-  data?: photo_favoritesAttributes;
+  data?: user_favoritesAttributes;
 }

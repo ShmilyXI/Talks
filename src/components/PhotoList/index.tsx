@@ -99,10 +99,10 @@ const PhotoList: FC<PhotoListProps> = (props) => {
   // 用户收藏照片
   const onUserPhotoFavorite = async (value: UserPhotoFavoriteRequest) => {
     try {
-      const { photoId, favoriteStatus } = value;
+      const { favoriteId, favoriteStatus } = value;
       await Api.userPhotoFavorite({
         data: {
-          photoId,
+          favoriteId: favoriteId,
           favoriteStatus,
         },
       });
@@ -272,7 +272,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             className="pointer-events-auto inline-flex align-top cursor-pointer"
                             onClick={_.debounce(() => {
                               onUserPhotoFavorite({
-                                photoId: item?.id,
+                                favoriteId: item?.id,
                                 favoriteStatus: item?.favoriteStatus === 1 ? 0 : 1,
                               });
                             }, 500)}
@@ -350,7 +350,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                             className="inline-flex align-top cursor-pointer"
                             onClick={_.debounce(() => {
                               onUserPhotoFavorite({
-                                photoId: item?.id,
+                                favoriteId: item?.id,
                                 favoriteStatus: item?.favoriteStatus === 1 ? 0 : 1,
                               });
                             }, 500)}
