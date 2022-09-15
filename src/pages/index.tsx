@@ -14,7 +14,7 @@ const Browse = () => {
 
   const [selectItem, setSelectItem] = useState<IItem>();
   const [isFirst, setIsFirst] = useState(true);
-  const [dataType, setDataType] = useState('all')
+  const [dataType, setDataType] = useState("all");
 
   useEffect(() => {
     if (selectItem?.value) {
@@ -55,11 +55,11 @@ const Browse = () => {
   ];
 
   // 获取列表数据
-  const getData = (type: string = dataType) => {
-    setDataType(type)
+  const getData = (type: string = dataType, pageIndex?: number, pageSize?: number) => {
+    setDataType(type);
     runGetGalleryPhotoList({
-      current: pagination.current,
-      pageSize: pagination.pageSize,
+      current: pageIndex || pagination.current,
+      pageSize: pageSize || pagination.pageSize,
       type,
     });
   };
@@ -80,7 +80,7 @@ const Browse = () => {
           </div>
         </div>
       </div>
-      <PhotoList getData={getData} list={photoData?.list || []} total={photoData?.total} />
+      <PhotoList getData={getData} pagination={pagination} list={photoData?.list || []} total={photoData?.total} />
     </div>
   );
 };

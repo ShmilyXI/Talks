@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import PhotoAlbum from "react-photo-album";
 import classnames from "classnames";
 import { Icon, PlaceholderSvg } from "@components";
-import { useRequest, configResponsive, useResponsive, useUpdateLayoutEffect } from "ahooks";
+import { useRequest, configResponsive, useResponsive, useUpdateLayoutEffect, usePagination } from "ahooks";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
@@ -17,6 +17,7 @@ type PhotoListProps = {
   list: PhotoListType[];
   total?: number;
   isDetail?: boolean;
+  pagination: any;
 };
 
 const BreakPoints = {
