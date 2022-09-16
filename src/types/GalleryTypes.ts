@@ -7,8 +7,8 @@ interface PhotoItem {
   width: number;
   height: number;
   theme_color: string;
-  create_time: string;
-  update_time: string;
+  create_time: Date;
+  update_time: Date;
 }
 
 interface GalleryItem {
@@ -48,11 +48,11 @@ export interface GetGalleryDetailResponse extends common.Response {
   data?: {
     id: number;
     title: string;
-    description: string;
+    description?: string;
     user_id: number;
     is_delete: number;
-    update_time: string;
-    create_time: string;
+    update_time: Date;
+    create_time: Date;
     user: PhotoList["user"];
     photoList: PhotoList[];
   };
