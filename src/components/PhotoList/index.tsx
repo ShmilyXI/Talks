@@ -17,7 +17,6 @@ type PhotoListProps = {
   list: PhotoListType[];
   total?: number;
   isDetail?: boolean;
-  pagination: any;
 };
 
 const BreakPoints = {

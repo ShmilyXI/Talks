@@ -4,6 +4,7 @@ import { useClickAway, useToggle } from "ahooks";
 import { Button, Icon, Menu } from "@components";
 import styles from "./index.module.less";
 import { IItem } from "@components/Menu";
+import { useRouter } from "next/router";
 
 type FilterProps = {
   items: IItem[]; // 筛选按钮列表
@@ -17,6 +18,7 @@ type FilterProps = {
 
 const Filter: FC<FilterProps> = (props) => {
   const { items, displayCount = 0, onChange, breakPoint, menuClassName = "", selectClassName = "", buttonClassName = "" } = props;
+  const router = useRouter();
   const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] = useToggle();
   const [showSelect, { toggle: toggleSelect, setLeft: setSelectLeft }] = useToggle();
 
@@ -59,8 +61,19 @@ const Filter: FC<FilterProps> = (props) => {
           {items?.length
             ? items.map((item, index) =>
                 displayCount === 0 || (displayCount > 0 && index + 1 <= displayCount) ? (
-                  <div className="px-4" key={item.value}>
-                    <Button className={buttonClassName} text={item.label} activeText={activeItem?.label} onClick={() => setActiveItem(item)} />
+                  <div className="px-4" key={item.value || index}>
+                    <Button
+                      className={buttonClassName}
+                      text={item.label}
+                      activeText={activeItem?.label}
+                      onClick={() => {
+                        if (item.href) {
+                          router.push(item.href);
+                          return;
+                        }
+                        setActiveItem(item);
+                      }}
+                    />
                   </div>
                 ) : null,
               )

@@ -1,4 +1,5 @@
-import { common } from './types';
+import { PhotoList } from "./PhotoTypes";
+import { common } from "./types";
 
 interface PhotoItem {
   id: number;
@@ -19,12 +20,12 @@ interface GalleryItem {
   update_time: string;
   user_id: number;
   photoList: PhotoItem[];
-  user:{
+  user: {
     username: string;
     display_name: string;
     avatar_url: string;
     telephone: string;
-  }
+  };
 }
 
 export interface GetGalleryListResponse extends common.Response {
@@ -44,6 +45,19 @@ export interface GetGalleryPhotoListResponse extends common.Response {
 }
 
 export interface GetGalleryDetailResponse extends common.Response {
+  data?: {
+    id: number;
+    title: string;
+    description: string;
+    user_id: number;
+    is_delete: number;
+    update_time: string;
+    create_time: string;
+    user: PhotoList["user"];
+    photoList: PhotoList[];
+  };
 }
 export interface GetGalleryDetailRequest {
+  id: number;
+  type: string;
 }

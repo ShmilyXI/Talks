@@ -6,7 +6,8 @@ import styles from "./index.module.less";
 
 export type IItem = {
   label: string | JSX.Element;
-  value: string;
+  value?: string;
+  href?: string;
   className?: string;
 };
 
@@ -49,7 +50,7 @@ const Menu: FC<MenuProps> = (props) => {
         >
           <div className={classnames("flex flex-col text-left py-12 text-16 leading-lg", wrapClassName)}>
             {items?.length ? (
-              items.map((item) => (
+              items.map((item, i) => (
                 <div
                   className={classnames(
                     "px-16 py-1 hover:bg-white-15 text-white cursor-pointer",
@@ -61,7 +62,7 @@ const Menu: FC<MenuProps> = (props) => {
                   onClick={() => {
                     onChange?.(item);
                   }}
-                  key={item.value}
+                  key={item.value || i}
                 >
                   {item.label}
                 </div>

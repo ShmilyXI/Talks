@@ -80,7 +80,7 @@ const Browse = () => {
           </div>
         </div>
       </div>
-      <PhotoList getData={getData} pagination={pagination} list={photoData?.list || []} total={photoData?.total} />
+      <PhotoList getData={getData} list={photoData?.list || []} total={photoData?.total} />
     </div>
   );
 };
