@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
 import dayjs from "dayjs";
-import { UserLikedRequest, UserPhotoFavoriteRequest } from "@/types/UserTypes";
+import { UserLikedRequest, UserFavoriteRequest } from "@/types/UserTypes";
 import Api from "@/service";
 import toast from "react-hot-toast";
 
@@ -97,7 +97,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
   };
 
   // 用户收藏照片
-  const onUserPhotoFavorite = async (value: UserPhotoFavoriteRequest) => {
+  const onUserPhotoFavorite = async (value: UserFavoriteRequest) => {
     try {
       const { favoriteId, favoriteStatus } = value;
       await Api.userPhotoFavorite({

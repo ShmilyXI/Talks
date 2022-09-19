@@ -11,8 +11,8 @@ import {
   UploadAvatarResponse,
   UserLikedRequest,
   UserLikedResponse,
-  UserPhotoFavoriteResponse,
-  UserPhotoFavoriteRequest
+  UserFavoriteResponse,
+  UserFavoriteRequest
 } from "@/types/UserTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
 
@@ -65,8 +65,8 @@ const userApi = {
   }),
   /** 用户收藏 **/
   userPhotoFavorite: createApi<
-    UserPhotoFavoriteResponse,
-    RequestPostType<UserPhotoFavoriteRequest>
+    UserFavoriteResponse,
+    RequestPostType<UserFavoriteRequest>
   >({
     url: "/user/user-photo-favorite",
     method: "POST",

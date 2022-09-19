@@ -11,7 +11,7 @@ interface PhotoItem {
   update_time: Date;
 }
 
-interface GalleryItem {
+export interface GalleryItem {
   id: number;
   title: string;
   description: string;
@@ -53,6 +53,7 @@ export interface GetGalleryDetailResponse extends common.Response {
     is_delete: number;
     update_time: Date;
     create_time: Date;
+    favoriteStatus: number;
     user: PhotoList["user"];
     photoList: PhotoList[];
   };

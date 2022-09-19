@@ -5,7 +5,7 @@ export default function Document() {
     <Html>
       <Head>
         <title>XIAO 521</title>
-        <script type="text/javascript" src="/iconfont.js" />
+        <script type="text/javascript" src="//at.alicdn.com/t/c/font_3238669_ksto67wypd.js" />
         <script src="/hs-ui.bundle.js"></script>
       </Head>
       <body>

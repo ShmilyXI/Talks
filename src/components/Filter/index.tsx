@@ -61,11 +61,16 @@ const Filter: FC<FilterProps> = (props) => {
           {items?.length
             ? items.map((item, index) =>
                 displayCount === 0 || (displayCount > 0 && index + 1 <= displayCount) ? (
-                  <div className="px-4" key={item.value || index}>
+                  <div className="px-4 flex items-center" key={item.value || index}>
                     <Button
                       className={buttonClassName}
-                      text={item.label}
-                      activeText={activeItem?.label}
+                      text={
+                        <>
+                          {`${item.label}`}
+                          {item.href && <Icon className="icon-resonserate" addClassName="ml-1"/>}
+                        </>
+                      }
+                      active={item?.value === activeItem.value}
                       onClick={() => {
                         if (item.href) {
                           router.push(item.href);

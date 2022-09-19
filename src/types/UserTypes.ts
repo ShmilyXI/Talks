@@ -1,10 +1,11 @@
-import { common } from './types';
+import { common } from "./types";
 
 export interface user_favoritesAttributes {
   id: number;
   user_id: number;
   favorite_id: number;
   favorite_status: number;
+  favorite_type: number;
   is_delete: number;
   update_time: Date;
   create_time: Date;
@@ -93,10 +94,11 @@ export interface UserLikedRequest {
 export interface UserLikedResponse extends common.Response {
   data?: user_likesAttributes;
 }
-export interface UserPhotoFavoriteRequest {
+export interface UserFavoriteRequest {
   favoriteId: number;
   favoriteStatus: number;
+  favoriteType: number;
 }
-export interface UserPhotoFavoriteResponse extends common.Response {
+export interface UserFavoriteResponse extends common.Response {
   data?: user_favoritesAttributes;
 }

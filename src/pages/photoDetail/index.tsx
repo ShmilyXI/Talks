@@ -13,7 +13,7 @@ import AddPhotoModal from "@components/AddPhotoModal";
 import toast from "react-hot-toast";
 import { CommentData, CommentItem } from "@/types/CommentTypes";
 import { Storage } from "@/utils/storage";
-import { BaseUserInfo, UserLikedRequest, UserPhotoFavoriteRequest } from "@/types/UserTypes";
+import { BaseUserInfo, UserLikedRequest, UserFavoriteRequest } from "@/types/UserTypes";
 import { IItem } from "@components/Menu";
 import { scrollToElement, toggleBodyOverflow } from "@/utils/common";
 
@@ -137,13 +137,14 @@ const Index = () => {
   };
 
   // 用户收藏照片
-  const onUserPhotoFavorite = async (value: UserPhotoFavoriteRequest) => {
+  const onUserPhotoFavorite = async (value: UserFavoriteRequest) => {
     try {
-      const { favoriteId, favoriteStatus } = value;
+      const { favoriteId, favoriteStatus, favoriteType } = value;
       await Api.userPhotoFavorite({
         data: {
           favoriteId,
           favoriteStatus,
+          favoriteType,
         },
       });
       await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
@@ -251,6 +252,7 @@ const Index = () => {
                           onUserPhotoFavorite({
                             favoriteId: curPhotoInfo?.id,
                             favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
+                            favoriteType: 0,
                           }),
                         500,
                       )}
@@ -662,6 +664,7 @@ const Index = () => {
                         onUserPhotoFavorite({
                           favoriteId: curPhotoInfo?.id,
                           favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
+                          favoriteType: 0,
                         }),
                       500,
                     )}

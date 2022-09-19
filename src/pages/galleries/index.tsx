@@ -3,13 +3,15 @@ import { Filter, Icon } from "@components";
 import { useInfiniteScroll, usePagination } from "ahooks";
 import Api from "@/service";
 import { useRouter } from "next/router";
+import { UserFavoriteRequest } from "@/types/UserTypes";
+import toast from "react-hot-toast";
+import _ from "lodash";
 
 const PAGE_SIZE = 20;
 const Index = () => {
   const router = useRouter();
 
-  const [dataType, setDataType] = useState("all");
-  const [isFirst, setIsFirst] = useState(true);
+  const [dataType, setDataType] = useState("selected");
 
   const {
     data: galleryData,
@@ -17,27 +19,42 @@ const Index = () => {
     loadMore,
     loadingMore,
     reload,
-  } = useInfiniteScroll((d) => {
-    const page = d ? Math.ceil(d.list.length / PAGE_SIZE) + 1 : 1;
-    return new Promise(async (resolve) => {
-      const { data } = await Api.getGalleryList({
-        data: { pageIndex: page, pageSize: PAGE_SIZE, type: dataType },
-      });
-      resolve(data);
-    }) as any;
-  });
+  } = useInfiniteScroll(
+    (d) => {
+      const page = d ? Math.ceil(d.list.length / PAGE_SIZE) + 1 : 1;
+      return new Promise(async (resolve) => {
+        const { data } = await Api.getGalleryList({
+          data: { pageIndex: page, pageSize: PAGE_SIZE, type: dataType },
+        });
+        resolve(data);
+      }) as any;
+    },
+    {
+      manual: true,
+    },
+  );
 
   useEffect(() => {
-    if (isFirst) {
-      setIsFirst(false);
-      return;
-    }
     reload();
   }, [dataType]);
 
-  useEffect(() => {
-    console.log("galleryData", galleryData);
-  }, [galleryData]);
+  // 用户收藏画廊
+  const onUserGalleryFavorite = async (value: UserFavoriteRequest) => {
+    try {
+      const { favoriteId, favoriteStatus, favoriteType } = value;
+      await Api.userPhotoFavorite({
+        data: {
+          favoriteId,
+          favoriteStatus,
+          favoriteType,
+        },
+      });
+      await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
+      reload();
+    } catch (error) {
+      await toast.error("收藏失败,请重试!");
+    }
+  };
 
   return (
     <div className="minScreenHeight">
@@ -134,18 +151,24 @@ const Index = () => {
 
                     <div className="absolute pin-t pin-x z-20 pointer-events-none p-8 flex justify-between items-center">
                       <div className="pointer-events-auto">
-                        <button type="button" className="follow inline-flex button-reset align-top is-public">
-                          <span className="off">
-                            <Icon className="icon-roundaddfill" addClassName="icon text-accent text-18" />
-                          </span>
-
-                          <span className="on on--private">
-                            <Icon className="icon-timefill" addClassName="icon text-grey-80 text-18" />
-                          </span>
-
-                          <span className="on on--public">
-                            <Icon className="icon-roundcheckfill" addClassName="icon text-grey-75 text-18" />
-                          </span>
+                        <button
+                          type="button"
+                          className="follow inline-flex button-reset align-top is-public"
+                          onClick={_.debounce(
+                            () =>
+                              onUserGalleryFavorite({
+                                favoriteId: item?.id,
+                                favoriteStatus: item?.favoriteStatus === 1 ? 0 : 1,
+                                favoriteType: 1,
+                              }),
+                            500,
+                          )}
+                        >
+                          {item?.favoriteStatus === 1 ? (
+                            <Icon className="icon-favorfill" addClassName="icon text-yellow-400 text-18" />
+                          ) : (
+                            <Icon className="icon-favor" addClassName="icon text-white text-18" />
+                          )}
                         </button>
                       </div>
                     </div>

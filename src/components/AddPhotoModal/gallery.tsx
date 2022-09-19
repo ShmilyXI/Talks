@@ -1,4 +1,6 @@
+import Api from "@/service";
 import { useClickAway, useToggle } from "ahooks";
+import { GalleryItem } from "@/types/GalleryTypes";
 import classnames from "classnames";
 import _ from "lodash";
 import React, { FC, useEffect, useRef, useState } from "react";
@@ -9,40 +11,13 @@ type GalleryProps = {
   value?: number[];
 };
 
-type GalleryItem = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  photoCount: number;
-};
-
-const mockGalleryList: GalleryItem[] = [
-  {
-    id: 1,
-    name: "1111",
-    imageUrl: "https://picsum.photos/40/40",
-    photoCount: 20,
-  },
-  {
-    id: 2,
-    name: "22222",
-    imageUrl: "https://picsum.photos/40/40",
-    photoCount: 90,
-  },
-  {
-    id: 3,
-    name: "33333",
-    imageUrl: "https://picsum.photos/40/40",
-    photoCount: 40,
-  },
-];
-
 const Gallery: FC<GalleryProps> = (props) => {
   const { onChange = () => {}, disabled, value } = props;
 
   const [gallerySearchValue, setGallerySearchValue] = useState<string>(); // 画廊弹窗搜索值
   const [galleryLock, setGalleryLock] = useState(false); // 画廊弹窗私人锁
   const [galleryList, setGalleryList] = useState<GalleryItem[]>([]); // 画廊列表
+  const [defaultGalleryList, setDefaultGalleryList] = useState<GalleryItem[]>([]); // 画廊默认列表
   const [gallerySelectKeys, setGallerySelectKeys] = useState<number[]>(); // 画廊元素选择id列表
   const galleryModalRef = useRef<HTMLDivElement>(null);
 
@@ -62,13 +37,22 @@ const Gallery: FC<GalleryProps> = (props) => {
   }, [value]);
 
   useEffect(() => {
-    setGalleryList(mockGalleryList);
+    getGalleryData();
   }, []);
 
+  const getGalleryData = async () => {
+    const { data } = await Api.getGalleryList({
+      data: { pageIndex: 1, pageSize: 999, type: "mine" },
+    });
+    const list = data?.list || [];
+    setGalleryList(list);
+    setDefaultGalleryList(list);
+  };
+  
   // 画廊弹窗搜索
-  const searchGalleryList = (data: string) => {
-    const items = mockGalleryList.filter((v) => v?.name?.indexOf(data) !== -1);
-    setGalleryList(data ? items : mockGalleryList);
+  const searchGalleryList = (value: string) => {
+    const items = defaultGalleryList.filter((v) => v?.title?.includes(value));
+    setGalleryList(value ? items : defaultGalleryList);
   };
 
   // 画廊元素点击
@@ -198,23 +182,23 @@ const Gallery: FC<GalleryProps> = (props) => {
                       "bg-selection": gallerySelectKeys?.indexOf(item.id) >= 0,
                     })}
                   >
-                    <div className="flex-none bg-grey-96 rounded w-40 mr-8 overflow-hidden">
+                    <div className="flex-none bg-grey-96 rounded w-[40px] h-[40px] mr-8 overflow-hidden">
                       <img
-                        src={item.imageUrl || "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'40' height%3D'40'%2F%3E"}
+                        src={item.photoList?.[0]?.url || "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'40' height%3D'40'%2F%3E"}
                         width="40"
                         height="40"
                         alt=""
-                        className="block w-full h-auto"
+                        className="block w-full h-full object-cover"
                       />
                     </div>
 
                     <div className="flex-grow min-w-0">
                       <div className="text-black flex items-center">
-                        <span className="text-14 leading-md font-medium truncate min-w-0">{item.name}</span>
+                        <span className="text-14 leading-md font-medium truncate min-w-0">{item.title}</span>
                       </div>
 
                       <div className="text-12 leading-sm">
-                        {item.photoCount || 0}
+                        {item.photoList?.length || 0}
                         &nbsp; photos
                       </div>
                     </div>

@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Storage } from "@/utils/storage";
 import classNames from "classnames";
+import { UserFavoriteRequest } from "@/types/UserTypes";
+import toast from "react-hot-toast";
 
 const Index = () => {
   const router = useRouter();
@@ -37,6 +39,24 @@ const Index = () => {
     }
   }, []);
 
+  // 用户收藏画廊
+  const onUserGalleryFavorite = async (value: UserFavoriteRequest) => {
+    try {
+      const { favoriteId, favoriteStatus, favoriteType } = value;
+      await Api.userPhotoFavorite({
+        data: {
+          favoriteId,
+          favoriteStatus,
+          favoriteType,
+        },
+      });
+      await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
+      getPhotoInfo();
+    } catch (error) {
+      await toast.error("收藏失败,请重试!");
+    }
+  };
+
   return (
     <div>
       <div className="container p-0 md:p-32 lg:py-48" data-controller="gallery" data-gallery-id="1498">
@@ -56,29 +76,29 @@ const Index = () => {
                 </span>
               </h1>
 
-              {/* <div
+              <div
                 className={classNames("flex items-center mt-16 -mx-4 md:mt-0 md:ml-16", {
                   hidden: !isLogin,
                 })}
               >
                 <div className="px-4">
-                  <button type="button" className="follow button button--follow is-public">
-                    <span className="off">
-                      <span className="block"> Follow </span>
-                    </span>
-
-                    <span className="on on--private">
-                      <span className="block group-hover:hidden"> Pending </span>
-                      <span className="hidden group-hover:block"> Cancel </span>
-                    </span>
-
-                    <span className="on on--public">
-                      <span className="block group-hover:hidden"> Following </span>
-                      <span className="hidden group-hover:block"> Unfollow </span>
-                    </span>
+                  <button
+                    type="button"
+                    className="follow button button--follow is-public"
+                    onClick={_.debounce(
+                      () =>
+                        onUserGalleryFavorite({
+                          favoriteId: +id,
+                          favoriteStatus: galleryDetailInfo?.favoriteStatus === 1 ? 0 : 1,
+                          favoriteType: 1,
+                        }),
+                      500,
+                    )}
+                  >
+                    {galleryDetailInfo?.favoriteStatus === 1 ? "Unfollow" : "Follow"}
                   </button>
                 </div>
-              </div> */}
+              </div>
             </div>
 
             <p className="md:max-w-568 text-14 leading-md md:text-16 md:leading-normal text-grey-27 mt-16 md:mt-8 break-words" data-target="gallery.body">
@@ -121,7 +141,7 @@ const Index = () => {
               }
               setDataType(item.value);
             }}
-          />   
+          />
         </div>
       </div>
 
