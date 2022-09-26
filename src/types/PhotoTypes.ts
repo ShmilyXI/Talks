@@ -1,4 +1,4 @@
-import { common } from "./types";
+import { common } from './types';
 
 // model类型
 export interface photosType {
@@ -63,13 +63,13 @@ export interface PhotoDetailInfoRequest {
   id: number;
 }
 
-export interface GetGalleryPhotoListResponse extends common.Response {
+export interface GetPhotoListResponse extends common.Response {
   data?: {
     list: PhotoList[];
     total: number;
   };
 }
-export interface GetGalleryPhotoListRequest {
+export interface GetPhotoListRequest {
   pageIndex: number;
   pageSize: number;
   type: string;

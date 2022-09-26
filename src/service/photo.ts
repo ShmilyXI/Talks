@@ -1,7 +1,7 @@
 /* 照片 */
 import {
-  GetGalleryPhotoListRequest,
-  GetGalleryPhotoListResponse,
+  GetPhotoListRequest,
+  GetPhotoListResponse,
   GetPhotoListByUserIdRequest,
   GetPhotoListByUserIdResponse,
   PhotoDetailInfoRequest,
@@ -19,8 +19,8 @@ const createApi = request.createApi({ baseURL: "/api" });
 
 const photoApi = {
   /** 获取画廊图片列表 **/
-  getGalleryPhotoList: createApi<GetGalleryPhotoListResponse, RequestPostType<GetGalleryPhotoListRequest>>({
-    url: "/photo/gallery-photo-list",
+  getGalleryPhotoList: createApi<GetPhotoListResponse, RequestPostType<GetPhotoListRequest>>({
+    url: "/photo/get-photo-list",
     method: "POST",
   }),
   /** 获取画廊图片详情 **/
