@@ -29,14 +29,14 @@ const Filter: FC<FilterProps> = (props) => {
   }, [activeItem]);
 
   return (
-    <div>
+    <div className="w-full">
       <div
         className={classnames("relative", selectClassName, {
           [`${breakPoint}:hidden`]: breakPoint,
         })}
       >
         <Menu
-          items={items.slice(displayCount)}
+          items={items}
           className="px-4"
           visible={showSelect}
           value={activeItem?.value}
@@ -67,7 +67,7 @@ const Filter: FC<FilterProps> = (props) => {
                       text={
                         <>
                           {`${item.label}`}
-                          {item.href && <Icon className="icon-resonserate" addClassName="ml-1"/>}
+                          {item.href && <Icon className="icon-resonserate" addClassName="ml-1" />}
                         </>
                       }
                       active={item?.value === activeItem.value}

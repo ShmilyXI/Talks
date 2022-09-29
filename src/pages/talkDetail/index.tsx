@@ -90,7 +90,7 @@ const Detail = () => {
                 <div className="bg-white mt-32">
                   <div className="bg-inherit flex w-full" id="comments">
                     <div className="bg-inherit w-full ">
-                      <div className="text-18 leading-sm text-black font-medium mb-8">{detailInfo?.commentCount}&nbsp; comments</div>
+                      <div className="text-18 leading-sm text-black font-medium mb-8">{detailInfo?.comment_count}&nbsp; comments</div>
 
                       <Comments addClassName="pt-16 md:pt-16" type="talk" targetId={+id} />
                     </div>

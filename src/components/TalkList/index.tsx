@@ -1,12 +1,13 @@
 import classnames from "classnames";
 import React, { useState, useEffect } from "react";
-import { usePagination, useRequest } from "ahooks";
+import { usePagination, useRequest, useToggle } from "ahooks";
 import Api from "@/service/index";
 import Filter from "../Filter";
 import Icon from "@components/Icon";
 import { useRouter } from "next/router";
 import { IItem } from "@components/Menu";
 import _ from "lodash";
+import AddTalkModal from "@components/AddTalkModal";
 
 type articleItem = {
   avatar: string;
@@ -24,6 +25,8 @@ type articleItem = {
 const Index = () => {
   const router = useRouter();
   const [dataType, setDataType] = useState("active");
+
+  const [showAddTalkModal, { toggle: toggleAddTalkModal, setLeft: setAddTalkModalLeft }] = useToggle(false); // 是否展示添加讨论弹窗
 
   const {
     data: talkData,
@@ -57,25 +60,33 @@ const Index = () => {
   return (
     <div className="lg:max-w-744 md:pl-16">
       <div className="-mx-16 md:-mx-0 p-16 md:px-0 md:py-32 lg:py-48 shadow-navbar md:shadow-none">
-        <div className="flex items-center justify-center md:justify-start">
-          <h1 className="mb-2 md:block md:mb-0  text-16 leading-normal sm:text-24 md:text-28 lg:text-32 sm:leading-xs">Talks</h1>
+        <div className="flex items-center">
+          <h1 className="hidden md:block text-16 leading-normal sm:text-24 md:text-28 lg:text-32 sm:leading-xs">Talks </h1>
+          <button type="button" className="hidden md:block button button--primary ml-16 md:ml-auto" onClick={toggleAddTalkModal}>
+            Create new talk
+          </button>
         </div>
-        <Filter
-          items={[
-            { label: "活跃的", value: "active" },
-            { label: "最近的", value: "recent" },
-            { label: "未答复", value: "unanswered" },
-            // { label: "受欢迎的", value: "popular" },
-            { label: "精选", value: "featured" },
-          ]}
-          menuClassName="mt-24"
-          selectClassName="w-full"
-          breakPoint="md"
-          displayCount={4}
-          onChange={(item) => {
-            setDataType(item.value);
-          }}
-        />
+        <div className="flex">
+          <Filter
+            items={[
+              { label: "活跃的", value: "active" },
+              { label: "最近的", value: "recent" },
+              { label: "未答复", value: "unanswered" },
+              { label: "受欢迎的", value: "popular" },
+              { label: "精选", value: "featured" },
+            ]}
+            menuClassName="mt-24"
+            selectClassName="w-full"
+            breakPoint="md"
+            displayCount={4}
+            onChange={(item) => {
+              setDataType(item.value);
+            }}
+          />
+          <button type="button" className="block md:hidden button button--primary ml-16 md:ml-auto" onClick={toggleAddTalkModal}>
+            Create new talk
+          </button>
+        </div>
       </div>
 
       <div className="pt-16 md:pt-0 md:pb-24 lg:pb-32 xl:pb-48">
@@ -184,6 +195,7 @@ const Index = () => {
           </ul>
         </div>
       </div>
+      {showAddTalkModal ? <AddTalkModal visible={showAddTalkModal} setModalLeft={setAddTalkModalLeft} /> : null}
     </div>
   );
 };

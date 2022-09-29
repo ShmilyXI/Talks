@@ -10,12 +10,7 @@ type ContributorItem = {
   answerCount: number;
 };
 const TopContributors = () => {
-  const { data, error, loading }: any = useRequest(Api.getTopContributorList);
-  const [contributorList, setContributorList] = useState<ContributorItem[]>(); // 文章列表
-
-  useEffect(() => {
-    setContributorList(data?.list || []);
-  }, [data]);
+  const { data, error, loading } = useRequest(Api.getOutstandingContributors);
 
   return (
     <div>
@@ -24,24 +19,24 @@ const TopContributors = () => {
       <p className="text-14 leading-md mb-16">在 Talks 上发起最多讨论的人。</p>
 
       <ol className="list-reset -mb-8">
-        {contributorList?.length
-          ? contributorList.map((item) => (
-              <li className="py-8 flex items-center" key={item.link}>
+        {data?.data?.length
+          ? data.data.map((item) => (
+              <li className="py-8 flex items-center" key={item.id}>
                 <div className="flex-none mr-16">
                   <div className="avatar">
-                    <img src={item.avatar} width="24" height="24" alt="" className="avatar__photo is-loaded w-[24px] h-[24px] object-cover rounded-full" />
+                    <img src={item.avatar_url} width="24" height="24" alt="" className="avatar__photo is-loaded w-[24px] h-[24px] object-cover rounded-full" />
                   </div>
                 </div>
 
                 <div className="min-w-0 mr-8 truncate">
-                  <a href={item.link} target="_blank" className="text-black hover:text-black">
-                    <span className="block">{item.name}</span>
+                  <a href={`userDetail?id=${item.id}`} target="_blank" className="text-black hover:text-black">
+                    <span className="block">{item.display_name}</span>
                   </a>
                 </div>
 
                 <div className="flex items-center text-14 ml-4">
                   <Icon className="icon-comment" addClassName="text-16 mr-1 text-black" />
-                  <span>{item.answerCount}</span>
+                  <span>{item.talk_count}</span>
                 </div>
               </li>
             ))

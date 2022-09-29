@@ -1,5 +1,6 @@
 import { CommentItem } from './CommentTypes';
 import { common } from './types';
+import { BaseUserInfo } from './UserTypes';
 
 export interface talk_commentsAttributes {
   id: number;
@@ -35,7 +36,7 @@ export interface TalkItem {
     telephone?: string;
     avatar_url?: string;
   };
-  commentCount?: number;
+  comment_count?: number;
   commentList?: talk_commentsAttributes[] | CommentItem[];
 }
 
@@ -73,4 +74,11 @@ export interface UpdateTalkRequest {
   id: number;
   title: string;
   content: string;
+}
+
+export interface GetOutstandingContributorsResponse extends common.Response {
+  data?: (BaseUserInfo & { talk_count?: number })[];
+}
+export interface GetUnansweredListResponse extends common.Response {
+  data?: TalkItem[];
 }
