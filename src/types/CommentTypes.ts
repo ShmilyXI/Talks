@@ -1,11 +1,30 @@
 import { common } from './types';
 
+export interface CommentsAttributes {
+  id: number;
+  username: string;
+  content: string;
+  target_id: number;
+  user_id: number;
+  user_avatar_url?: string;
+  parent_comment_id?: number;
+  parent_comment_user_id?: number;
+  reply_comment_id?: number;
+  reply_comment_user_id?: number;
+  comment_level: number;
+  liked_count: number;
+  is_delete: number;
+  top_status: number;
+  update_time: Date;
+  create_time: Date;
+}
+
 export type CommentItem = {
   id: number;
   user_id: number;
   username: string;
   user_avatar_url?: string;
-  photo_id: number;
+  target_id: number;
   parent_comment_id?: number;
   parent_comment_user_id?: number;
   reply_comment_id?: number;
@@ -14,7 +33,6 @@ export type CommentItem = {
   comment_level: number;
   liked_count: number;
   status: number;
-  type: number;
   is_delete: number;
   top_status: number;
   update_time: Date;
@@ -39,27 +57,29 @@ export type CommentData = {
   replyCommentId?: number;
   replyCommentUserId?: number;
 };
-export interface GetPhotoCommentListResponse extends common.Response {
-  data: {
+export interface GetCommentListResponse extends common.Response {
+  data?: {
     list?: CommentItem[];
   };
 }
-export interface GetPhotoCommentListRequest {
-  id: number;
+export interface GetCommentListRequest {
+  targetId: number;
+  type: 'photo' | 'talk';
 }
-export interface AddPhotoCommentResponse extends common.Response {}
-export interface AddPhotoCommentRequest {
-  photoId: number;
+export interface AddCommentResponse extends common.Response {}
+export interface AddCommentRequest {
+  targetId: number;
+  type: 'photo' | 'talk';
   content: string;
   commentLevel: number;
-  type: number;
   parentCommentId?: number;
   parentCommentUserId?: number;
   replyCommentId?: number;
   replyCommentUserId?: number;
 }
-export interface DeletePhotoCommentResponse extends common.Response {}
-export interface DeletePhotoCommentRequest {
+export interface DeleteCommentResponse extends common.Response {}
+export interface DeleteCommentRequest {
   id?: number;
-  photoId?: number;
+  type: 'photo' | 'talk';
+  targetId?: number;
 }

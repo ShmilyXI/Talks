@@ -1,27 +1,31 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { CommentData, CommentItem } from "@/types/CommentTypes";
 import { Icon } from "@components";
-import { useClickAway, useToggle } from "ahooks";
+import { useClickAway, useIsomorphicLayoutEffect, useToggle } from "ahooks";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import _ from "lodash";
 import { BaseUserInfo, UserLikedRequest } from "@/types/UserTypes";
 import { Storage } from "@/utils/storage";
 import swal from "sweetalert";
+import Api from "@/service";
+import toast from "react-hot-toast";
+import { scrollToElement } from "@/utils/common";
+import { useRouter } from "next/router";
 
 type Props = {
-  list: CommentItem[];
+  type: "photo" | "talk";
   className?: string;
   addClassName?: string;
-  onSubmit?: (data: CommentData, callback: () => void) => void;
-  onUserLiked?: (data: UserLikedRequest) => void;
-  onDeleteComment?: (id: number) => void;
+  targetId: number;
 };
 const Comments: FC<Props> = (props) => {
-  const { list, className, addClassName, onSubmit = () => {}, onUserLiked = () => {}, onDeleteComment = () => {} } = props;
+  const router = useRouter();
+  const { className, type, addClassName, targetId } = props;
   const [commentContent, setCommentContent] = useState(""); // 评论内容
   const [replyContent, setReplyContent] = useState(""); // 评论回复内容
   const [replyId, setReplyId] = useState<number>(); // 评论回复id
+  const [commentList, setCommentList] = useState<CommentItem[]>([]); // 评论列表
   const [userInfo, setUserInfo] = useState<BaseUserInfo>();
   const textareaRef = useRef(null); // 一级评论框ref
   const [isFocus, { setLeft: setIsFocusLeft, setRight: setIsFocusRight }] = useToggle();
@@ -37,8 +41,76 @@ const Comments: FC<Props> = (props) => {
     setUserInfo(_userInfo);
   }, []);
 
+  useEffect(() => {
+    if (_.isNil(targetId) || _.isNil(type)) return;
+    getCommentList(+targetId);
+  }, [targetId, type]);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!commentList?.length) return;
+    const routerPath = router.asPath;
+    const commentId = routerPath?.split("#")?.[1];
+    if (commentId) {
+      scrollToElement(document.getElementById(commentId));
+    }
+  }, [commentList]);
+
+  // 获取评论列表
+  const getCommentList = async (targetId?: number) => {
+    const { data } = await Api.getCommentList({ params: { targetId, type } });
+    setCommentList(data?.list || []);
+  };
+
+  // 评论提交
+  const onCommentSubmit = async (value: CommentData, callback: () => void) => {
+    if (!_.trim(value?.content)) {
+      toast.error("请输入评论内容");
+      return;
+    }
+    const data = {
+      ...value,
+      content: _.trim(value?.content),
+      targetId,
+      type,
+    };
+    await Api.addComment({ data });
+    await toast.success("评论成功!");
+    callback();
+    getCommentList(targetId);
+  };
+
+  // 用户点赞评论
+  const onUserLiked = async (value: UserLikedRequest) => {
+    try {
+      const { likedId, likedStatus, likedType } = value;
+      await Api.userLiked({
+        data: {
+          likedId,
+          likedStatus,
+          likedType,
+        },
+      });
+      await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
+      getCommentList(targetId);
+    } catch (error) {
+      await toast.error("点赞失败,请重试!");
+    }
+  };
+
+  // 删除评论
+  const onDeleteComment = async (id: number) => {
+    if (_.isNil(id) || _.isNil(targetId)) return;
+    try {
+      await Api.deleteComment({ data: { id, targetId, type } });
+      await toast.success("删除成功!");
+      getCommentList(targetId);
+    } catch (error) {
+      await toast.error("删除失败,请重试!");
+    }
+  };
+
   return (
-    <div className={classnames("flex flex-grow flex-col lg:overflow-y-scroll", className)} id="comment">
+    <div className={classnames("flex flex-grow flex-col lg:overflow-y-scroll lg:overflow-x-hidden", className)} id="comment">
       {/* 用户评论区 未登录用户不展示 */}
       <div className={classnames("flex flex-none pb-8", addClassName)} ref={textareaRef}>
         <div className="flex-none mr-16 self-start">
@@ -84,7 +156,7 @@ const Comments: FC<Props> = (props) => {
                 <button
                   className="button button--primary"
                   onClick={() => {
-                    onSubmit(
+                    onCommentSubmit(
                       {
                         content: commentContent,
                         commentLevel: 1,
@@ -113,12 +185,12 @@ const Comments: FC<Props> = (props) => {
       <div className="bg-inherit flex w-full" id="comments">
         <div
           className={classnames("bg-inherit w-full", {
-            hidden: !list?.length,
+            hidden: !commentList?.length,
           })}
         >
           <div className={classnames("bg-inherit md:pt-0", addClassName)}>
             <div className="bg-inherit my-3">
-              {list?.map((item) => (
+              {commentList?.map((item) => (
                 <div className="bg-inherit thread thread--has-replies" key={`${item.create_time}`}>
                   <div className="comment bg-inherit flex py-6 relative" id={`comment-${item.id}`}>
                     <div className="flex-none mr-12 relative z-10">
@@ -257,7 +329,7 @@ const Comments: FC<Props> = (props) => {
                             type="submit"
                             className="button button--primary"
                             onClick={() => {
-                              onSubmit(
+                              onCommentSubmit(
                                 {
                                   content: replyContent,
                                   commentLevel: 2,
@@ -451,7 +523,7 @@ const Comments: FC<Props> = (props) => {
                                     type="submit"
                                     className="button button--primary"
                                     onClick={() => {
-                                      onSubmit(
+                                      onCommentSubmit(
                                         {
                                           content: replyContent,
                                           commentLevel: 2,
@@ -497,7 +569,7 @@ const Comments: FC<Props> = (props) => {
 
         <div
           className={classnames("w-full self-start", {
-            hidden: list?.length,
+            hidden: commentList?.length,
           })}
         >
           <div className="rounded-6  text-grey-53 text-center px-16 pt-24 pb-32 md:py-24 md:px-32 md:pb-48 md:pt-24 lg:py-72 lg:px-24">

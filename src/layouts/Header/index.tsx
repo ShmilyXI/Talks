@@ -69,8 +69,8 @@ const Index = () => {
 
   const items: IItem[] = [
     {
-      label: t("common.community"),
-      value: "community",
+      label: t("common.talk"),
+      value: "talk",
       className: "xl:hidden",
     },
     // {
@@ -237,10 +237,10 @@ const Index = () => {
                   onClick={() => {
                     setWrapLeft();
                     setSearchValue("");
-                    goRoute("/community");
+                    goRoute("/talk");
                   }}
                 >
-                  <span className="group-hover:underline">{t("common.community")}</span>
+                  <span className="group-hover:underline">{t("common.talk")}</span>
                 </a>
 
                 {/* <a
@@ -588,7 +588,7 @@ const Index = () => {
 
           <a
             className="group hover:no-underline hidden xl:flex items-center py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black cursor-pointer"
-            onClick={() => goRoute("/community")}
+            onClick={() => goRoute("/talk")}
           >
             <span className="group-hover:text-black">{/* Community */}社区</span>
           </a>

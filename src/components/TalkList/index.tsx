@@ -1,10 +1,12 @@
 import classnames from "classnames";
 import React, { useState, useEffect } from "react";
-import { useRequest } from "ahooks";
+import { usePagination, useRequest } from "ahooks";
 import Api from "@/service/index";
-import Filter from "../../../components/Filter";
+import Filter from "../Filter";
 import Icon from "@components/Icon";
 import { useRouter } from "next/router";
+import { IItem } from "@components/Menu";
+import _ from "lodash";
 
 type articleItem = {
   avatar: string;
@@ -21,12 +23,32 @@ type articleItem = {
 
 const Index = () => {
   const router = useRouter();
-  const { data, error, loading }: any = useRequest(Api.getArticleLatestList);
-  const [articleList, setArticleList] = useState<articleItem[]>(); // 文章列表
-  useEffect(() => {
-    setArticleList(data?.list || []);
-  }, [data]);
+  const [dataType, setDataType] = useState("active");
 
+  const {
+    data: talkData,
+    loading: getTalkListLoading,
+    run: runGetTalkList,
+    pagination,
+  } = usePagination(
+    ({ current, pageSize, type = dataType }) => {
+      return new Promise(async (resolve) => {
+        const { data } = await Api.getTalkList({
+          data: { pageIndex: current, pageSize, type },
+        });
+        resolve(data);
+      }) as any;
+    },
+    { refreshDeps: [dataType] },
+  );
+
+  // 获取列表数据
+  const getData = (pageIndex?: number, pageSize?: number) => {
+    runGetTalkList({
+      current: pageIndex || pagination.current,
+      pageSize: pageSize || pagination.pageSize,
+    });
+  };
   // 路由跳转
   const goRoute = (path: string) => {
     router.push(path);
@@ -43,7 +65,7 @@ const Index = () => {
             { label: "活跃的", value: "active" },
             { label: "最近的", value: "recent" },
             { label: "未答复", value: "unanswered" },
-            { label: "受欢迎的", value: "popular" },
+            // { label: "受欢迎的", value: "popular" },
             { label: "精选", value: "featured" },
           ]}
           menuClassName="mt-24"
@@ -51,7 +73,7 @@ const Index = () => {
           breakPoint="md"
           displayCount={4}
           onChange={(item) => {
-            console.log("item", item);
+            setDataType(item.value);
           }}
         />
       </div>
@@ -59,20 +81,20 @@ const Index = () => {
       <div className="pt-16 md:pt-0 md:pb-24 lg:pb-32 xl:pb-48">
         <div className="-my-12 md:-my-16">
           {/* 列表 */}
-          {articleList?.length
-            ? articleList.map((item) => (
+          {talkData?.list?.length
+            ? talkData.list.map((item) => (
                 <div className="flex items-start py-12 md:py-16" key={item.title}>
                   {/* 头像 */}
                   <div className="flex-none mr-24 md:mr-48 hidden sm:block">
-                    <a href={item.avatarLink} target="_blank" className="avatar">
-                      <img src={item.avatar} width="48" height="48" alt="" className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full" />
+                    <a href={`/userDetail?id=${item.user_id}`} target="_blank" className="avatar">
+                      <img src={item?.user?.avatar_url} width="48" height="48" alt="" className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full" />
                     </a>
                   </div>
 
                   {/* 内容 */}
                   <div className="flex-grow min-w-0 my-2 pl-16 md:pl-0">
                     <div className="text-18 leading-sm relative">
-                      <a onClick={() => goRoute(`/community/detail?authorId=${item.authorId}`)} target="_blank" className="block text-grey-53 hover:text-grey-53 cursor-pointer">
+                      <a onClick={() => goRoute(`/talkDetail?id=${item.id}`)} target="_blank" className="block text-grey-53 hover:text-grey-53 cursor-pointer">
                         {item.tag ? (
                           <span className="inline-flex text-16 align-middle mr-4" data-tooltip="" title={item.tag}>
                             {/* <svg
@@ -90,30 +112,30 @@ const Index = () => {
                     </div>
 
                     <div className="flex flex-wrap text-12 items-center break-words mt-2">
-                      <a href={item.authorLink} className="text-grey-53 truncate mr-8 hover:text-grey-53" target="_blank">
-                        <span className="block">{item.author}</span>
+                      <a href={`/userDetail?id=${item.user_id}`} className="text-grey-53 truncate mr-8 hover:text-grey-53" target="_blank">
+                        <span className="block">{item.user?.display_name}</span>
                       </a>
 
-                      <time className="mr-8 truncate" title={item.date}>
-                        {item.date}
+                      <time className="mr-8 truncate" title={item.create_time}>
+                        {item.create_time}
                       </time>
 
-                      <span className="mr-8">{item.answerCount} replies</span>
+                      <span className="mr-8">{item.comment_count || 0} replies</span>
                     </div>
                   </div>
 
                   {/* 参与回复人头像 */}
                   <div className="hidden md:flex ml-48 flex-none">
                     <div className="flex">
-                      {item.answerList?.length
-                        ? item.answerList.map((a) => (
+                      {item.commentList?.length
+                        ? _.map(_.slice(item.commentList, 0, 3) as any, (comment) => (
                             <a
-                              onClick={() => goRoute(`/community/detail?authorId=${item.authorId}`)}
+                              onClick={() => goRoute(`/userDetail?id=${comment.user_id}`)}
                               className="avatar border-2 border-white -ml-12 relative z-3 cursor-pointer"
                               target="_blank"
-                              key={a.authorId}
+                              key={comment.user_id}
                             >
-                              <img src={a.avatar} width="28" height="28" alt="" className="avatar__photo is-loaded w-[28px] h-[28px] object-cover rounded-full" />
+                              <img src={comment.user_avatar_url} width="28" height="28" alt="" className="avatar__photo is-loaded w-[28px] h-[28px] object-cover rounded-full" />
                             </a>
                           ))
                         : null}
@@ -127,8 +149,15 @@ const Index = () => {
           <ul className="mt-28 mb-24 md:mt-44 md:-mb-4 -mx-4 list-reset flex flex-wrap justify-between">
             <li className="p-4">
               <span
+                onClick={() => {
+                  console.log("pagination.current :>> ", pagination.current);
+                  if (pagination.current <= 1) {
+                    return;
+                  }
+                  getData(pagination.current - 1);
+                }}
                 className={classnames("button button--tertiary", {
-                  "is-disabled": true,
+                  "is-disabled": pagination.current <= 1,
                 })}
               >
                 <Icon className="icon-back" addClassName="mr-8" />
@@ -138,8 +167,14 @@ const Index = () => {
 
             <li className="p-4">
               <span
+                onClick={() => {
+                  if (pagination.current * pagination.pageSize >= pagination.total) {
+                    return;
+                  }
+                  getData(pagination.current + 1);
+                }}
                 className={classnames("button button--tertiary", {
-                  "is-disabled": false,
+                  "is-disabled": pagination.current * pagination.pageSize >= pagination.total,
                 })}
               >
                 Next

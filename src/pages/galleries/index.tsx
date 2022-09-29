@@ -31,12 +31,9 @@ const Index = () => {
     },
     {
       manual: true,
+      reloadDeps:[dataType]
     },
   );
-
-  useEffect(() => {
-    reload();
-  }, [dataType]);
 
   // 用户收藏画廊
   const onUserGalleryFavorite = async (value: UserFavoriteRequest) => {

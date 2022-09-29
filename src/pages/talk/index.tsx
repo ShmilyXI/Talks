@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FC } from "react";
-import TalkList from "@/pages/community/TalkList";
-import TopContributors from "./TopContributors";
-import UnansweredTalks from "./UnansweredTalks";
+import TalkList from "@components/TalkList";
+import TopContributors from "@/components/TopContributors";
+import UnansweredTalks from "@/components/UnansweredTalks";
 
 interface PageProps {}
 

@@ -99,11 +99,12 @@ const PhotoList: FC<PhotoListProps> = (props) => {
   // 用户收藏照片
   const onUserPhotoFavorite = async (value: UserFavoriteRequest) => {
     try {
-      const { favoriteId, favoriteStatus } = value;
+      const { favoriteId, favoriteStatus,favoriteType } = value;
       await Api.userPhotoFavorite({
         data: {
-          favoriteId: favoriteId,
+          favoriteId,
           favoriteStatus,
+          favoriteType,
         },
       });
       await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
@@ -274,6 +275,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               onUserPhotoFavorite({
                                 favoriteId: item?.id,
                                 favoriteStatus: item?.favoriteStatus === 1 ? 0 : 1,
+                                favoriteType: 0,
                               });
                             }, 500)}
                             title="favorite"
@@ -352,6 +354,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
                               onUserPhotoFavorite({
                                 favoriteId: item?.id,
                                 favoriteStatus: item?.favoriteStatus === 1 ? 0 : 1,
+                                favoriteType: 0,
                               });
                             }, 500)}
                           >

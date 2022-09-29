@@ -1,11 +1,11 @@
 /* 评论 */
 import {
-  AddPhotoCommentRequest,
-  AddPhotoCommentResponse,
-  DeletePhotoCommentRequest,
-  DeletePhotoCommentResponse,
-  GetPhotoCommentListRequest,
-  GetPhotoCommentListResponse,
+  AddCommentRequest,
+  AddCommentResponse,
+  DeleteCommentRequest,
+  DeleteCommentResponse,
+  GetCommentListRequest,
+  GetCommentListResponse,
 } from "@/types/CommentTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
 
@@ -13,28 +13,28 @@ import request, { RequestGetType, RequestPostType } from "@/utils/request";
 const createApi = request.createApi({ baseURL: "/api" });
 
 const commentApi = {
-  /** 获取照片评论列表 **/
-  getPhotoCommentList: createApi<
-    GetPhotoCommentListResponse,
-    RequestGetType<GetPhotoCommentListRequest>
+  /** 获取评论列表 **/
+  getCommentList: createApi<
+    GetCommentListResponse,
+    RequestGetType<GetCommentListRequest>
   >({
-    url: "/comment/get-photo-comment-list",
+    url: "/comment/get-comment-list",
     method: "GET",
   }),
-  /** 新增照片评论 **/
-  addPhotoComment: createApi<
-    AddPhotoCommentResponse,
-    RequestPostType<AddPhotoCommentRequest>
+  /** 新增评论 **/
+  addComment: createApi<
+    AddCommentResponse,
+    RequestPostType<AddCommentRequest>
   >({
-    url: "/comment/add-photo-comment",
+    url: "/comment/add-comment",
     method: "POST",
   }),
-  /** 删除照片评论 **/
-  deletePhotoComment: createApi<
-    DeletePhotoCommentResponse,
-    RequestPostType<DeletePhotoCommentRequest>
+  /** 删除评论 **/
+  deleteComment: createApi<
+    DeleteCommentResponse,
+    RequestPostType<DeleteCommentRequest>
   >({
-    url: "/comment/delete-photo-comment",
+    url: "/comment/delete-comment",
     method: "POST",
   }),
 };

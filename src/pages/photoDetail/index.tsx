@@ -74,12 +74,6 @@ const Index = () => {
     setPhotoDetailInfo(data);
   };
 
-  // 获取图片评论列表
-  const getCommentList = async (id: number) => {
-    const { data } = await Api.getPhotoCommentList({ params: { id } });
-    setCommentList(data?.list || []);
-  };
-
   useIsomorphicLayoutEffect(() => {
     if (!commentList?.length) return;
     const routerPath = router.asPath;
@@ -95,24 +89,6 @@ const Index = () => {
     getPhotoInfo(_id);
   }, [id]);
 
-  // 评论提交
-  const onCommentSubmit = async (value: CommentData, callback: () => void) => {
-    if (!_.trim(value?.content)) {
-      toast.error("请输入评论内容");
-      return;
-    }
-    const data = {
-      ...value,
-      content: _.trim(value?.content),
-      photoId: curPhotoInfo.id,
-      type: 1,
-    };
-    await Api.addPhotoComment({ data });
-    await toast.success("评论成功!");
-    callback();
-    getCommentList(curPhotoInfo.id);
-  };
-
   // 用户点赞照片
   const onUserLiked = async (value: UserLikedRequest) => {
     try {
@@ -125,12 +101,7 @@ const Index = () => {
         },
       });
       await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
-      if (likedType === 0) {
-        getPhotoInfo(curPhotoInfo.id);
-      }
-      if (likedType === 1) {
-        getCommentList(curPhotoInfo.id);
-      }
+      getPhotoInfo(curPhotoInfo.id);
     } catch (error) {
       await toast.error("点赞失败,请重试!");
     }
@@ -151,18 +122,6 @@ const Index = () => {
       getPhotoInfo(curPhotoInfo.id);
     } catch (error) {
       await toast.error("收藏失败,请重试!");
-    }
-  };
-
-  // 删除评论
-  const onDeleteComment = async (id: number) => {
-    if (_.isNil(id) || _.isNil(curPhotoInfo?.id)) return;
-    try {
-      await Api.deletePhotoComment({ data: { id, photoId: curPhotoInfo?.id } });
-      await toast.success("删除成功!");
-      getCommentList(curPhotoInfo.id);
-    } catch (error) {
-      await toast.error("删除失败,请重试!");
     }
   };
 
@@ -198,9 +157,6 @@ const Index = () => {
             index={photoDetailInfo?.index}
             onChange={(index) => {
               const item = photoList?.[index];
-              if (+item?.id) {
-                getCommentList(+item?.id);
-              }
               item && setCurPhotoInfo(item);
             }}
           />
@@ -767,14 +723,7 @@ const Index = () => {
           </div>
 
           {/* 评论列表 */}
-          <Comments
-            className="bg-grey-99"
-            addClassName="p-16 md:p-24 md:px-32 lg:px-24"
-            list={commentList}
-            onSubmit={onCommentSubmit}
-            onUserLiked={onUserLiked}
-            onDeleteComment={onDeleteComment}
-          />
+          <Comments className="bg-grey-99" addClassName="p-16 md:p-24 md:px-32 lg:px-24" type="photo" targetId={curPhotoInfo?.id} />
 
           {/* mobile 底部区域 */}
           {/* <div className="p-16 md:p-32 lg:hidden">

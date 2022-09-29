@@ -12,36 +12,34 @@ const Browse = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [selectItem, setSelectItem] = useState<IItem>();
-  const [isFirst, setIsFirst] = useState(true);
-  const [dataType, setDataType] = useState("all");
-
-  useEffect(() => {
-    if (selectItem?.value) {
-      getData(selectItem.value);
-    }
-    return () => {
-      setSelectItem(undefined);
-    };
-  }, [selectItem]);
+  const [dataType, setDataType] = useState<string>("all");
 
   const {
     data: photoData,
     loading: getGalleryPhotoListLoading,
     run: runGetGalleryPhotoList,
     pagination,
-  } = usePagination(({ current, pageSize, type = dataType }) => {
-    if (isFirst) {
-      setIsFirst(false);
-      return;
-    }
-    return new Promise(async (resolve) => {
-      const { data } = await Api.getGalleryPhotoList({
-        data: { pageIndex: current, pageSize, type },
-      });
-      resolve(data);
-    }) as any;
-  });
+  } = usePagination(
+    ({ current, pageSize, type = dataType }) => {
+      return new Promise(async (resolve) => {
+        const { data } = await Api.getGalleryPhotoList({
+          data: { pageIndex: current, pageSize, type },
+        });
+        resolve(data);
+      }) as any;
+    },
+    {
+      refreshDeps: [dataType],
+    },
+  );
+
+  // 获取列表数据
+  const getData = (pageIndex?: number, pageSize?: number) => {
+    runGetGalleryPhotoList({
+      current: pageIndex || pagination.current,
+      pageSize: pageSize || pagination.pageSize,
+    });
+  };
 
   const items: IItem[] = [
     { label: "全部", value: "all" },
@@ -54,16 +52,6 @@ const Browse = () => {
     { label: t("common.liked"), value: "liked" },
   ];
 
-  // 获取列表数据
-  const getData = (type: string = dataType, pageIndex?: number, pageSize?: number) => {
-    setDataType(type);
-    runGetGalleryPhotoList({
-      current: pageIndex || pagination.current,
-      pageSize: pageSize || pagination.pageSize,
-      type,
-    });
-  };
-
   return (
     <div>
       <div className="d-container p-16 md:px-32 md:py-24">
@@ -73,8 +61,7 @@ const Browse = () => {
               breakPoint="md"
               items={items}
               onChange={(item) => {
-                console.log("item", item);
-                setSelectItem(item);
+                setDataType(item.value);
               }}
             />
           </div>
