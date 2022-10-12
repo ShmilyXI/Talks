@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@types/cookie": "^0.5.1",
+    "@wangeditor/editor": "^5.1.21",
+    "@wangeditor/editor-for-react": "^1.0.5",
     "@zeit/next-css": "^1.0.1",
     "ahooks": "^3.4.0",
     "axios": "^0.27.2",

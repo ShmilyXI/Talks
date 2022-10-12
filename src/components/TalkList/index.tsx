@@ -26,7 +26,7 @@ const Index = () => {
   const router = useRouter();
   const [dataType, setDataType] = useState("active");
 
-  const [showAddTalkModal, { toggle: toggleAddTalkModal, setLeft: setAddTalkModalLeft }] = useToggle(false); // 是否展示添加讨论弹窗
+  const [showAddTalkModal, { toggle: toggleAddTalkModal, setLeft: setAddTalkModalLeft }] = useToggle(true); // 是否展示添加讨论弹窗
 
   const {
     data: talkData,
