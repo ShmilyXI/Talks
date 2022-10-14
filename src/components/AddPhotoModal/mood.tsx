@@ -1,4 +1,4 @@
-import { IItem } from "@components/Menu";
+import { IItem } from "@/components/Menu";
 import { useToggle } from "ahooks";
 import classnames from "classnames";
 import React, { FC } from "react";

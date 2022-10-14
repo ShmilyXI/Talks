@@ -10,7 +10,6 @@ import Api from "@/service";
 import toast from "react-hot-toast";
 import Form, { Field } from "rc-field-form";
 import { Checked } from "@/components";
-import { useRouter } from "next/router";
 import { PhotoList } from "@/types/PhotoTypes";
 
 type Props = {
@@ -29,7 +28,6 @@ const Index: FC<Props> = (props) => {
   const [loading, setLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [form] = Form.useForm();
-  const router = useRouter();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -94,7 +92,7 @@ const Index: FC<Props> = (props) => {
       setTempFile(undefined);
       setTempImage(undefined);
       setModalLeft();
-      router.reload();
+      location.reload();
     } catch (error) {
       setLoading(false);
     }
@@ -127,6 +125,11 @@ const Index: FC<Props> = (props) => {
 
   return (
     <div>
+      {visible && (
+        <style type="text/css">
+          {'body,html { overflow: hidden; height: 100vh; }'}
+        </style>
+      )}
       <div className={classnames("modal", { block: visible })}>
         <div className="modal-dialog modal-dialog--centered">
           <div className="modal-content max-w-552 p-16 md:p-24 w-full">

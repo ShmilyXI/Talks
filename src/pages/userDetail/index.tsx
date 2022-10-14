@@ -1,16 +1,16 @@
 import Api from "@/service/index";
 import { useRequest } from "ahooks";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { PhotoList, Filter, Icon } from "@components";
+import { useParams } from 'umi';
+import { PhotoList, Filter, Icon } from "@/components";
 import _ from "lodash";
 import { BaseUserInfo } from "@/types/UserTypes";
 import classnames from "classnames";
 import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
 
 const UserDetail = () => {
-  const router = useRouter();
-  const { id } = router.query;
+  const routeParams = useParams();
+  const { id } = routeParams;
 
   const [userInfo, setUserInfo] = useState<BaseUserInfo>(); // 用户信息
   const [photoList, setPhotoList] = useState<PhotoListType[]>(); // 用户照片列表

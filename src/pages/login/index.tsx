@@ -1,8 +1,8 @@
-import Icon from "@components/Icon";
+import Icon from "@/components/Icon";
 import { useToggle, useSetState, useRequest } from "ahooks";
 import classnames from "classnames";
 import React, { useEffect, useRef } from "react";
-import { useRouter } from "next/router";
+import { useNavigate, useParams } from "react-router-dom";
 import { Storage } from "@/utils/storage";
 import toast from "react-hot-toast";
 import Api from "@/service";
@@ -14,8 +14,9 @@ interface State {
 }
 
 const Login = () => {
-  const router = useRouter();
-  const { signIn } = router.query;
+  const routeParams = useParams();
+  const navigate = useNavigate();
+  const { signIn } = routeParams;
 
   const [showSignIn, { toggle: toggleSignIn, setLeft: setSignInLeft, setRight: setSignInRight }] = useToggle(false);
   const [showSwitch, { setLeft: setSwitchLeft, setRight: setSwitchRight }] = useToggle(false);
@@ -56,7 +57,7 @@ const Login = () => {
         params: { id: +data?.id },
       });
       storage.setItem("userInfo", JSON.stringify(userInfo));
-      router.replace("/");
+      navigate("/", { replace: true });
     }
   };
 

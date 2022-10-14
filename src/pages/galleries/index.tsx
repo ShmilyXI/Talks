@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Filter, Icon } from "@components";
+import { Filter, Icon } from "@/components";
 import { useInfiniteScroll, usePagination } from "ahooks";
 import Api from "@/service";
-import { useRouter } from "next/router";
+import { useParams } from 'umi';
 import { UserFavoriteRequest } from "@/types/UserTypes";
 import toast from "react-hot-toast";
 import _ from "lodash";
 
 const PAGE_SIZE = 20;
 const Index = () => {
-  const router = useRouter();
+  const routeParams = useParams();
 
   const [dataType, setDataType] = useState("selected");
 

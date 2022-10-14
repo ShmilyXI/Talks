@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import PhotoAlbum from "react-photo-album";
 import classnames from "classnames";
-import { Icon, PlaceholderSvg } from "@components";
+import { Icon, PlaceholderSvg } from "@/components";
 import { useRequest, configResponsive, useResponsive, useUpdateLayoutEffect, usePagination } from "ahooks";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
@@ -33,7 +33,7 @@ configResponsive(BreakPoints);
 
 const PhotoList: FC<PhotoListProps> = (props) => {
   const { getData = () => {}, list, total, isDetail } = props;
-  const router = useRouter();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [photoList, setPhotoList] = useState<PhotoListType[]>([]); // 图片列表
   const [isMobile, setIsMobile] = useState(false);
@@ -75,7 +75,7 @@ const PhotoList: FC<PhotoListProps> = (props) => {
   // 路由跳转
   const goRoute = (path: string) => {
     console.log("path", path);
-    router.push(path);
+    navigate(path);
   };
 
   // 用户点赞照片

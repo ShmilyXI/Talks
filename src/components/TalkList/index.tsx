@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import { usePagination, useRequest, useToggle } from "ahooks";
 import Api from "@/service/index";
 import Filter from "../Filter";
-import Icon from "@components/Icon";
-import { useRouter } from "next/router";
-import { IItem } from "@components/Menu";
+import Icon from "@/components/Icon";
+import { useNavigate } from "react-router-dom";
+import { IItem } from "@/components/Menu";
 import _ from "lodash";
-import AddTalkModal from "@components/AddTalkModal";
+import AddTalkModal from "@/components/AddTalkModal";
 
 type articleItem = {
   avatar: string;
@@ -23,10 +23,10 @@ type articleItem = {
 };
 
 const Index = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [dataType, setDataType] = useState("active");
 
-  const [showAddTalkModal, { toggle: toggleAddTalkModal, setLeft: setAddTalkModalLeft }] = useToggle(true); // 是否展示添加讨论弹窗
+  const [showAddTalkModal, { toggle: toggleAddTalkModal, setLeft: setAddTalkModalLeft }] = useToggle(false); // 是否展示添加讨论弹窗
 
   const {
     data: talkData,
@@ -54,7 +54,7 @@ const Index = () => {
   };
   // 路由跳转
   const goRoute = (path: string) => {
-    router.push(path);
+    navigate(path);
   };
 
   return (

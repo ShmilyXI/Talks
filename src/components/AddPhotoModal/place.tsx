@@ -1,5 +1,5 @@
 import Api from "@/service";
-import Menu, { IItem } from "@components/Menu";
+import Menu, { IItem } from "@/components/Menu";
 import { useToggle } from "ahooks";
 import classnames from "classnames";
 import _ from "lodash";

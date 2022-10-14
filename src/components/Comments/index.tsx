@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { CommentData, CommentItem } from "@/types/CommentTypes";
-import { Icon } from "@components";
+import Icon from "@/components/Icon";
 import { useClickAway, useIsomorphicLayoutEffect, useToggle } from "ahooks";
 import classnames from "classnames";
 import dayjs from "dayjs";
@@ -11,7 +11,7 @@ import swal from "sweetalert";
 import Api from "@/service";
 import toast from "react-hot-toast";
 import { scrollToElement } from "@/utils/common";
-import { useRouter } from "next/router";
+import { useLocation } from 'umi';
 
 type Props = {
   type: "photo" | "talk";
@@ -20,7 +20,7 @@ type Props = {
   targetId: number;
 };
 const Comments: FC<Props> = (props) => {
-  const router = useRouter();
+  const routeLocation = useLocation();
   const { className, type, addClassName, targetId } = props;
   const [commentContent, setCommentContent] = useState(""); // 评论内容
   const [replyContent, setReplyContent] = useState(""); // 评论回复内容
@@ -48,7 +48,7 @@ const Comments: FC<Props> = (props) => {
 
   useIsomorphicLayoutEffect(() => {
     if (!commentList?.length) return;
-    const routerPath = router.asPath;
+    const routerPath = routeLocation.pathname;
     const commentId = routerPath?.split("#")?.[1];
     if (commentId) {
       scrollToElement(document.getElementById(commentId));

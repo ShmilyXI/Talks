@@ -1,8 +1,8 @@
-import { useRouter } from "next/router";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useIsomorphicLayoutEffect, useRequest } from "ahooks";
 import dayjs from "dayjs";
-import { Comments } from "@components";
+import { Comments } from "@/components";
 import UnansweredTalks from "@/components/UnansweredTalks";
 import TopContributors from "@/components/TopContributors";
 import Api from "@/service";
@@ -13,8 +13,9 @@ import toast from "react-hot-toast";
 import { scrollToElement } from "@/utils/common";
 
 const Detail = () => {
-  const router = useRouter();
-  const { id } = router.query as { id: string };
+  const routeParams = useParams();
+  const navigate = useNavigate();
+  const { id } = routeParams;
   const [detailInfo, setDetailInfo] = useState<TalkItem>();
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const Detail = () => {
 
   // 路由跳转
   const goRoute = (path: string) => {
-    router.push(path);
+    navigate(path);
   };
 
   return (

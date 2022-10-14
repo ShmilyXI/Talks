@@ -1,4 +1,4 @@
-import Icon from "@components/Icon";
+import Icon from "@/components/Icon";
 import { useClickAway, useToggle } from "ahooks";
 import classnames from "classnames";
 import React, { FC, useEffect, useRef, useState } from "react";

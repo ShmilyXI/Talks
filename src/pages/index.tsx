@@ -2,18 +2,16 @@ import React, { useEffect, useState } from "react";
 import Filter from "@/components/Filter";
 import Api from "@/service/index";
 import { usePagination } from "ahooks";
-import { useRouter } from "next/router";
-import { PhotoList } from "@components";
+import { PhotoList } from "@/components";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
-import { IItem } from "@components/Menu";
+import { IItem } from "@/components/Menu";
 
 const Browse = () => {
-  const router = useRouter();
   const { t } = useTranslation();
 
   const [dataType, setDataType] = useState<string>("all");
-
+  
   const {
     data: photoData,
     loading: getGalleryPhotoListLoading,

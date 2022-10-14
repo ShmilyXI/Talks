@@ -1,10 +1,12 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 import { useClickAway, useToggle } from "ahooks";
-import { Button, Icon, Menu } from "@components";
+import Button from "@/components/Button";
+import Icon from "@/components/Icon";
+import Menu from "@/components/Menu";
+import { IItem } from "@/components/Menu";
 import styles from "./index.module.less";
-import { IItem } from "@components/Menu";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 
 type FilterProps = {
   items: IItem[]; // 筛选按钮列表
@@ -18,10 +20,9 @@ type FilterProps = {
 
 const Filter: FC<FilterProps> = (props) => {
   const { items, displayCount = 0, onChange, breakPoint, menuClassName = "", selectClassName = "", buttonClassName = "" } = props;
-  const router = useRouter();
+  const navigate = useNavigate();
   const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] = useToggle();
   const [showSelect, { toggle: toggleSelect, setLeft: setSelectLeft }] = useToggle();
-
   const [activeItem, setActiveItem] = useState<IItem>(items?.[0]);
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const Filter: FC<FilterProps> = (props) => {
                       active={item?.value === activeItem.value}
                       onClick={() => {
                         if (item.href) {
-                          router.push(item.href);
+                          navigate(item.href);
                           return;
                         }
                         setActiveItem(item);

@@ -1,50 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Icon, Menu, PhotoViews, Comments } from "@components";
-import classnames from "classnames";
-import dayjs from "dayjs";
-import { useIsomorphicLayoutEffect, useToggle } from "ahooks";
-import { useTranslation } from "react-i18next";
-import Api from "@/service";
-import { PhotoList, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
-import classNames from "classnames";
-import _ from "lodash";
-import AddPhotoModal from "@components/AddPhotoModal";
-import toast from "react-hot-toast";
-import { CommentData, CommentItem } from "@/types/CommentTypes";
-import { Storage } from "@/utils/storage";
-import { BaseUserInfo, UserLikedRequest, UserFavoriteRequest } from "@/types/UserTypes";
-import { IItem } from "@components/Menu";
-import { scrollToElement, toggleBodyOverflow } from "@/utils/common";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'umi';
+import { Icon, Menu, PhotoViews, Comments } from '@/components';
+import classnames from 'classnames';
+import dayjs from 'dayjs';
+import { useIsomorphicLayoutEffect, useToggle } from 'ahooks';
+import { useTranslation } from 'react-i18next';
+import Api from '@/service';
+import { PhotoList, PhotoDetailInfoResponse } from '@/types/PhotoTypes';
+import classNames from 'classnames';
+import _ from 'lodash';
+import AddPhotoModal from '@/components/AddPhotoModal';
+import toast from 'react-hot-toast';
+import { CommentData, CommentItem } from '@/types/CommentTypes';
+import { Storage } from '@/utils/storage';
+import {
+  BaseUserInfo,
+  UserLikedRequest,
+  UserFavoriteRequest,
+} from '@/types/UserTypes';
+import { IItem } from '@/components/Menu';
+import { scrollToElement, toggleBodyOverflow } from '@/utils/common';
 
 type Mood = Record<string, { text: string; icon: string }>;
 
 // Mood Location  View
 const MoodEnum: Mood = {
-  Awesome: { text: "Awesome", icon: "icon-emoji" },
-  Good: { text: "Good", icon: "icon-emoji" },
-  Meh: { text: "Meh", icon: "icon-emoji" },
-  Bad: { text: "Bad", icon: "icon-emoji" },
-  Terrible: { text: "Terrible", icon: "icon-emoji" },
+  Awesome: { text: 'Awesome', icon: 'icon-emoji' },
+  Good: { text: 'Good', icon: 'icon-emoji' },
+  Meh: { text: 'Meh', icon: 'icon-emoji' },
+  Bad: { text: 'Bad', icon: 'icon-emoji' },
+  Terrible: { text: 'Terrible', icon: 'icon-emoji' },
 };
 
 const Index = () => {
-  const router = useRouter();
-  const { id } = router.query as { id: string };
+  const routeParams = useParams();
+  const routeLocation = useLocation();
+
+  const { id } = routeParams;
   const { t } = useTranslation();
   const [curPhotoInfo, setCurPhotoInfo] = useState<PhotoList>(); // 当前图片信息
   const [photoList, setPhotoList] = useState<PhotoList[]>(); // 图片列表
   const [commentList, setCommentList] = useState<CommentItem[]>([]); // 评论列表
   const [userInfo, setUserInfo] = useState<BaseUserInfo>();
-  const [photoDetailInfo, setPhotoDetailInfo] = useState<PhotoDetailInfoResponse["data"]>(); // 图片详情信息
+  const [photoDetailInfo, setPhotoDetailInfo] =
+    useState<PhotoDetailInfoResponse['data']>(); // 图片详情信息
 
-  const [showAddPhotoModal, { toggle: toggleAddPhotoModal, setLeft: setAddPhotoModalLeft }] = useToggle(false); // 是否展示添加编辑照片弹窗
-  const [showMoreMenu, { toggle: toggleMoreMenu, setLeft: setMoreMenuLeft }] = useToggle(); // 是否展示更多选择下拉
-  const [showMMoreMenu, { toggle: toggleMMoreMenu, setLeft: setMMoreMenuLeft }] = useToggle(); // 是否展示更多选择下拉
+  const [
+    showAddPhotoModal,
+    { toggle: toggleAddPhotoModal, setLeft: setAddPhotoModalLeft },
+  ] = useToggle(false); // 是否展示添加编辑照片弹窗
+  const [showMoreMenu, { toggle: toggleMoreMenu, setLeft: setMoreMenuLeft }] =
+    useToggle(); // 是否展示更多选择下拉
+  const [
+    showMMoreMenu,
+    { toggle: toggleMMoreMenu, setLeft: setMMoreMenuLeft },
+  ] = useToggle(); // 是否展示更多选择下拉
 
   useEffect(() => {
-    const storage = new Storage(sessionStorage, "Talks");
-    const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
+    const storage = new Storage(sessionStorage, 'Talks');
+    const _userInfo = JSON.parse(storage.getItem('userInfo') || '{}');
     setUserInfo(_userInfo);
   }, []);
 
@@ -56,7 +70,7 @@ const Index = () => {
   const onMoreMenuChange = ({ value }: IItem) => {
     if (!value) return;
     switch (value) {
-      case "edit":
+      case 'edit':
         toggleAddPhotoModal();
         break;
       default:
@@ -68,7 +82,7 @@ const Index = () => {
     const { data } = await Api.getPhotoDetailInfo({ params: { id } });
     const list = data?.list || [];
     const index = data?.index || 0;
-    console.log("data", data);
+    console.log('data', data);
     setCurPhotoInfo(list?.[index]);
     setPhotoList(list);
     setPhotoDetailInfo(data);
@@ -76,8 +90,8 @@ const Index = () => {
 
   useIsomorphicLayoutEffect(() => {
     if (!commentList?.length) return;
-    const routerPath = router.asPath;
-    const commentId = routerPath?.split("#")?.[1];
+    const routerPath = routeLocation.pathname;
+    const commentId = routerPath?.split('#')?.[1];
     if (commentId) {
       scrollToElement(document.getElementById(commentId));
     }
@@ -100,10 +114,10 @@ const Index = () => {
           likedType,
         },
       });
-      await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
+      await toast.success(likedStatus === 1 ? '点赞成功!' : '取消点赞成功!');
       getPhotoInfo(curPhotoInfo.id);
     } catch (error) {
-      await toast.error("点赞失败,请重试!");
+      await toast.error('点赞失败,请重试!');
     }
   };
 
@@ -118,10 +132,10 @@ const Index = () => {
           favoriteType,
         },
       });
-      await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
+      await toast.success(favoriteStatus === 1 ? '收藏成功!' : '取消收藏成功!');
       getPhotoInfo(curPhotoInfo.id);
     } catch (error) {
-      await toast.error("收藏失败,请重试!");
+      await toast.error('收藏失败,请重试!');
     }
   };
 
@@ -133,19 +147,34 @@ const Index = () => {
           <div className="flex items-center min-w-0">
             <div className="flex-none">
               <div className="avatar">
-                <img src={curPhotoInfo?.user?.avatar_url} width="32" height="32" alt="" className="avatar__photo w-[32px] h-[32px] object-cover rounded-full" />
+                <img
+                  src={curPhotoInfo?.user?.avatar_url}
+                  width="32"
+                  height="32"
+                  alt=""
+                  className="avatar__photo w-[32px] h-[32px] object-cover rounded-full"
+                />
               </div>
             </div>
 
             <div className="ml-16 min-w-0 truncate">
-              <a className="font-medium text-black block text-14 leading-md cursor-pointer" href={`/userDetail?id=${curPhotoInfo?.user_id}`}>
-                <span className="block truncate">{curPhotoInfo?.user?.display_name || curPhotoInfo?.user?.username}</span>
+              <a
+                className="font-medium text-black block text-14 leading-md cursor-pointer"
+                href={`/userDetail?id=${curPhotoInfo?.user_id}`}
+              >
+                <span className="block truncate">
+                  {curPhotoInfo?.user?.display_name ||
+                    curPhotoInfo?.user?.username}
+                </span>
               </a>
             </div>
           </div>
 
           <div className="ml-16 flex items-center flex-none text-12 leading-sm">
-            <time dateTime={`${curPhotoInfo?.create_time || ""}`} title={`${curPhotoInfo?.create_time || ""}`}>
+            <time
+              dateTime={`${curPhotoInfo?.create_time || ''}`}
+              title={`${curPhotoInfo?.create_time || ''}`}
+            >
               {dayjs(curPhotoInfo?.create_time).fromNow()}
             </time>
           </div>
@@ -166,10 +195,22 @@ const Index = () => {
               <div className="flex items-center text-12 leading-sm lg:text-14 lg:leading-md">
                 {/* <div className="mr-8 text-grey-53">Day 23</div> */}
 
-                <time className="lg:hidden" dateTime={`${curPhotoInfo?.create_time || ""}`} title={`${curPhotoInfo?.create_time || ""}`}>
-                  <span className="sm:hidden">{dayjs(curPhotoInfo?.create_time).format("YYYY-MM-DD HH:mm")}</span>
+                <time
+                  className="lg:hidden"
+                  dateTime={`${curPhotoInfo?.create_time || ''}`}
+                  title={`${curPhotoInfo?.create_time || ''}`}
+                >
+                  <span className="sm:hidden">
+                    {dayjs(curPhotoInfo?.create_time).format(
+                      'YYYY-MM-DD HH:mm',
+                    )}
+                  </span>
 
-                  <span className="hidden sm:block">{dayjs(curPhotoInfo?.create_time).format("YYYY-MM-DD HH:mm")}</span>
+                  <span className="hidden sm:block">
+                    {dayjs(curPhotoInfo?.create_time).format(
+                      'YYYY-MM-DD HH:mm',
+                    )}
+                  </span>
                 </time>
               </div>
 
@@ -184,16 +225,23 @@ const Index = () => {
                         () =>
                           onUserLiked({
                             likedId: curPhotoInfo?.id,
-                            likedStatus: curPhotoInfo?.likedStatus === 1 ? 0 : 1,
+                            likedStatus:
+                              curPhotoInfo?.likedStatus === 1 ? 0 : 1,
                             likedType: 0,
                           }),
                         500,
                       )}
                     >
                       {curPhotoInfo?.likedStatus === 1 ? (
-                        <Icon className="icon-likefill" addClassName="text-22 text-red" />
+                        <Icon
+                          className="icon-likefill"
+                          addClassName="text-22 text-red"
+                        />
                       ) : (
-                        <Icon className="icon-like" addClassName="text-22 text-black" />
+                        <Icon
+                          className="icon-like"
+                          addClassName="text-22 text-black"
+                        />
                       )}
                     </button>
                   </div>
@@ -207,16 +255,23 @@ const Index = () => {
                         () =>
                           onUserPhotoFavorite({
                             favoriteId: curPhotoInfo?.id,
-                            favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
+                            favoriteStatus:
+                              curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
                             favoriteType: 0,
                           }),
                         500,
                       )}
                     >
                       {curPhotoInfo?.favoriteStatus === 1 ? (
-                        <Icon className="icon-favorfill" addClassName="text-22 text-yellow-400" />
+                        <Icon
+                          className="icon-favorfill"
+                          addClassName="text-22 text-yellow-400"
+                        />
                       ) : (
-                        <Icon className="icon-favor" addClassName="text-22 text-black" />
+                        <Icon
+                          className="icon-favor"
+                          addClassName="text-22 text-black"
+                        />
                       )}
                     </button>
                   </div>
@@ -269,8 +324,8 @@ const Index = () => {
                       <Menu
                         items={[
                           {
-                            label: "编辑",
-                            value: "edit",
+                            label: '编辑',
+                            value: 'edit',
                           },
                         ]}
                         align="right"
@@ -280,8 +335,15 @@ const Index = () => {
                         }}
                         setLeft={setMMoreMenuLeft}
                       >
-                        <button type="button" className="inline-flex button-reset align-top" onClick={toggleMMoreMenu}>
-                          <Icon className="icon-moreandroid" addClassName="text-20 text-black" />
+                        <button
+                          type="button"
+                          className="inline-flex button-reset align-top"
+                          onClick={toggleMMoreMenu}
+                        >
+                          <Icon
+                            className="icon-moreandroid"
+                            addClassName="text-20 text-black"
+                          />
                         </button>
                       </Menu>
                     </div>
@@ -291,14 +353,22 @@ const Index = () => {
             </div>
             {/* 图片标题 */}
             <div className="font-medium text-black mb-8 md:mb-16 ">
-              <h1 className="story__title text-14 md:text-16 lg:text-18 leading-normal" data-target="translations.title">
+              <h1
+                className="story__title text-14 md:text-16 lg:text-18 leading-normal"
+                data-target="translations.title"
+              >
                 {curPhotoInfo?.title}
               </h1>
             </div>
 
             {/* 图片详情 */}
-            <div className="wysiwyg wysiwyg--story mb-8 sm:mb-16" data-target="translations.body">
-              <div dangerouslySetInnerHTML={{ __html: curPhotoInfo?.description }}></div>
+            <div
+              className="wysiwyg wysiwyg--story mb-8 sm:mb-16"
+              data-target="translations.body"
+            >
+              <div
+                dangerouslySetInnerHTML={{ __html: curPhotoInfo?.description }}
+              ></div>
               {/* <p>
                 {curPhotoInfo?.tags?.length
                   ? curPhotoInfo?.tags.map((tag) => (
@@ -312,15 +382,33 @@ const Index = () => {
 
             {/* 图片扩展信息 */}
             <div className="flex flex-wrap -mx-8 text-12 leading-sm lg:text-14 lg:leading-md">
-              <div className={classnames("items-center px-8", curPhotoInfo?.mood ? "flex" : "hidden")}>
-                <Icon className={MoodEnum?.[curPhotoInfo?.mood!]?.icon} addClassName="text-14 lg:text-16 mr-4" />
+              <div
+                className={classnames(
+                  'items-center px-8',
+                  curPhotoInfo?.mood ? 'flex' : 'hidden',
+                )}
+              >
+                <Icon
+                  className={MoodEnum?.[curPhotoInfo?.mood!]?.icon}
+                  addClassName="text-14 lg:text-16 mr-4"
+                />
                 <span>{MoodEnum?.[curPhotoInfo?.mood!]?.text}</span>
               </div>
 
-              <div className={classNames("items-center px-8", curPhotoInfo?.place ? "flex" : "hidden")}>
+              <div
+                className={classNames(
+                  'items-center px-8',
+                  curPhotoInfo?.place ? 'flex' : 'hidden',
+                )}
+              >
                 <Icon className="icon-map" addClassName="text-14 lg:text-16" />
-                <a className="text-inherit ml-4 cursor-pointer" onClick={() => console.log("place-->", curPhotoInfo?.place)}>
-                  <span className="block lg:truncate lg:max-w-200">{curPhotoInfo?.place}</span>
+                <a
+                  className="text-inherit ml-4 cursor-pointer"
+                  onClick={() => console.log('place-->', curPhotoInfo?.place)}
+                >
+                  <span className="block lg:truncate lg:max-w-200">
+                    {curPhotoInfo?.place}
+                  </span>
                 </a>
               </div>
               {/* 
@@ -491,43 +579,69 @@ const Index = () => {
 
             {/* 相机信息 */}
             <div className="hidden lg:block mt-48">
-              <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">{t("common.exif")}</div>
+              <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
+                {t('common.exif')}
+              </div>
 
               <div className="flex flex-wrap -mx-8 -my-8 lg:-my-12 break-words">
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                  <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.brand")}</div>
+                  <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                    {t('common.brand')}
+                  </div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_brand || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">
+                    {curPhotoInfo?.exif_brand || '无'}
+                  </div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                  <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.model")}</div>
+                  <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                    {t('common.model')}
+                  </div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_model || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">
+                    {curPhotoInfo?.exif_model || '无'}
+                  </div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                  <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.aperture")}</div>
+                  <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                    {t('common.aperture')}
+                  </div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_aperture || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">
+                    {curPhotoInfo?.exif_aperture || '无'}
+                  </div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                  <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.focalLength")}</div>
+                  <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                    {t('common.focalLength')}
+                  </div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_focal_length || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">
+                    {curPhotoInfo?.exif_focal_length || '无'}
+                  </div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                  <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.shutterSpeed")}</div>
+                  <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                    {t('common.shutterSpeed')}
+                  </div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_shutter_speed || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">
+                    {curPhotoInfo?.exif_shutter_speed || '无'}
+                  </div>
                 </div>
 
                 <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                  <div className="text-12 lg:text-14 leading-md lg:mb-8">ISO</div>
+                  <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                    ISO
+                  </div>
 
-                  <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_iso || "无"}</div>
+                  <div className="text-14 lg:text-16 text-black">
+                    {curPhotoInfo?.exif_iso || '无'}
+                  </div>
                 </div>
               </div>
             </div>
@@ -536,26 +650,44 @@ const Index = () => {
 
         {/* 评论 底部内容 区 */}
         <div className="flex-none lg:w-384 lg:flex flex-col lg:overflow-hidden">
-          <div className="flex-none relative p-16 md:p-24 story__meta z-1 hidden lg:block" data-target="story.meta">
+          <div
+            className="flex-none relative p-16 md:p-24 story__meta z-1 hidden lg:block"
+            data-target="story.meta"
+          >
             <div className="flex items-center">
               <div className="flex-none">
                 <div className="avatar">
-                  <img src={curPhotoInfo?.user?.avatar_url} width="48" height="48" alt="" className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full" />
+                  <img
+                    src={curPhotoInfo?.user?.avatar_url}
+                    width="48"
+                    height="48"
+                    alt=""
+                    className="avatar__photo is-loaded w-[48px] h-[48px] object-cover rounded-full"
+                  />
                 </div>
               </div>
 
               <div className="ml-16 flex-grow min-w-0">
                 <div className="flex items-center">
                   <div className="text-16 min-w-0">
-                    <a href={`/userDetail?id=${curPhotoInfo?.user_id}`} className="text-black font-medium block truncate">
-                      <span className="block">{curPhotoInfo?.user?.display_name || curPhotoInfo?.user?.username}</span>
+                    <a
+                      href={`/userDetail?id=${curPhotoInfo?.user_id}`}
+                      className="text-black font-medium block truncate"
+                    >
+                      <span className="block">
+                        {curPhotoInfo?.user?.display_name ||
+                          curPhotoInfo?.user?.username}
+                      </span>
                     </a>
                   </div>
                 </div>
 
                 <div className="text-14 leading-md truncate">
-                  <time dateTime="2022-06-07T13:46:45+00:00" title="2022-06-07T13:46:45+00:00">
-                    {t("common.published")}&nbsp;
+                  <time
+                    dateTime="2022-06-07T13:46:45+00:00"
+                    title="2022-06-07T13:46:45+00:00"
+                  >
+                    {t('common.published')}&nbsp;
                     {dayjs(curPhotoInfo?.create_time).fromNow()}
                   </time>
                 </div>
@@ -565,8 +697,8 @@ const Index = () => {
                   <Menu
                     items={[
                       {
-                        label: "编辑",
-                        value: "edit",
+                        label: '编辑',
+                        value: 'edit',
                       },
                     ]}
                     align="right"
@@ -576,8 +708,15 @@ const Index = () => {
                     }}
                     setLeft={setMoreMenuLeft}
                   >
-                    <button type="button" className="inline-flex button-reset align-top" onClick={toggleMoreMenu}>
-                      <Icon className="icon-settings" addClassName="text-16 md:text-18" />
+                    <button
+                      type="button"
+                      className="inline-flex button-reset align-top"
+                      onClick={toggleMoreMenu}
+                    >
+                      <Icon
+                        className="icon-settings"
+                        addClassName="text-16 md:text-18"
+                      />
                     </button>
                   </Menu>
                 </div>
@@ -603,9 +742,15 @@ const Index = () => {
                     )}
                   >
                     {curPhotoInfo?.likedStatus === 1 ? (
-                      <Icon className="icon-likefill" addClassName="text-red text-22" />
+                      <Icon
+                        className="icon-likefill"
+                        addClassName="text-red text-22"
+                      />
                     ) : (
-                      <Icon className="icon-like" addClassName="text-black text-22" />
+                      <Icon
+                        className="icon-like"
+                        addClassName="text-black text-22"
+                      />
                     )}
                   </button>
                 </div>
@@ -619,16 +764,23 @@ const Index = () => {
                       () =>
                         onUserPhotoFavorite({
                           favoriteId: curPhotoInfo?.id,
-                          favoriteStatus: curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
+                          favoriteStatus:
+                            curPhotoInfo?.favoriteStatus === 1 ? 0 : 1,
                           favoriteType: 0,
                         }),
                       500,
                     )}
                   >
                     {curPhotoInfo?.favoriteStatus === 1 ? (
-                      <Icon className="icon-favorfill" addClassName="text-yellow-400 text-22" />
+                      <Icon
+                        className="icon-favorfill"
+                        addClassName="text-yellow-400 text-22"
+                      />
                     ) : (
-                      <Icon className="icon-favor" addClassName="text-black text-22" />
+                      <Icon
+                        className="icon-favor"
+                        addClassName="text-black text-22"
+                      />
                     )}
                   </button>
                 </div>
@@ -678,17 +830,23 @@ const Index = () => {
                 </div> */}
 
                 <div className="pl-12 pr-8 leading-none lg:hidden">
-                  <button type="button" className="inline-flex button-reset align-top">
-                    <Icon className="icon-moreandroid" addClassName="text-24 text-black" />
+                  <button
+                    type="button"
+                    className="inline-flex button-reset align-top"
+                  >
+                    <Icon
+                      className="icon-moreandroid"
+                      addClassName="text-24 text-black"
+                    />
                   </button>
                   <div
                     className="absolute z-50 bg-black-95 rounded whitespace-no-wrap min-w-128 shadow-sm "
                     style={{
-                      position: "absolute",
-                      transform: "translate3d(0px, 5px, 0px)",
-                      top: "0px",
-                      left: "0px",
-                      willChange: "transform",
+                      position: 'absolute',
+                      transform: 'translate3d(0px, 5px, 0px)',
+                      top: '0px',
+                      left: '0px',
+                      willChange: 'transform',
                     }}
                   >
                     <div className="flex flex-col text-left py-12 text-16 leading-lg">
@@ -723,7 +881,12 @@ const Index = () => {
           </div>
 
           {/* 评论列表 */}
-          <Comments className="bg-grey-99" addClassName="p-16 md:p-24 md:px-32 lg:px-24" type="photo" targetId={curPhotoInfo?.id} />
+          <Comments
+            className="bg-grey-99"
+            addClassName="p-16 md:p-24 md:px-32 lg:px-24"
+            type="photo"
+            targetId={curPhotoInfo?.id}
+          />
 
           {/* mobile 底部区域 */}
           {/* <div className="p-16 md:p-32 lg:hidden">
@@ -738,49 +901,79 @@ const Index = () => {
 
           {/* mobile 设备参数 */}
           <div className="p-16 md:p-32 lg:hidden">
-            <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">{t("common.exif")}</div>
+            <div className="text-14 leading-md lg:text-18 lg:leading-sm text-black font-medium mb-16 lg:mb-24">
+              {t('common.exif')}
+            </div>
 
             <div className="flex flex-wrap -mx-8 -my-8 lg:-my-12 break-words">
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.brand")}</div>
+                <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                  {t('common.brand')}
+                </div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_brand || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">
+                  {curPhotoInfo?.exif_brand || '无'}
+                </div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.model")}</div>
+                <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                  {t('common.model')}
+                </div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_model || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">
+                  {curPhotoInfo?.exif_model || '无'}
+                </div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.aperture")}</div>
+                <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                  {t('common.aperture')}
+                </div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_aperture || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">
+                  {curPhotoInfo?.exif_aperture || '无'}
+                </div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.focalLength")}</div>
+                <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                  {t('common.focalLength')}
+                </div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_focal_length || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">
+                  {curPhotoInfo?.exif_focal_length || '无'}
+                </div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
-                <div className="text-12 lg:text-14 leading-md lg:mb-8">{t("common.shutterSpeed")}</div>
+                <div className="text-12 lg:text-14 leading-md lg:mb-8">
+                  {t('common.shutterSpeed')}
+                </div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_shutter_speed || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">
+                  {curPhotoInfo?.exif_shutter_speed || '无'}
+                </div>
               </div>
 
               <div className="p-8 lg:py-12 w-1/2 md:w-1/3">
                 <div className="text-12 lg:text-14 leading-md lg:mb-8">ISO</div>
 
-                <div className="text-14 lg:text-16 text-black">{curPhotoInfo?.exif_iso || "无"}</div>
+                <div className="text-14 lg:text-16 text-black">
+                  {curPhotoInfo?.exif_iso || '无'}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      {showAddPhotoModal ? <AddPhotoModal visible={showAddPhotoModal} setModalLeft={setAddPhotoModalLeft} value={curPhotoInfo} /> : null}
+      {showAddPhotoModal ? (
+        <AddPhotoModal
+          visible={showAddPhotoModal}
+          setModalLeft={setAddPhotoModalLeft}
+          value={curPhotoInfo}
+        />
+      ) : null}
     </div>
   );
 };

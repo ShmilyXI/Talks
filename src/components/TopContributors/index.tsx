@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
 import Api from "@/service/index";
-import Icon from "@components/Icon";
+import Icon from "@/components/Icon";
 
 type ContributorItem = {
   avatar: string;

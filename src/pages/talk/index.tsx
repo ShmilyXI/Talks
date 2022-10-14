@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import TalkList from "@components/TalkList";
+import TalkList from "@/components/TalkList";
 import TopContributors from "@/components/TopContributors";
 import UnansweredTalks from "@/components/UnansweredTalks";
 

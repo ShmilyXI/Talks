@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import Icon from "@components/Icon";
+import Icon from "@/components/Icon";
 import { useClickAway, useToggle } from "ahooks";
 import classnames from "classnames";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { Storage } from "@/utils/storage";
 import toast from "react-hot-toast";
 import type { IItem } from "@/components/Menu";
 import Menu from "@/components/Menu/index";
 import { useTranslation } from "react-i18next";
-import AddPhotoModal from "@components/AddPhotoModal";
+import AddPhotoModal from "@/components/AddPhotoModal";
 import { BaseUserInfo } from "@/types/UserTypes";
 import { toggleBodyOverflow } from "@/utils/common";
 
 const Index = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [activeMenuItem, setActiveMenuItem] = useState<IItem>();
   const [showMenu, { toggle: toggleMenu, setLeft: setMenuLeft }] = useToggle();
@@ -94,7 +94,7 @@ const Index = () => {
 
   // 路由跳转
   const goRoute = (path: string) => {
-    router.push(path);
+    navigate(path);
   };
 
   // menu搜索框查询

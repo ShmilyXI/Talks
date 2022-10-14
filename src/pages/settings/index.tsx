@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Filter from "@components/Filter";
-import Menu, { IItem } from "@components/Menu";
+import Filter from "@/components/Filter";
+import Menu, { IItem } from "@/components/Menu";
 import Form, { Field } from "rc-field-form";
 import toast from "react-hot-toast";
 import classnames from "classnames";
 import { Storage } from "@/utils/storage";
 import Api from "@/service";
-import { useRouter } from "next/router";
 import _ from "lodash";
-import Place from "@components/AddPhotoModal/place";
+import Place from "@/components/AddPhotoModal/place";
 
 const Index = () => {
   const [tempFile, setTempFile] = useState<any>(); // 暂存上传的图片文件
@@ -16,7 +15,6 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<any>();
   const [form] = Form.useForm();
-  const router = useRouter();
 
   useEffect(() => {
     const storage = new Storage(sessionStorage, "Talks");
@@ -90,7 +88,8 @@ const Index = () => {
       storage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       await toast.success("提交成功!");
-      router.reload();
+      location.reload();
+
     } catch (error) {
       setLoading(false);
     }

@@ -865,7 +865,7 @@ textarea.input {
     white-space: nowrap;
 }
 .story-list__special {
-    background-image: url(/img/stories/bg-confetti-white.svg);
+    /* background-image: url(/img/stories/bg-confetti-white.svg); */
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -1034,6 +1034,18 @@ textarea.input {
     position: relative;
     width: auto;
 }
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 5rem 1rem 1rem;
+    }
+    .modal__close{
+        margin:0;
+        padding: 1rem;
+    }
+    .input.story-form__input--title{
+        max-width: 90%;
+    }
+}
 @media (min-width: 576px) {
     .modal-dialog {
         margin: 1rem;
@@ -1069,7 +1081,7 @@ textarea.input {
     }
 }
 .modal-content--confetti {
-    background-image: url(/img/stories/bg-confetti.svg);
+    /* background-image: url(/img/stories/bg-confetti.svg); */
     background-repeat: no-repeat;
     background-position: 50% 0;
     background-size: contain;
@@ -1890,14 +1902,14 @@ input[type="radio"]:disabled ~ .radio__icon {
 }
 @media (min-width: 768px) {
     .about-page__founder {
-        background-image: url(/img/about/bg-founder.jpg);
+        /* background-image: url(/img/about/bg-founder.jpg); */
         background-position: 50% 100%;
         background-repeat: no-repeat;
         background-size: 1177px;
     }
 }
 .guide-page__header {
-    background: url(/img/guides/blob.svg) no-repeat;
+    /* background: url(/img/guides/blob.svg) no-repeat; */
     background-position: 50% 32px;
 }
 @media (min-width: 768px) {
@@ -1906,12 +1918,12 @@ input[type="radio"]:disabled ~ .radio__icon {
     }
 }
 .improve-page__hero {
-    background: #000 url(/img/improve-photography/bg-hero.jpg) 50% 0 no-repeat;
+    /* background: #000 url(/img/improve-photography/bg-hero.jpg) 50% 0 no-repeat; */
     background-size: contain;
 }
 @media only screen and (min-device-pixel-ratio: 1.25) {
     .improve-page__hero {
-        background-image: url(/img/improve-photography/bg-hero.jpg);
+        /* background-image: url(/img/improve-photography/bg-hero.jpg); */
     }
 }
 .atwho-view {
@@ -2284,7 +2296,7 @@ input[type="radio"]:disabled ~ .radio__icon {
     font-weight: 400 !important;
 }
 .pac-logo:after {
-    background: url(/img/places/logo-google@2x.png) no-repeat !important;
+    /* background: url(/img/places/logo-google@2x.png) no-repeat !important; */
     background-position: right 0.375rem bottom 6px !important;
     background-size: 7.5rem 0.875rem !important;
     height: 1.625rem !important;
@@ -3913,10 +3925,10 @@ body.guillotine-dragging * {
     cursor: help;
 }
 .cursor-zoom-in {
-    cursor: url(/cursors/zoom-in.cur), pointer;
+    /* cursor: url(/cursors/zoom-in.cur), pointer; */
 }
 .cursor-zoom-out {
-    cursor: url(/cursors/zoom-out.cur), pointer;
+    /* cursor: url(/cursors/zoom-out.cur), pointer; */
 }
 .filter-grayscale {
     -webkit-filter: grayscale(100%);
