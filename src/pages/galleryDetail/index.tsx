@@ -3,7 +3,7 @@ import { GetGalleryDetailResponse } from "@/types/GalleryTypes";
 import Filter from "@/components/Filter";
 import PhotoList from "@/components/PhotoList";
 import _ from "lodash";
-import { useParams } from 'umi';
+import { useSearchParams } from "umi";
 import React, { useEffect, useState } from "react";
 import { Storage } from "@/utils/storage";
 import classNames from "classnames";
@@ -11,8 +11,8 @@ import { UserFavoriteRequest } from "@/types/UserTypes";
 import toast from "react-hot-toast";
 
 const Index = () => {
-  const routeParams = useParams();
-  const { id } = routeParams;
+  const [routeParams] = useSearchParams();
+  const id = routeParams.get("id");
   const [isLogin, setIsLogin] = useState(false); // 是否是登录状态
   const [dataType, setDataType] = useState("popular");
   const [photoList, setPhotoList] = useState([]);

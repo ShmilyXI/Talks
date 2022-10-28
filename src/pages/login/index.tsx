@@ -1,8 +1,8 @@
 import Icon from "@/components/Icon";
 import { useToggle, useSetState, useRequest } from "ahooks";
 import classnames from "classnames";
-import React, { useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Storage } from "@/utils/storage";
 import toast from "react-hot-toast";
 import Api from "@/service";
@@ -14,28 +14,29 @@ interface State {
 }
 
 const Login = () => {
-  const routeParams = useParams();
+  const [routeParams] = useSearchParams();
   const navigate = useNavigate();
-  const { signIn } = routeParams;
+  const isFirstSignIn = routeParams.get("signIn") === "1";
 
-  const [showSignIn, { toggle: toggleSignIn, setLeft: setSignInLeft, setRight: setSignInRight }] = useToggle(false);
-  const [showSwitch, { setLeft: setSwitchLeft, setRight: setSwitchRight }] = useToggle(false);
+  const [showSignIn, { toggle: toggleSignIn, setLeft: setSignInLeft, setRight: setSignInRight }] = useToggle(isFirstSignIn);
 
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [state, setState] = useSetState<State>({ formValue: {} });
 
   const timer = useRef<NodeJS.Timeout>();
 
-  useEffect(() => {
-    if (signIn === "1") {
-      setSignInRight();
-    } else {
-      setSignInLeft();
-    }
-    return () => {
-      clearTimeout(timer.current);
-      setState({});
-    };
-  }, [signIn]);
+  // useEffect(() => {
+  //   if (isFirstSignIn) {
+  //     setSignInRight();
+  //     setIsFirstLogin(true);
+  //   } else {
+  //     setSignInLeft();
+  //   }
+  //   return () => {
+  //     clearTimeout(timer.current);
+  //     setState({});
+  //   };
+  // }, [isFirstSignIn]);
 
   // 注册
   const onRegister = async () => {
@@ -43,6 +44,7 @@ const Login = () => {
     toast.success("注册成功");
     transformForm(_.pick(state.formValue?.[0], ["telephone", "password"]));
   };
+
   // 登录
   const onLogin = async () => {
     const { data, token } = await Api.userLogin({
@@ -61,13 +63,10 @@ const Login = () => {
     }
   };
 
+  // 切换登录注册页
   const transformForm = (formValue = {}) => {
     setState({ formValue });
     toggleSignIn();
-    setSwitchRight();
-    timer.current = setTimeout(() => {
-      setSwitchLeft();
-    }, 1000);
   };
 
   const onInputChange = (data: any) => {
@@ -189,7 +188,6 @@ const Login = () => {
         <div
           className={classnames("switch flex justify-center items-center absolute top-0 left-0 h-full w-[400px] p-[50px] z-[200] overflow-hidden", {
             "is-txr": showSignIn,
-            "is-gx": showSwitch,
           })}
         >
           <div

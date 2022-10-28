@@ -123,9 +123,6 @@
     position: absolute;
     transition: @transition;
   }
-  .is-gx {
-    animation: is-gx @transition;
-  }
   .is-m-left {
     left: calc(100% - 32px);
   }
@@ -147,17 +144,6 @@
     }
     50% {
       transform: translateX(-3px);
-    }
-  }
-  @keyframes is-gx {
-    0%,
-    10%,
-    100% {
-      width: 400px;
-    }
-    30%,
-    50% {
-      width: 500px;
     }
   }
 }

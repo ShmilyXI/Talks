@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useIsomorphicLayoutEffect, useRequest } from "ahooks";
 import dayjs from "dayjs";
@@ -13,9 +13,9 @@ import toast from "react-hot-toast";
 import { scrollToElement } from "@/utils/common";
 
 const Detail = () => {
-  const routeParams = useParams();
+  const [routeParams] = useSearchParams();
   const navigate = useNavigate();
-  const { id } = routeParams;
+  const id = routeParams.get("id");
   const [detailInfo, setDetailInfo] = useState<TalkItem>();
 
   useEffect(() => {

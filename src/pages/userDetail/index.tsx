@@ -1,7 +1,7 @@
 import Api from "@/service/index";
 import { useRequest } from "ahooks";
 import React, { useEffect, useState } from "react";
-import { useParams } from 'umi';
+import { useSearchParams } from "umi";
 import { PhotoList, Filter, Icon } from "@/components";
 import _ from "lodash";
 import { BaseUserInfo } from "@/types/UserTypes";
@@ -9,8 +9,8 @@ import classnames from "classnames";
 import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
 
 const UserDetail = () => {
-  const routeParams = useParams();
-  const { id } = routeParams;
+  const [routeParams] = useSearchParams();
+  const id = routeParams.get("id");
 
   const [userInfo, setUserInfo] = useState<BaseUserInfo>(); // 用户信息
   const [photoList, setPhotoList] = useState<PhotoListType[]>(); // 用户照片列表

@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Filter, Icon } from "@/components";
 import { useInfiniteScroll, usePagination } from "ahooks";
 import Api from "@/service";
-import { useParams } from 'umi';
 import { UserFavoriteRequest } from "@/types/UserTypes";
 import toast from "react-hot-toast";
 import _ from "lodash";
 
 const PAGE_SIZE = 20;
 const Index = () => {
-  const routeParams = useParams();
-
   const [dataType, setDataType] = useState("selected");
 
   const {
@@ -31,7 +28,7 @@ const Index = () => {
     },
     {
       manual: true,
-      reloadDeps:[dataType]
+      reloadDeps: [dataType],
     },
   );
 
