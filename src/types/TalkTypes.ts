@@ -1,6 +1,6 @@
-import { CommentItem } from './CommentTypes';
-import { common } from './types';
-import { BaseUserInfo } from './UserTypes';
+import { CommentItem } from "./CommentTypes";
+import { common } from "./types";
+import { BaseUserInfo } from "./UserTypes";
 
 export interface talk_commentsAttributes {
   id: number;
@@ -66,6 +66,10 @@ export interface AddTalkResponse extends common.Response {}
 export interface AddTalkRequest {
   title: string;
   content: string;
+}
+
+export interface UploadImageResponse extends common.Response {
+  data?: string;
 }
 
 export interface UpdateTalkResponse extends common.Response {}

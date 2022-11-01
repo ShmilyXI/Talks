@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { IItem } from "@/components/Menu";
 import _ from "lodash";
 import AddTalkModal from "@/components/AddTalkModal";
+import toast from "react-hot-toast";
 
 type articleItem = {
   avatar: string;
@@ -24,7 +25,7 @@ type articleItem = {
 
 const Index = () => {
   const navigate = useNavigate();
-  const [dataType, setDataType] = useState("active");
+  const [dataType, setDataType] = useState("recent");
 
   const [showAddTalkModal, { toggle: toggleAddTalkModal, setLeft: setAddTalkModalLeft }] = useToggle(false); // 是否展示添加讨论弹窗
 
@@ -63,14 +64,14 @@ const Index = () => {
         <div className="flex items-center">
           <h1 className="hidden md:block text-16 leading-normal sm:text-24 md:text-28 lg:text-32 sm:leading-xs">Talks </h1>
           <button type="button" className="hidden md:block button button--primary ml-16 md:ml-auto" onClick={toggleAddTalkModal}>
-            Create new talk
+            创建新讨论
           </button>
         </div>
         <div className="flex">
           <Filter
             items={[
-              { label: "活跃的", value: "active" },
               { label: "最近的", value: "recent" },
+              { label: "活跃的", value: "active" },
               { label: "未答复", value: "unanswered" },
               { label: "受欢迎的", value: "popular" },
               { label: "精选", value: "featured" },
@@ -84,7 +85,7 @@ const Index = () => {
             }}
           />
           <button type="button" className="block md:hidden button button--primary ml-16 md:ml-auto" onClick={toggleAddTalkModal}>
-            Create new talk
+            创建新讨论
           </button>
         </div>
       </div>
@@ -94,7 +95,7 @@ const Index = () => {
           {/* 列表 */}
           {talkData?.list?.length
             ? talkData.list.map((item) => (
-                <div className="flex items-start py-12 md:py-16" key={item.title}>
+                <div className="flex items-start py-12 md:py-16" key={item.id}>
                   {/* 头像 */}
                   <div className="flex-none mr-24 md:mr-48 hidden sm:block">
                     <a href={`/userDetail?id=${item.user_id}`} target="_blank" className="avatar">
@@ -144,7 +145,7 @@ const Index = () => {
                               onClick={() => goRoute(`/userDetail?id=${comment.user_id}`)}
                               className="avatar border-2 border-white -ml-12 relative z-3 cursor-pointer"
                               target="_blank"
-                              key={comment.user_id}
+                              key={comment.id}
                             >
                               <img src={comment.user_avatar_url} width="28" height="28" alt="" className="avatar__photo is-loaded w-[28px] h-[28px] object-cover rounded-full" />
                             </a>

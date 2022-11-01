@@ -2,8 +2,8 @@
 import {
   GetPhotoListRequest,
   GetPhotoListResponse,
-  GetPhotoListByUserIdRequest,
-  GetPhotoListByUserIdResponse,
+  GetUserPhotoListRequest,
+  GetUserPhotoListResponse,
   PhotoDetailInfoRequest,
   PhotoDetailInfoResponse,
   PublishPhotoRequest,
@@ -28,9 +28,9 @@ const photoApi = {
     url: "/photo/photo-detail-info",
     method: "GET",
   }),
-  /** 获取照片列表,根据用户id **/
-  getPhotoListByUserId: createApi<GetPhotoListByUserIdResponse, RequestGetType<GetPhotoListByUserIdRequest>>({
-    url: "/photo/get-photo-list-by-user-id",
+  /** 获取用户照片列表 **/
+  getUserPhotoList: createApi<GetUserPhotoListResponse, RequestGetType<GetUserPhotoListRequest>>({
+    url: "/photo/get-user-photo-list",
     method: "GET",
   }),
   /** 上传照片 **/

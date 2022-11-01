@@ -22,8 +22,8 @@ const UserDetail = () => {
     setUserInfo(data);
   };
 
-  const getPhotoListByUserId = async (id: number) => {
-    const { data = {} }: any = await Api.getPhotoListByUserId({
+  const getUserPhotoList = async (id: number) => {
+    const { data = {} }: any = await Api.getUserPhotoList({
       params: { id },
     });
     setPhotoList(data?.list || []);
@@ -32,7 +32,7 @@ const UserDetail = () => {
   useEffect(() => {
     if (_.isNil(id)) return;
     getUserInfo(+id);
-    getPhotoListByUserId(+id);
+    getUserPhotoList(+id);
   }, [id]);
 
   return (
@@ -50,8 +50,8 @@ const UserDetail = () => {
               />
             </div>
             {/* 个人徽章 */}
-            <div className="absolute flex flex-col items-end grid:items-start grid:flex-row pin-r top-[32px] grid:pin-b grid:pin-t-auto grid:pin-r-center grid:h-auto w-36 grid:w-108 -mr-16 grid:mr-0 grid:-mb-18 z-1">
-              <div className="flex-none grid:px-2 order-1 w-24 grid:w-36 cursor-pointer">
+            <div className="absolute flex flex-col items-end grid:items-start grid:flex-row pin-r top-[12px] md:top-[32px] grid:pin-b grid:pin-t-auto grid:pin-r-center grid:h-auto w-36 grid:w-108 -mr-16 grid:mr-0 grid:-mb-18 z-1">
+              <div className="flex-none grid:px-2 order-1 grid:w-36 cursor-pointer">
                 <img src="https://tookapic.com/img/badges/1000-photo-club.svg" width="32" height="32" alt="" className="block is-loaded" />
               </div>
 
@@ -59,7 +59,7 @@ const UserDetail = () => {
                 <img src="https://tookapic.com/img/badges/motor-mouth.svg" width="32" height="32" alt="" className="block is-loaded" />
               </div>
 
-              <div className="flex-none pr-11 grid:px-2 grid:-mt-8 order-2 w-35 grid:w-36 cursor-pointer">
+              <div className="flex-none md:pr-5 pr-11 grid:px-2 grid:-mt-8 w-35 order-2 grid:w-36 cursor-pointer">
                 <img src="https://tookapic.com/img/badges/senior.svg" width="32" height="32" alt="" className="block is-loaded" />
               </div>
             </div>
@@ -197,7 +197,7 @@ const UserDetail = () => {
           </div>
         </div>
       </div> */}
-      <PhotoList getData={() => getPhotoListByUserId(+id)} list={photoList} isDetail />
+      <PhotoList getData={() => getUserPhotoList(+id)} list={photoList} isDetail />
     </div>
   );
 };

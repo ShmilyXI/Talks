@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 // 千分位分割
 export const formatPrice = (price: number) => {
   return String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -19,4 +21,12 @@ export const toggleBodyOverflow = (flag: boolean) => {
 export const scrollToElement = (element: HTMLElement) => {
   if (!document.body || !element) return;
   element.scrollIntoView();
+};
+
+export const sleep = (time = 3000) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(undefined);
+    }, time);
+  });
 };

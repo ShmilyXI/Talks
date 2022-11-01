@@ -129,10 +129,10 @@ export interface UpdatePhotoRequest {
 }
 export interface UpdatePhotoResponse extends common.Response {}
 
-export interface GetPhotoListByUserIdRequest {
+export interface GetUserPhotoListRequest {
   id: number;
 }
-export interface GetPhotoListByUserIdResponse extends common.Response {
+export interface GetUserPhotoListResponse extends common.Response {
   data?: {
     list: PhotoList[];
   };

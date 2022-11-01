@@ -26,9 +26,14 @@ const talkApi = {
     url: "/talk/get-unanswered-list",
     method: "GET",
   }),
+  /** 上传图片 **/
+  uploadImage: createApi<TalkTypes.UploadImageResponse, RequestPostType<CommonReq>>({
+    url: "/talk/upload-image",
+    method: "POST",
+  }),
   /** 新增讨论 **/
   addTalk: createApi<TalkTypes.AddTalkResponse, RequestPostType<TalkTypes.AddTalkRequest>>({
-    url: "/talk/upload-talk",
+    url: "/talk/add-talk",
     method: "POST",
   }),
   /** 编辑讨论 **/

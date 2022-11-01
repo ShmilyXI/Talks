@@ -1,30 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Editor, Toolbar } from '@wangeditor/editor-for-react';
-import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor';
-import '@wangeditor/editor/dist/css/style.css'; // 引入 css
+import React, { useState, useEffect, FC, useMemo, useRef } from "react";
+import { Editor, Toolbar } from "@wangeditor/editor-for-react";
+import { DomEditor, IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor";
+import _ from "lodash";
+import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 
-function BaseEditor(props) {
-  // editor 实例
+interface IProps {
+  toolbarConfig?: Partial<IToolbarConfig>;
+  editorConfig?: Partial<IEditorConfig>;
+  onChange?: (value: string) => void;
+}
+
+const BaseEditor: FC<IProps> = (props) => {
+  const { onChange } = props;
   const [editor, setEditor] = useState<IDomEditor | null>(null); // TS 语法
-  // const [editor, setEditor] = useState(null)                   // JS 语法
 
   // 编辑器内容
   const [html, setHtml] = useState<string>();
 
-  // 工具栏配置
-  const toolbarConfig: Partial<IToolbarConfig> = {}; // TS 语法
-  // const toolbarConfig = { }                        // JS 语法
-
-  // 编辑器配置
-  const editorConfig: Partial<IEditorConfig> = {
-    // TS 语法
-    // const editorConfig = {                         // JS 语法
-    placeholder: '请输入内容...',
-  };
-
-  // 及时销毁 editor ，重要！
   useEffect(() => {
     return () => {
+      // 及时销毁 editor ，重要！
       if (editor == null) return;
       editor.destroy();
       setEditor(null);
@@ -33,25 +28,25 @@ function BaseEditor(props) {
 
   return (
     <>
-      <div style={{ border: '1px solid #ccc', zIndex: 100 }}>
-        <Toolbar
-          editor={editor}
-          defaultConfig={toolbarConfig}
-          mode="default"
-          style={{ borderBottom: '1px solid #ccc' }}
-        />
+      <div style={{ border: "1px solid #eaeaea", zIndex: 100 }}>
+        <Toolbar editor={editor} defaultConfig={props?.toolbarConfig} mode="default" style={{ borderBottom: "1px solid #eaeaea" }} />
         <Editor
-          defaultConfig={editorConfig}
+          defaultConfig={props?.editorConfig}
           value={html}
           onCreated={setEditor}
-          onChange={(editor) => setHtml(editor.getHtml())}
+          onChange={(editor) => {
+            const isEmpty = editor.isEmpty();
+            const nowHtml = editor.getHtml();
+            setHtml(nowHtml);
+            onChange?.(!isEmpty ? nowHtml : undefined);
+          }}
           mode="default"
-          style={{ height: '220px', overflowY: 'hidden' }}
-          {...props}
+          style={{ height: "220px", overflowY: "hidden" }}
+          {..._.omit(props, ["onChange"])}
         />
       </div>
     </>
   );
-}
+};
 
 export default BaseEditor;

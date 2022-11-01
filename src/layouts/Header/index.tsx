@@ -346,29 +346,17 @@ const Index = () => {
       {/* mobile navbar */}
       <div className="flex items-center justify-between md:hidden">
         <button type="button" className="button-reset py-20 text-black text-24 leading-none text-center w-64" onClick={toggleWrap} ref={buttonRef}>
-          <svg className="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path d="M442 114H6a6 6 0 0 1-6-6V84a6 6 0 0 1 6-6h436a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6zm0 160H6a6 6 0 0 1-6-6v-24a6 6 0 0 1 6-6h436a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6zm0 160H6a6 6 0 0 1-6-6v-24a6 6 0 0 1 6-6h436a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6z" />
-          </svg>
+          <Icon className="icon-menu" />
         </button>
-
         <a href="/" className={classnames("py-20 text-black text-24 leading-none text-center flex-1", { hidden: !isLogin })}>
-          <svg className="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-            <path d="M488 312.7V456c0 13.3-10.7 24-24 24H348c-6.6 0-12-5.4-12-12V356c0-6.6-5.4-12-12-12h-72c-6.6 0-12 5.4-12 12v112c0 6.6-5.4 12-12 12H112c-13.3 0-24-10.7-24-24V312.7c0-3.6 1.6-7 4.4-9.3l188-154.8c4.4-3.6 10.8-3.6 15.3 0l188 154.8c2.7 2.3 4.3 5.7 4.3 9.3zm83.6-60.9L488 182.9V44.4c0-6.6-5.4-12-12-12h-56c-6.6 0-12 5.4-12 12V117l-89.5-73.7c-17.7-14.6-43.3-14.6-61 0L4.4 251.8c-5.1 4.2-5.8 11.8-1.6 16.9l25.5 31c4.2 5.1 11.8 5.8 16.9 1.6l235.2-193.7c4.4-3.6 10.8-3.6 15.3 0l235.2 193.7c5.1 4.2 12.7 3.5 16.9-1.6l25.5-31c4.2-5.2 3.4-12.7-1.7-16.9z" />
-          </svg>
+          <Icon className="icon-home1" />
         </a>
-
         <a href="/messages" className={classnames("py-20 text-black text-24 leading-none text-center flex-1 relative", { hidden: !isLogin })}>
-          <svg className="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path d="M464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM48 96h416c8.8 0 16 7.2 16 16v41.4c-21.9 18.5-53.2 44-150.6 121.3-16.9 13.4-50.2 45.7-73.4 45.3-23.2.4-56.6-31.9-73.4-45.3C85.2 197.4 53.9 171.9 32 153.4V112c0-8.8 7.2-16 16-16zm416 320H48c-8.8 0-16-7.2-16-16V195c22.8 18.7 58.8 47.6 130.7 104.7 20.5 16.4 56.7 52.5 93.3 52.3 36.4.3 72.3-35.5 93.3-52.3 71.9-57.1 107.9-86 130.7-104.7v205c0 8.8-7.2 16-16 16z" />
-          </svg>
+          <Icon className="icon-mail" />
         </a>
-
         <a href="/notifications" className={classnames("py-20 text-black text-24 leading-none text-center flex-1 relative", { hidden: !isLogin })}>
-          <svg className="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path d="M433.884 366.059C411.634 343.809 384 316.118 384 208c0-79.394-57.831-145.269-133.663-157.83A31.845 31.845 0 0 0 256 32c0-17.673-14.327-32-32-32s-32 14.327-32 32c0 6.75 2.095 13.008 5.663 18.17C121.831 62.731 64 128.606 64 208c0 108.118-27.643 135.809-49.893 158.059C-16.042 396.208 5.325 448 48.048 448H160c0 35.29 28.71 64 64 64s64-28.71 64-64h111.943c42.638 0 64.151-51.731 33.941-81.941zM224 480c-17.645 0-32-14.355-32-32h64c0 17.645-14.355 32-32 32zm175.943-64H48.048c-14.223 0-21.331-17.296-11.314-27.314C71.585 353.836 96 314.825 96 208c0-70.741 57.249-128 128-128 70.74 0 128 57.249 128 128 0 106.419 24.206 145.635 59.257 180.686C421.314 398.744 414.11 416 399.943 416z" />
-          </svg>
+          <Icon className="icon-bell" />
         </a>
-
         <div
           className={classnames("flex-1 text-center", {
             hidden: !isLogin,
