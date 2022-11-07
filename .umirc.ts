@@ -1,16 +1,17 @@
 export default {
-  npmClient: 'pnpm',
+  npmClient: "pnpm",
+  title: "Talks",
   alias: {
-    '@': '/src',
-    '@components': '/src/components',
-    '@styles': '/src/styles',
+    "@": "/src",
+    "@components": "/src/components",
+    "@styles": "/src/styles",
   },
-  extraPostCSSPlugins: [require('tailwindcss')],
+  extraPostCSSPlugins: [require("tailwindcss")],
   proxy: {
-    '/api': {
-      target: 'http://127.0.0.1:3000',
+    "/api": {
+      target: "http://127.0.0.1:3000",
       pathRewrite: {
-        '^/api': '/',
+        "^/api": "/",
       },
       changeOrigin: true,
     },
