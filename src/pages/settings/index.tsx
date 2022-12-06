@@ -17,7 +17,7 @@ const Index = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    const storage = new Storage(sessionStorage, "Talks");
+    const storage = new Storage(localStorage, "Talks");
     const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
     const place = {
       value: _userInfo?.place_id,
@@ -84,7 +84,7 @@ const Index = () => {
       setTempFile(undefined);
       setTempImage(undefined);
       console.log("data", data);
-      const storage = new Storage(sessionStorage, "Talks");
+      const storage = new Storage(localStorage, "Talks");
       storage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       await toast.success("提交成功!");

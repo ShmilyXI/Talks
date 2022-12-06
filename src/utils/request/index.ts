@@ -44,7 +44,7 @@ request.middlewares.request.use(
       ctx.retCode = err.retCode;
       if (err.retCode === "-3" || err.retCode === "-4") {
         toast.error("登录态过期，请重新登录！", { id: "1" });
-        const storage = new Storage(sessionStorage, "Talks");
+        const storage = new Storage(localStorage, "Talks");
         storage.removeItem("token");
         storage.removeItem("userInfo");
         window.location.replace("/login?signIn=1");
@@ -62,7 +62,7 @@ request.middlewares.response.use(serializedResponseMiddleware());
 request.middlewares.request.use(async (ctx, next) => {
   const { config } = ctx;
   // config.params = { ...config.data, ...config.params };
-  const storage = new Storage(sessionStorage, "Talks");
+  const storage = new Storage(localStorage, "Talks");
   const token = storage.getItem("token");
   if (config.headers) config.headers.Authorization = `Bearer ${token}`;
   await next();

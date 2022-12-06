@@ -35,8 +35,8 @@ const Index = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (sessionStorage) {
-      const storage = new Storage(sessionStorage, "Talks");
+    if (localStorage) {
+      const storage = new Storage(localStorage, "Talks");
       const _isLogin = storage?.getItem("token");
       const _userInfo = JSON.parse(storage?.getItem("userInfo") || "{}");
       setIsLogin(_isLogin);
@@ -113,7 +113,7 @@ const Index = () => {
 
   // 退出登录
   const onLogout = () => {
-    const storage = new Storage(sessionStorage, "Talks");
+    const storage = new Storage(localStorage, "Talks");
     storage.removeItem("token");
     storage.removeItem("userInfo");
     goRoute("/login?signIn=1");

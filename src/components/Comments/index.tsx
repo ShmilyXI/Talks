@@ -36,7 +36,7 @@ const Comments: FC<Props> = (props) => {
   }, textareaRef);
 
   useEffect(() => {
-    const storage = new Storage(sessionStorage, "Talks");
+    const storage = new Storage(localStorage, "Talks");
     const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
     setUserInfo(_userInfo);
   }, []);

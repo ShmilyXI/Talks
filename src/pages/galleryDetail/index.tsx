@@ -32,8 +32,8 @@ const Index = () => {
   }, [dataType, id]);
 
   useEffect(() => {
-    if (sessionStorage) {
-      const storage = new Storage(sessionStorage, "Talks");
+    if (localStorage) {
+      const storage = new Storage(localStorage, "Talks");
       const _isLogin = storage?.getItem("token");
       setIsLogin(_isLogin);
     }

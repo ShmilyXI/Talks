@@ -56,7 +56,7 @@ const Login = () => {
       });
       console.log("data", data);
       if (token) {
-        const storage = new Storage(sessionStorage, "Talks");
+        const storage = new Storage(localStorage, "Talks");
         storage.setItem("token", token);
         toast.success("登录成功");
         const { data: userInfo = {} } = await Api.getUserInfo({

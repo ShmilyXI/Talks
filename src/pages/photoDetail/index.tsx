@@ -45,7 +45,7 @@ const Index = () => {
   const [showMMoreMenu, { toggle: toggleMMoreMenu, setLeft: setMMoreMenuLeft }] = useToggle(); // 是否展示更多选择下拉
 
   useEffect(() => {
-    const storage = new Storage(sessionStorage, "Talks");
+    const storage = new Storage(localStorage, "Talks");
     const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
     setUserInfo(_userInfo);
   }, []);
