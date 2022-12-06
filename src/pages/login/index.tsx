@@ -37,29 +37,36 @@ const Login = () => {
   //     setState({});
   //   };
   // }, [isFirstSignIn]);
-
   // 注册
   const onRegister = async () => {
-    await Api.userRegister({ data: state.formValue });
-    toast.success("注册成功");
-    transformForm(_.pick(state.formValue?.[0], ["telephone", "password"]));
+    try {
+      await Api.userRegister({ data: state.formValue });
+      toast.success("注册成功");
+      transformForm(_.pick(state.formValue?.[0], ["telephone", "password"]));
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   // 登录
   const onLogin = async () => {
-    const { data, token } = await Api.userLogin({
-      data: state.formValue,
-    });
-    console.log("data", data);
-    if (token) {
-      const storage = new Storage(sessionStorage, "Talks");
-      storage.setItem("token", token);
-      toast.success("登录成功");
-      const { data: userInfo = {} } = await Api.getUserInfo({
-        params: { id: +data?.id },
+    try {
+      const { data, token } = await Api.userLogin({
+        data: state.formValue,
       });
-      storage.setItem("userInfo", JSON.stringify(userInfo));
-      navigate("/", { replace: true });
+      console.log("data", data);
+      if (token) {
+        const storage = new Storage(sessionStorage, "Talks");
+        storage.setItem("token", token);
+        toast.success("登录成功");
+        const { data: userInfo = {} } = await Api.getUserInfo({
+          params: { id: +data?.id },
+        });
+        storage.setItem("userInfo", JSON.stringify(userInfo));
+        navigate("/", { replace: true });
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
