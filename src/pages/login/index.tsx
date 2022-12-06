@@ -7,11 +7,17 @@ import { Storage } from "@/utils/storage";
 import toast from "react-hot-toast";
 import Api from "@/service";
 import _ from "lodash";
+import regExp from "@/utils/regExp";
 import "./index.less";
 
 interface State {
   [key: string]: any;
 }
+type ErrorInfos = {
+  username?: string;
+  telephone?: string;
+  password?: string;
+};
 
 const Login = () => {
   const [routeParams] = useSearchParams();
@@ -20,37 +26,65 @@ const Login = () => {
 
   const [showSignIn, { toggle: toggleSignIn, setLeft: setSignInLeft, setRight: setSignInRight }] = useToggle(isFirstSignIn);
 
-  const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const [errorInfos, setErrorInfos] = useState<ErrorInfos>();
   const [state, setState] = useSetState<State>({ formValue: {} });
 
-  const timer = useRef<NodeJS.Timeout>();
-
-  // useEffect(() => {
-  //   if (isFirstSignIn) {
-  //     setSignInRight();
-  //     setIsFirstLogin(true);
-  //   } else {
-  //     setSignInLeft();
-  //   }
-  //   return () => {
-  //     clearTimeout(timer.current);
-  //     setState({});
-  //   };
-  // }, [isFirstSignIn]);
+  // 校验
+  const validate = (values, isRegister = false): Promise<void> =>
+    new Promise((resolve, reject) => {
+      {
+        const { username, telephone, password } = values;
+        const errorInfos: ErrorInfos = {};
+        let hasError = false;
+        if (!username && isRegister) {
+          errorInfos.username = "请输入用户名";
+          hasError = true;
+        }
+        if (username && !regExp.checkName(username)) {
+          errorInfos.username = "用户名格式错误,请输入3-20位字母、数字、下划线";
+          hasError = true;
+        }
+        if (!telephone) {
+          errorInfos.telephone = "请输入手机号码";
+          hasError = true;
+        }
+        if (telephone && !regExp.checkTel(telephone)) {
+          errorInfos.telephone = "手机号码格式错误";
+          hasError = true;
+        }
+        if (!password) {
+          errorInfos.password = "请输入密码";
+          hasError = true;
+        }
+        if (password && !regExp.checkPassword(password)) {
+          errorInfos.password = "密码格式错误,请输入8-32位字符";
+          hasError = true;
+        }
+        if (hasError) {
+          setErrorInfos(errorInfos);
+          reject();
+        }
+        resolve();
+      }
+    });
   // 注册
   const onRegister = async () => {
     try {
+      await validate(state.formValue, true);
       await Api.userRegister({ data: state.formValue });
       toast.success("注册成功");
       transformForm(_.pick(state.formValue?.[0], ["telephone", "password"]));
     } catch (error) {
-      toast.error(error.message);
+      if (error?.message) {
+        toast.error(error.message);
+      }
     }
   };
 
   // 登录
   const onLogin = async () => {
     try {
+      await validate(state.formValue);
       const { data, token } = await Api.userLogin({
         data: state.formValue,
       });
@@ -66,17 +100,20 @@ const Login = () => {
         navigate("/", { replace: true });
       }
     } catch (error) {
-      toast.error(error.message);
+      if (error?.message) {
+        toast.error(error.message);
+      }
     }
   };
 
   // 切换登录注册页
   const transformForm = (formValue = {}) => {
+    setErrorInfos({});
     setState({ formValue });
     toggleSignIn();
   };
 
-  const onInputChange = (data: any) => {
+  const onInputChange = async (data: any) => {
     const name = data.target?.name || "";
     if (!name) return;
     const value = data.target?.value;
@@ -120,6 +157,7 @@ const Login = () => {
               value={state.formValue?.username || ""}
               onChange={onInputChange}
             />
+            <p className="text-red-500 text-sm">{errorInfos?.username}</p>
             <input
               className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
               type="text"
@@ -129,6 +167,7 @@ const Login = () => {
               value={state.formValue?.telephone || ""}
               onChange={onInputChange}
             />
+            <p className="text-red-500 text-sm">{errorInfos?.telephone}</p>
             <input
               className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
               type="password"
@@ -138,6 +177,7 @@ const Login = () => {
               value={state.formValue?.password || ""}
               onChange={onInputChange}
             />
+            <p className="text-red-500 text-sm">{errorInfos?.password}</p>
             <button className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none" onClick={onRegister}>
               {/* SIGN UP */}
               注册
@@ -173,15 +213,16 @@ const Login = () => {
               value={state.formValue?.telephone || ""}
               onChange={onInputChange}
             />
+            <p className="text-red-500 text-sm">{errorInfos?.telephone}</p>
             <input
               className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
               type="password"
-              // // placeholder="Password"
               placeholder="密码"
               name="password"
               value={state.formValue?.password || ""}
               onChange={onInputChange}
             />
+            <p className="text-red-500 text-sm">{errorInfos?.password}</p>
             <a className="form__link text-base mt-6 hover:no-underline cursor-pointer">
               {/* Forgot your password? */}
               忘记你的密码?
