@@ -602,13 +602,23 @@ const Index = () => {
         </div>
 
         <div className={classnames("flex-none items-center justify-start ml-32 lg:ml-48 flex-grow", { hidden: !isLogin, flex: isLogin })}>
-          <a className="group mr-16 relative cursor-pointer">
+          <a
+            className="group mr-16 relative cursor-pointer"
+            onClick={() => {
+              toast.error("暂未开放,敬请期待");
+            }}
+          >
             <svg className="icon text-24 text-grey-27" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path d="M464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM48 96h416c8.8 0 16 7.2 16 16v41.4c-21.9 18.5-53.2 44-150.6 121.3-16.9 13.4-50.2 45.7-73.4 45.3-23.2.4-56.6-31.9-73.4-45.3C85.2 197.4 53.9 171.9 32 153.4V112c0-8.8 7.2-16 16-16zm416 320H48c-8.8 0-16-7.2-16-16V195c22.8 18.7 58.8 47.6 130.7 104.7 20.5 16.4 56.7 52.5 93.3 52.3 36.4.3 72.3-35.5 93.3-52.3 71.9-57.1 107.9-86 130.7-104.7v205c0 8.8-7.2 16-16 16z" />
             </svg>
           </a>
 
-          <div className="sm:relative">
+          <div
+            className="sm:relative"
+            onClick={() => {
+              toast.error("暂未开放,敬请期待");
+            }}
+          >
             <a className="group block relative cursor-pointer">
               <svg className="icon text-24 text-grey-27" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M433.884 366.059C411.634 343.809 384 316.118 384 208c0-79.394-57.831-145.269-133.663-157.83A31.845 31.845 0 0 0 256 32c0-17.673-14.327-32-32-32s-32 14.327-32 32c0 6.75 2.095 13.008 5.663 18.17C121.831 62.731 64 128.606 64 208c0 108.118-27.643 135.809-49.893 158.059C-16.042 396.208 5.325 448 48.048 448H160c0 35.29 28.71 64 64 64s64-28.71 64-64h111.943c42.638 0 64.151-51.731 33.941-81.941zM224 480c-17.645 0-32-14.355-32-32h64c0 17.645-14.355 32-32 32zm175.943-64H48.048c-14.223 0-21.331-17.296-11.314-27.314C71.585 353.836 96 314.825 96 208c0-70.741 57.249-128 128-128 70.74 0 128 57.249 128 128 0 106.419 24.206 145.635 59.257 180.686C421.314 398.744 414.11 416 399.943 416z" />
@@ -617,9 +627,9 @@ const Index = () => {
           </div>
 
           <button type="button" className="button button--secondary ml-16 lg:ml-24 text-16" onClick={toggleAddPhotoModal}>
-            <span className="xl:hidden"> Upload </span>
+            <span className="xl:hidden"> 发布 </span>
 
-            <span className="hidden xl:block"> Upload </span>
+            <span className="hidden xl:block"> 发布 </span>
           </button>
 
           <div className="ml-16 lg:ml-24">

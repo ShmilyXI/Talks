@@ -76,7 +76,6 @@ export interface GetPhotoListRequest {
 }
 export interface UploadPhotoResponse extends common.Response {
   data?: {
-    extname: string;
     fileName: string;
     height: number;
     imgUrl: string;

@@ -95,7 +95,7 @@ const Index = () => {
                       500,
                     )}
                   >
-                    {galleryDetailInfo?.favoriteStatus === 1 ? "Unfollow" : "Follow"}
+                    {galleryDetailInfo?.favoriteStatus === 1 ? "取消关注" : "关注"}
                   </button>
                 </div>
               </div>
