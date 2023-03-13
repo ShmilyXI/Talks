@@ -106,6 +106,32 @@ const Login = () => {
     }
   };
 
+  const onExperienceLogin = async () => {
+    try {
+      const { data, token } = await Api.userLogin({
+        data: {
+          telephone: "17611111111",
+          password: "11111111",
+        },
+      });
+      console.log("data", data);
+      if (token) {
+        const storage = new Storage(localStorage, "Talks");
+        storage.setItem("token", token);
+        toast.success("登录成功");
+        const { data: userInfo = {} } = await Api.getUserInfo({
+          params: { id: +data?.id },
+        });
+        storage.setItem("userInfo", JSON.stringify(userInfo));
+        navigate("/", { replace: true });
+      }
+    } catch (error) {
+      if (error?.message) {
+        toast.error(error.message);
+      }
+    }
+  };
+
   // 切换登录注册页
   const transformForm = (formValue = {}) => {
     setErrorInfos({});
@@ -219,17 +245,23 @@ const Login = () => {
               type="password"
               placeholder="密码"
               name="password"
-              value={state.formValue?.password || ""}
+              value={state.formValue?.password}
               onChange={onInputChange}
             />
             <p className="text-red-500 text-sm">{errorInfos?.password}</p>
-            <a className="form__link text-base mt-6 hover:no-underline cursor-pointer">
-              {/* Forgot your password? */}
+            {/* <a className="form__link text-base mt-6 hover:no-underline cursor-pointer">
               忘记你的密码?
-            </a>
+            </a> */}
             <button className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none" onClick={onLogin}>
               {/* SIGN IN */}
               登录
+            </button>
+            <button
+              className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
+              onClick={onExperienceLogin}
+            >
+              {/* SIGN IN */}
+              体验账号登录
             </button>
           </div>
         </div>
@@ -386,13 +418,20 @@ const Login = () => {
               value={state.formValue?.password || ""}
               onChange={onInputChange}
             />
-            <a className="form__link text-base mt-6 hover:no-underline cursor-pointer">
-              {/* Forgot your password? */}
+            {/* <a className="form__link text-base mt-6 hover:no-underline cursor-pointer">
               忘记你的密码?
-            </a>
+            </a> */}
+            <span className="mt-8 mb-3">测试账号：17611111111 11111111</span>
             <button className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none" onClick={onLogin}>
               {/* SIGN IN */}
               登录
+            </button>
+            <button
+              className="form__button login-button w-[180px] h-[50px] rounded-[25px] mt-12 font-bold text-sm tracking-widest border-none outline-none"
+              onClick={onExperienceLogin}
+            >
+              {/* SIGN IN */}
+              体验账号登录
             </button>
           </div>
         </div>

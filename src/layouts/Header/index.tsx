@@ -668,7 +668,13 @@ const Index = () => {
               }}
             >
               <a className="block avatar cursor-pointer" onClick={toggleUserMenu}>
-                <img src={userInfo?.avatar_url} width="32" height="32" alt={userInfo?.username} className="avatar__photo object-cover w-[32px] h-[32px]" />
+                <img
+                  src={userInfo?.avatar_url || "https://dummyimage.com/32x32&placeholder"}
+                  width="32"
+                  height="32"
+                  alt={userInfo?.username}
+                  className="avatar__photo object-cover w-[32px] h-[32px]"
+                />
               </a>
             </Menu>
           </div>
