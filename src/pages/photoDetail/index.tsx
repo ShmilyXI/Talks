@@ -9,8 +9,8 @@ import Api from "@/service";
 import { PhotoList, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
 import classNames from "classnames";
 import _ from "lodash";
-import AddPhotoModal from "@/components/AddPhotoModal";
 import toast from "react-hot-toast";
+import AddPhotoModal from "@/components/AddPhotoModal";
 import { CommentData, CommentItem } from "@/types/CommentTypes";
 import { Storage } from "@/utils/storage";
 import { BaseUserInfo, UserLikedRequest, UserFavoriteRequest } from "@/types/UserTypes";
@@ -814,7 +814,15 @@ const Index = () => {
           </div>
         </div>
       </div>
-      {showAddPhotoModal ? <AddPhotoModal visible={showAddPhotoModal} setModalLeft={setAddPhotoModalLeft} value={curPhotoInfo} /> : null}
+      {showAddPhotoModal ? (
+        <AddPhotoModal
+          visible={showAddPhotoModal}
+          onClose={() => {
+            setAddPhotoModalLeft();
+          }}
+          data={curPhotoInfo}
+        />
+      ) : null}
     </div>
   );
 };

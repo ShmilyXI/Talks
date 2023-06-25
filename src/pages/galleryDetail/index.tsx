@@ -7,16 +7,21 @@ import { useSearchParams } from "umi";
 import React, { useEffect, useState } from "react";
 import { Storage } from "@/utils/storage";
 import classNames from "classnames";
-import { UserFavoriteRequest } from "@/types/UserTypes";
+import { BaseUserInfo, UserFavoriteRequest } from "@/types/UserTypes";
 import toast from "react-hot-toast";
+import { Modal, Form, Input, message } from "antd";
 
 const Index = () => {
   const [routeParams] = useSearchParams();
   const id = routeParams.get("id");
   const [isLogin, setIsLogin] = useState(false); // 是否是登录状态
   const [dataType, setDataType] = useState("popular");
+  const [userInfo, setUserInfo] = useState<BaseUserInfo>();
   const [photoList, setPhotoList] = useState([]);
   const [galleryDetailInfo, setGalleryDetailInfo] = useState<GetGalleryDetailResponse["data"]>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [form] = Form.useForm();
 
   // 获取画廊详情信息
   const getPhotoInfo = async () => {
@@ -35,9 +40,26 @@ const Index = () => {
     if (localStorage) {
       const storage = new Storage(localStorage, "Talks");
       const _isLogin = storage?.getItem("token");
+      const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
+      setUserInfo(_userInfo);
       setIsLogin(_isLogin);
     }
   }, []);
+
+  // 编辑
+  const onEdit = async () => {
+    if (_.isNil(galleryDetailInfo?.id)) return;
+    setModalLoading(true);
+    try {
+      const values = await form.validateFields();
+      await Api.updateGallery({ data: { ...values, id: galleryDetailInfo?.id } });
+      message.success("修改成功!");
+      setModalVisible(false);
+      getPhotoInfo();
+    } finally {
+      setModalLoading(false);
+    }
+  };
 
   // 用户收藏画廊
   const onUserGalleryFavorite = async (value: UserFavoriteRequest) => {
@@ -59,10 +81,10 @@ const Index = () => {
 
   return (
     <div>
-      <div className="container p-0 md:p-32 lg:py-48" data-controller="gallery" data-gallery-id="1498">
-        <div className="container p-0">
+      <div className="d-container p-0 md:p-32 lg:py-48 m-0" data-controller="gallery" data-gallery-id="1498">
+        <div className="d-container p-0">
           <div className="px-16 pt-16 md:p-0">
-            <div className="flex flex-col md:flex-row md:items-center">
+            <div className="flex flex-col md:flex-row md:items-center justify-between">
               <h1 className="text-24 md:text-28 lg:text-32 leading-xs break-words min-w-0 md:truncate">
                 <span className="align-middle mr-4" data-target="gallery.title">
                   {galleryDetailInfo?.title}
@@ -76,27 +98,47 @@ const Index = () => {
                 </span>
               </h1>
 
-              <div
-                className={classNames("flex items-center mt-16 -mx-4 md:mt-0 md:ml-16", {
-                  hidden: !isLogin,
-                })}
-              >
-                <div className="px-4">
-                  <button
-                    type="button"
-                    className="follow button button--follow is-public"
-                    onClick={_.debounce(
-                      () =>
-                        onUserGalleryFavorite({
-                          favoriteId: +id,
-                          favoriteStatus: galleryDetailInfo?.favoriteStatus === 1 ? 0 : 1,
-                          favoriteType: 1,
-                        }),
-                      500,
-                    )}
-                  >
-                    {galleryDetailInfo?.favoriteStatus === 1 ? "取消关注" : "关注"}
-                  </button>
+              <div className="flex">
+                <div
+                  className={classNames("flex items-center mt-16 -mx-4 md:mt-0 md:ml-16", {
+                    hidden: !isLogin,
+                  })}
+                >
+                  <div className="px-4">
+                    <button
+                      type="button"
+                      className="follow button button--follow is-public"
+                      onClick={_.debounce(
+                        () =>
+                          onUserGalleryFavorite({
+                            favoriteId: +id,
+                            favoriteStatus: galleryDetailInfo?.favoriteStatus === 1 ? 0 : 1,
+                            favoriteType: 1,
+                          }),
+                        500,
+                      )}
+                    >
+                      {galleryDetailInfo?.favoriteStatus === 1 ? "取消收藏" : "收藏"}
+                    </button>
+                  </div>
+                </div>
+                <div
+                  className={classNames("flex items-center mt-16 -mx-4 md:mt-0 md:ml-16", {
+                    hidden: !isLogin || userInfo?.id !== galleryDetailInfo?.user_id,
+                  })}
+                >
+                  <div className="px-4">
+                    <button
+                      type="button"
+                      className="follow button button--follow is-public"
+                      onClick={() => {
+                        setModalVisible(true);
+                        form.setFieldsValue(galleryDetailInfo);
+                      }}
+                    >
+                      编辑
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -146,6 +188,35 @@ const Index = () => {
       </div>
 
       <PhotoList getData={getPhotoInfo} list={photoList} />
+      <Modal
+        title="编辑"
+        open={modalVisible}
+        onCancel={() => {
+          setModalVisible(false);
+        }}
+        onOk={() => onEdit()}
+        width={540}
+        confirmLoading={modalLoading}
+      >
+        <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="p-5">
+          <Form.Item
+            name="title"
+            label="画廊名称"
+            required
+            rules={[
+              {
+                required: true,
+                message: "请输入画廊名称",
+              },
+            ]}
+          >
+            <Input placeholder="请输入画廊名称" />
+          </Form.Item>
+          <Form.Item name="description" label="描述">
+            <Input placeholder="请输入描述" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

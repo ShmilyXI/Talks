@@ -19,6 +19,8 @@ export interface GalleryItem {
   create_time: string;
   update_time: string;
   user_id: number;
+  favoriteStatus: number;
+  choice_type: number;
   photoList: PhotoItem[];
   user: {
     username: string;
@@ -35,6 +37,7 @@ export interface GetGalleryListRequest {
   pageIndex: number;
   pageSize: number;
   type: string;
+  user_id?: number | string;
 }
 
 export interface GetGalleryPhotoListResponse extends common.Response {
@@ -62,3 +65,18 @@ export interface GetGalleryDetailRequest {
   id: number;
   type: string;
 }
+export interface AddGalleryRequest {
+  user_id: number;
+  title: string;
+  description?: string;
+}
+export interface AddGalleryResponse extends common.Response {
+  data?: string;
+}
+
+export interface UpdateGalleryRequest {
+  id: number;
+  title: string;
+  description?: string;
+}
+export interface UpdateGalleryResponse extends common.Response {}

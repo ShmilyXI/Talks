@@ -6,12 +6,14 @@ import { PhotoList } from "@/components";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { IItem } from "@/components/Menu";
+import { useSearchParams } from "umi";
 
 const Browse = () => {
   const { t } = useTranslation();
+  const [routeParams] = useSearchParams();
+  const _type = routeParams.get("type");
+  const [dataType, setDataType] = useState<string>(_type || "all");
 
-  const [dataType, setDataType] = useState<string>("all");
-  
   const {
     data: photoData,
     loading: getGalleryPhotoListLoading,
@@ -21,7 +23,7 @@ const Browse = () => {
     ({ current, pageSize, type = dataType }) => {
       return new Promise(async (resolve) => {
         const { data } = await Api.getGalleryPhotoList({
-          data: { pageIndex: current, pageSize, type },
+          data: { pageIndex: current, pageSize, type: type || dataType },
         });
         resolve(data);
       }) as any;
@@ -57,6 +59,7 @@ const Browse = () => {
           <div className="min-w-0 flex-grow mr-8">
             <Filter
               breakPoint="md"
+              value={_type || ""}
               items={items}
               onChange={(item) => {
                 setDataType(item.value);

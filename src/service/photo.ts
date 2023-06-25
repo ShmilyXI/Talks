@@ -37,6 +37,9 @@ const photoApi = {
   uploadPhoto: createApi<CommonRes, RequestPostType<UploadPhotoResponse>>({
     url: "/photo/upload-photo",
     method: "POST",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   }),
   /** 发布照片 **/
   publishPhoto: createApi<PublishPhotoResponse, RequestPostType<PublishPhotoRequest>>({
@@ -47,6 +50,9 @@ const photoApi = {
   updatePhoto: createApi<UpdatePhotoResponse, RequestPostType<UpdatePhotoRequest>>({
     url: "/photo/update-photo",
     method: "POST",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   }),
   /** 获取画廊图片评论列表 **/
   getPhotoDetailComments: createApi<CommonRes, RequestGetType<CommonReq>>({

@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import Api from "@/service";
 import _ from "lodash";
 import regExp from "@/utils/regExp";
+import md5 from "md5";
 import "./index.less";
 
 interface State {
@@ -67,11 +68,12 @@ const Login = () => {
         resolve();
       }
     });
+
   // 注册
   const onRegister = async () => {
     try {
       await validate(state.formValue, true);
-      await Api.userRegister({ data: state.formValue });
+      await Api.userRegister({ data: { ...state.formValue, password: md5(state.formValue.password) } });
       toast.success("注册成功");
       transformForm(_.pick(state.formValue?.[0], ["telephone", "password"]));
     } catch (error) {
@@ -86,7 +88,7 @@ const Login = () => {
     try {
       await validate(state.formValue);
       const { data, token } = await Api.userLogin({
-        data: state.formValue,
+        data: { ...state.formValue, password: md5(state.formValue.password) },
       });
       console.log("data", data);
       if (token) {
@@ -172,7 +174,7 @@ const Login = () => {
             </div>
             <span className="mt-8 mb-3">
               {/* or use telephone for registration */}
-              或使用手机号码进行注册
+              或者使用手机号码进行注册
             </span>
             <input
               className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
@@ -228,7 +230,7 @@ const Login = () => {
             </div>
             <span className="mt-8 mb-3">
               {/* or use your telephone account */}
-              或使用您的手机号码帐户
+              或者使用您的手机号码帐户
             </span>
             <input
               className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
@@ -344,7 +346,7 @@ const Login = () => {
             </div>
             <span className="mt-8 mb-3">
               {/* or use telephone for registration */}
-              或使用手机号码进行注册
+              或者使用手机号码进行注册
             </span>
             <input
               className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"
@@ -398,7 +400,7 @@ const Login = () => {
             </div>
             <span className="mt-8 mb-3">
               {/* or use your telephone account */}
-              或使用您的手机号码帐户
+              或者使用您的手机号码帐户
             </span>
             <input
               className="form__input w-4/6 h-10 my-4 pl-6 text-sm tracking-wide border-none outline-none rounded-lg"

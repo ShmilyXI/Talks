@@ -1,3 +1,4 @@
+import { GalleryItem } from './GalleryTypes';
 import { common } from './types';
 
 // model类型
@@ -39,10 +40,12 @@ export interface photosType {
 type ExifData = {
   brand: string;
   model: string;
-  aperture: string;
+  aperture: string | number;
   focalLength: string;
   shutterSpeed: string;
-  iso: string;
+  iso: string | number;
+  exposureDifference: string;
+  lensModel: string;
 };
 
 export interface PhotoList extends photosType {
@@ -91,24 +94,29 @@ export interface IItem {
   value: string;
 }
 export interface PublishPhotoRequest {
-  title: string;
-  description?: string;
-  url: string;
-  width: number;
-  height: number;
-  galleryIds?: string;
-  shootingDate: string;
-  themeColor: string;
-  mood: string;
-  place: string;
-  placeId: string;
-  location: string;
-  provincialName: string;
-  showComments: boolean;
-  cityName: string;
-  areaName: string;
-  tags: string[];
-  photoExifInfo?: ExifData;
+  title: string; // 标题
+  type: 'photo' | 'gallery'; // 类型
+  description?: string; // 描述
+  gallery?: number[]; // 画廊列表
+  newGalleryList?: Partial<GalleryItem>[]; // 新建画廊列表
+  // mood: string; // 心情
+  place: string; // 地点
+  placeId: string; // 地点id
+  location: string; // 经纬度
+  provincialName: string; // 省份
+  cityName: string; // 城市
+  areaName: string; // 区域
+  // tags: string[]; // 标签
+  showComments: boolean; // 是否显示评论
+  shootingDate: string; // 拍摄日期
+  photosData: {
+    imgUrl: string; // 图片地址
+    width: number; // 图片宽度
+    height: number; // 图片高度
+    themeColor: string; // 主题色
+    photoExifInfo?: ExifData; // 图片exif信息
+    type: string; // 图片类型
+  }[];
 }
 export interface PublishPhotoResponse extends common.Response {}
 export interface UpdatePhotoRequest {
@@ -135,4 +143,11 @@ export interface GetUserPhotoListResponse extends common.Response {
   data?: {
     list: PhotoList[];
   };
+}
+
+export interface QiniuUploadResponse {
+  mimeType: string;
+  width: string;
+  height: string;
+  key: string;
 }

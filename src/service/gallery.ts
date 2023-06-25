@@ -4,6 +4,8 @@ import {
   GetGalleryListResponse,
   GetGalleryDetailRequest,
   GetGalleryDetailResponse,
+  UpdateGalleryRequest,
+  UpdateGalleryResponse,
 } from "@/types/GalleryTypes";
 import request, { RequestGetType, RequestPostType } from "@/utils/request";
 import { CommonReq, CommonRes } from ".";
@@ -20,6 +22,11 @@ const galleryApi = {
   getGalleryDetail: createApi<GetGalleryDetailResponse, RequestGetType<GetGalleryDetailRequest>>({
     url: "/gallery/get-detail",
     method: "GET",
+  }),
+  /** 编辑画廊 **/
+  updateGallery: createApi<UpdateGalleryResponse, RequestPostType<UpdateGalleryRequest>>({
+    url: "/gallery/update",
+    method: "POST",
   }),
 };
 

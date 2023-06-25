@@ -17,6 +17,7 @@ import '@styles/default.css';
 import '@styles/global.less';
 import 'yet-another-react-lightbox/styles.css';
 import 'tippy.js/dist/tippy.css';
+import 'antd/dist/reset.css';
 
 // import '//at.alicdn.com/t/c/font_3238669_ksto67wypd.js';
 import './assets/hs-ui.bundle.js';

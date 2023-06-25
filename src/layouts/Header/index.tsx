@@ -242,7 +242,6 @@ const Index = () => {
                 >
                   <span className="group-hover:underline">{t("common.talk")}</span>
                 </a>
-
                 {/* <a
                   className={classnames("py-4 text-white font-medium", {
                     hidden: !isLogin,
@@ -263,32 +262,44 @@ const Index = () => {
                   className={classnames("mt-16 py-4 text-grey-53", {
                     hidden: !isLogin,
                   })}
+                  onClick={() => {
+                    goRoute(`/userDetail?id=${userInfo?.id}`);
+                  }}
                 >
-                  My Profile
+                  My Photos
                 </a>
 
                 <a
                   className={classnames("py-4 text-grey-53", {
                     hidden: !isLogin,
                   })}
-                >
-                  My Likes
-                </a>
-
-                <a
-                  className={classnames("py-4 text-grey-53", {
-                    hidden: !isLogin,
-                  })}
-                >
-                  My Favorites
-                </a>
-
-                <a
-                  className={classnames("py-4 text-grey-53", {
-                    hidden: !isLogin,
-                  })}
+                  onClick={() => {
+                    goRoute(`/userDetail?id=${userInfo?.id}&type=2`);
+                  }}
                 >
                   My Galleries
+                </a>
+
+                <a
+                  className={classnames("py-4 text-grey-53", {
+                    hidden: !isLogin,
+                  })}
+                  onClick={() => {
+                    goRoute("?type=liked");
+                  }}
+                >
+                  My Liked
+                </a>
+
+                <a
+                  className={classnames("py-4 text-grey-53", {
+                    hidden: !isLogin,
+                  })}
+                  onClick={() => {
+                    goRoute("?type=favorites");
+                  }}
+                >
+                  My Favorites
                 </a>
 
                 {/* <a
@@ -556,7 +567,7 @@ const Index = () => {
             flex: isLogin,
           })}
         >
-          <a className="hidden lg:block py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black hover:no-underline cursor-pointer" onClick={() => goRoute("/")}>
+          <a className="group hover:no-underline items-center py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black cursor-pointer" onClick={() => goRoute("/")}>
             {/* Home */}主页
           </a>
 
@@ -574,14 +585,14 @@ const Index = () => {
             Themes
           </a> */}
 
-          <a
-            className="group hover:no-underline hidden xl:flex items-center py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black cursor-pointer"
-            onClick={() => goRoute("/talk")}
-          >
-            <span className="group-hover:text-black">{/* Community */}社区</span>
+          <a className="group hover:no-underline items-center py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black cursor-pointer" onClick={() => goRoute("/talk")}>
+            <span className="group-hover:text-black">社区</span>
+          </a>
+          <a className="group hover:no-underline items-center py-4 px-16 leading-sm font-medium text-grey-53 hover:text-black cursor-pointer" onClick={() => goRoute("/galleries")}>
+            <span className="group-hover:text-black">画廊</span>
           </a>
 
-          <Menu
+          {/* <Menu
             items={items}
             className="ml-8"
             visible={showMenu}
@@ -598,11 +609,11 @@ const Index = () => {
                 <path d="M192 256c0 17.7-14.3 32-32 32s-32-14.3-32-32 14.3-32 32-32 32 14.3 32 32zm88-32c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm-240 0c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32z" />
               </svg>
             </a>
-          </Menu>
+          </Menu> */}
         </div>
 
-        <div className={classnames("flex-none items-center justify-start ml-32 lg:ml-48 flex-grow", { hidden: !isLogin, flex: isLogin })}>
-          <a
+        <div className={classnames("flex-none items-center justify-start flex-grow", { hidden: !isLogin, flex: isLogin })}>
+          {/* <a
             className="group mr-16 relative cursor-pointer"
             onClick={() => {
               toast.error("暂未开放,敬请期待");
@@ -624,21 +635,21 @@ const Index = () => {
                 <path d="M433.884 366.059C411.634 343.809 384 316.118 384 208c0-79.394-57.831-145.269-133.663-157.83A31.845 31.845 0 0 0 256 32c0-17.673-14.327-32-32-32s-32 14.327-32 32c0 6.75 2.095 13.008 5.663 18.17C121.831 62.731 64 128.606 64 208c0 108.118-27.643 135.809-49.893 158.059C-16.042 396.208 5.325 448 48.048 448H160c0 35.29 28.71 64 64 64s64-28.71 64-64h111.943c42.638 0 64.151-51.731 33.941-81.941zM224 480c-17.645 0-32-14.355-32-32h64c0 17.645-14.355 32-32 32zm175.943-64H48.048c-14.223 0-21.331-17.296-11.314-27.314C71.585 353.836 96 314.825 96 208c0-70.741 57.249-128 128-128 70.74 0 128 57.249 128 128 0 106.419 24.206 145.635 59.257 180.686C421.314 398.744 414.11 416 399.943 416z" />
               </svg>
             </a>
-          </div>
+          </div> */}
 
-          <button type="button" className="button button--secondary ml-16 lg:ml-24 text-16" onClick={toggleAddPhotoModal}>
+          <button type="button" className="button button--secondary ml-16 lg:ml-16 text-16" onClick={toggleAddPhotoModal}>
             <span className="xl:hidden"> 发布 </span>
 
             <span className="hidden xl:block"> 发布 </span>
           </button>
 
-          <div className="ml-16 lg:ml-24">
+          <div className="ml-8 lg:ml-16">
             <Menu
               items={[
-                { label: "My Profile", value: "profile" },
-                { label: "My Likes", value: "likes" },
-                { label: "My Favorites", value: "favorites" },
+                { label: "My Photos", value: "photos" },
                 { label: "My Galleries", value: "galleries" },
+                { label: "My Liked", value: "liked" },
+                { label: "My Favorites", value: "favorites" },
                 // { label: "My Badges", value: "badges" },
                 // { label: "Orders", value: "orders" },
                 {
@@ -658,12 +669,24 @@ const Index = () => {
               setLeft={setUserMenuLeft}
               onChange={(item) => {
                 setUserMenuLeft();
-                if (item.value) {
-                  if (item.value === "logout") {
+                switch (item.value) {
+                  case "logout":
                     onLogout();
-                    return;
-                  }
-                  goRoute(`/${item.value}`);
+                    break;
+                  case "photos":
+                    window.location.href = `/userDetail?id=${userInfo?.id}`;
+                    break;
+                  case "galleries":
+                    window.location.href = `/userDetail?id=${userInfo?.id}&type=2`;
+                    break;
+                  case "liked":
+                    window.location.href = "/?type=liked";
+                    break;
+                  case "favorites":
+                    window.location.href = "/?type=favorites";
+                    break;
+                  default:
+                    goRoute(`/${item.value}`);
                 }
               }}
             >
@@ -680,7 +703,12 @@ const Index = () => {
           </div>
         </div>
       </div>
-      {showAddPhotoModal ? <AddPhotoModal visible={showAddPhotoModal} setModalLeft={setAddPhotoModalLeft} /> : null}
+      <AddPhotoModal
+        visible={showAddPhotoModal}
+        onClose={() => {
+          setAddPhotoModalLeft();
+        }}
+      />
     </div>
   );
 };

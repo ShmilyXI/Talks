@@ -1,5 +1,5 @@
 import Api from "@/service/index";
-import { useRequest } from "ahooks";
+import { useInfiniteScroll, useRequest } from "ahooks";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "umi";
 import { PhotoList, Filter, Icon } from "@/components";
@@ -7,13 +7,38 @@ import _ from "lodash";
 import { BaseUserInfo } from "@/types/UserTypes";
 import classnames from "classnames";
 import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
+import GalleryList from "@/components/GalleryList";
 
+const PAGE_SIZE = 20;
 const UserDetail = () => {
   const [routeParams] = useSearchParams();
   const id = routeParams.get("id");
+  const _type = routeParams.get("type");
 
   const [userInfo, setUserInfo] = useState<BaseUserInfo>(); // 用户信息
   const [photoList, setPhotoList] = useState<PhotoListType[]>(); // 用户照片列表
+  const [type, setType] = useState(_type || "1");
+
+  const {
+    data: galleryData,
+    loading: getGalleryListLoading,
+    loadMore,
+    loadingMore,
+    reload,
+  } = useInfiniteScroll(
+    (d) => {
+      const page = d ? Math.ceil(d.list.length / PAGE_SIZE) + 1 : 1;
+      return new Promise(async (resolve) => {
+        const { data } = await Api.getGalleryList({
+          data: { pageIndex: page, pageSize: PAGE_SIZE, type: "user", user_id: id },
+        });
+        resolve(data);
+      }) as any;
+    },
+    {
+      // manual: true,
+    },
+  );
 
   const getUserInfo = async (id: number) => {
     const { data = {} }: any = await Api.getUserInfo({
@@ -31,9 +56,18 @@ const UserDetail = () => {
 
   useEffect(() => {
     if (_.isNil(id)) return;
-    getUserInfo(+id);
-    getUserPhotoList(+id);
-  }, [id]);
+    if (!userInfo?.id) {
+      getUserInfo(+id);
+    }
+    switch (type) {
+      case "1":
+        getUserPhotoList(+id);
+        break;
+      case "2":
+        reload();
+        break;
+    }
+  }, [id, type]);
 
   return (
     <div>
@@ -145,7 +179,7 @@ const UserDetail = () => {
               {/* {userInfo?.individual_resume} */}
             </div>
 
-            {/* <div className="mt-8 grid:mt-16 flex flex-wrap -mx-8 text-14 grid:text-16">
+            <div className="mt-8 grid:mt-16 flex flex-wrap -mx-8 text-14 grid:text-16">
               <div className="px-8 whitespace-no-wrap">
                 <span className="mr-4">#7</span>
                 248/365
@@ -154,50 +188,37 @@ const UserDetail = () => {
               <div className="px-8 whitespace-no-wrap">6 streak</div>
 
               <div className="px-8 whitespace-no-wrap">
-                <button
-                  type="button"
-                  className="block button-reset hover:underline"
-                  data-controller="modal-trigger"
-                  data-selector="[data-modal='relationships']"
-                >
+                <button type="button" className="block button-reset hover:underline" data-controller="modal-trigger" data-selector="[data-modal='relationships']">
                   4K followers
                 </button>
               </div>
 
-              <div className="px-8 whitespace-no-wrap hidden grid:block">
-                150.4K likes
-              </div>
+              <div className="px-8 whitespace-no-wrap hidden grid:block">150.4K likes</div>
 
-              <div className="px-8 whitespace-no-wrap hidden lg:block">
-                1.4M views
-              </div>
-            </div> */}
+              <div className="px-8 whitespace-no-wrap hidden lg:block">1.4M views</div>
+            </div>
           </div>
         </div>
       </div>
-      {/* <div className="d-container p-16 md:px-32 md:py-24">
+      <div className="d-container p-16 md:px-32 md:py-24">
         <div className="d-container p-0 flex items-center justify-between">
           <div className="min-w-0 flex-grow mr-8">
             <Filter
               breakPoint="md"
+              value={type || "1"}
               items={[
-                { label: "Following", value: "1" },
-                { label: "Popular", value: "2" },
-                { label: "Recent", value: "3" },
-                { label: "Debuts", value: "4" },
-                { label: "Finishers", value: "5" },
-                { label: "Photos of the Day", value: "6" },
-                { label: "Favorites", value: "7" },
-                { label: "Liked", value: "8" },
+                { label: "Photos", value: "1" },
+                { label: "Galleries", value: "2" },
               ]}
               onChange={(item) => {
-                console.log("item", item);
+                setType(item.value);
               }}
             />
           </div>
         </div>
-      </div> */}
-      <PhotoList getData={() => getUserPhotoList(+id)} list={photoList} isDetail />
+      </div>
+      {type === "1" ? <PhotoList getData={() => getUserPhotoList(+id)} list={photoList} isDetail /> : null}
+      {type === "2" ? <GalleryList list={galleryData?.list || []} total={galleryData?.total} getData={reload} loadMore={loadMore} /> : null}
     </div>
   );
 };
