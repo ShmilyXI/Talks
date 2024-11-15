@@ -1,14 +1,11 @@
 /* 公共 */
-import {} from "@/types/PhotoTypes";
-import { axiosCreateRequest } from "@/utils/request/axiosCreateRequest";
-import { CommonReq, CommonRes } from "./";
 
-const request = axiosCreateRequest();
+import axios from "axios";
 
 const commonApi = {
   /** 根据关键字查询地点 **/
   getPlaceByKeyword: (params) =>
-    request({
+    axios({
       url: "https://restapi.amap.com/v3/place/text",
       method: "GET",
       params,

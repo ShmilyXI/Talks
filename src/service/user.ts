@@ -1,76 +1,28 @@
 /* 用户 */
-import {
-  UserLoginResponse,
-  UserLoginRequest,
-  UserRegisterResponse,
-  UserRegisterRequest,
-  GetUserInfoResponse,
-  GetUserInfoRequest,
-  UpdateUserInfoResponse,
-  UpdateUserInfoRequest,
-  UploadAvatarResponse,
-  UserLikedRequest,
-  UserLikedResponse,
-  UserFavoriteResponse,
-  UserFavoriteRequest
-} from "@/types/UserTypes";
-import request, { RequestGetType, RequestPostType } from "@/utils/request";
 
-import { CommonRes } from ".";
-
-const createApi = request.createApi({ baseURL: "/api" });
+import { baseRequest } from ".";
 
 const userApi = {
   /** 登录 **/
-  userLogin: createApi<UserLoginResponse, RequestPostType<UserLoginRequest>>({
-    url: "/user/login",
-    method: "POST",
-  }),
+  userLogin: async (data = {}) => await baseRequest.Http("/user/login", { method: "POST", data }),
+
   /** 注册 **/
-  userRegister: createApi<
-    UserRegisterResponse,
-    RequestPostType<UserRegisterRequest>
-  >({
-    url: "/user/register",
-    method: "POST",
-  }),
+  userRegister: async (data = {}) => await baseRequest.Http("/user/register", { method: "POST", data }),
+
   /** 获取用户信息 **/
-  getUserInfo: createApi<
-    GetUserInfoResponse,
-    RequestGetType<GetUserInfoRequest>
-  >({
-    url: "/user/get-user-info",
-    method: "GET",
-  }),
+  getUserInfo: async (params = {}) => await baseRequest.Http("/user/get-user-info", { method: "GET", params }),
+
   /** 上传头像 **/
-  uploadAvatar: createApi<CommonRes, RequestPostType<UploadAvatarResponse>>({
-    url: "/user/upload-avatar",
-    method: "POST",
-  }),
+  uploadAvatar: async (data = {}) => await baseRequest.Http("/user/upload-avatar", { method: "POST", data }),
+
   /** 更新用户信息 **/
-  updateUserInfo: createApi<
-    UpdateUserInfoResponse,
-    RequestPostType<UpdateUserInfoRequest>
-  >({
-    url: "/user/update-user-info",
-    method: "POST",
-  }),
+  updateUserInfo: async (data = {}) => await baseRequest.Http("/user/update-user-info", { method: "POST", data }),
+
   /** 用户点赞 **/
-  userLiked: createApi<
-    UserLikedResponse,
-    RequestPostType<UserLikedRequest>
-  >({
-    url: "/user/user-liked",
-    method: "POST",
-  }),
+  userLiked: async (data = {}) => await baseRequest.Http("/user/user-liked", { method: "POST", data }),
+
   /** 用户收藏 **/
-  userPhotoFavorite: createApi<
-    UserFavoriteResponse,
-    RequestPostType<UserFavoriteRequest>
-  >({
-    url: "/user/user-photo-favorite",
-    method: "POST",
-  }),
+  userPhotoFavorite: async (data = {}) => await baseRequest.Http("/user/user-photo-favorite", { method: "POST", data }),
 };
 
 export default userApi;

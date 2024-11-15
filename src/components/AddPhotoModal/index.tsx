@@ -1,15 +1,14 @@
-import { Button, DatePicker, Image, Form, Input, Modal, Segmented, Select, Switch, Upload, UploadFile, Space, Divider, InputRef } from "antd";
-import React, { FC, useEffect, useRef, useState } from "react";
-import { AppstoreOutlined, PictureOutlined, PlusOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
-import { RcFile } from "antd/es/upload";
 import Api from "@/service";
 import { GalleryItem } from "@/types/GalleryTypes";
 import { Storage } from "@/utils/storage";
+import { AppstoreOutlined, PictureOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Divider, Form, Image, Input, InputRef, Modal, Segmented, Select, Switch, Upload, UploadFile } from "antd";
+import dayjs from "dayjs";
 import _ from "lodash";
+import React, { FC, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { v4 as uuid } from "uuid";
 import { IItem } from "../Menu";
-import toast from "react-hot-toast";
 
 type AddPhotoModalProps = {
   visible: boolean;
@@ -59,6 +58,7 @@ const Index: FC<AddPhotoModalProps> = (props) => {
         const { data: photosData } = await Api.uploadPhoto({
           data: formData as any,
         });
+        console.log("photosData", photosData);
         params = {
           ...params,
           photosData,
@@ -67,8 +67,8 @@ const Index: FC<AddPhotoModalProps> = (props) => {
         await toast.success("发布成功!");
       }
       setLoading(false);
-      form.resetFields();
-      onClose?.();
+      // form.resetFields();
+      // onClose?.();
     } catch (error) {
       setLoading(false);
     }

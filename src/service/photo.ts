@@ -1,69 +1,30 @@
+import { baseRequest } from ".";
+
 /* 照片 */
-import {
-  GetPhotoListRequest,
-  GetPhotoListResponse,
-  GetUserPhotoListRequest,
-  GetUserPhotoListResponse,
-  PhotoDetailInfoRequest,
-  PhotoDetailInfoResponse,
-  PublishPhotoRequest,
-  PublishPhotoResponse,
-  UpdatePhotoRequest,
-  UpdatePhotoResponse,
-  UploadPhotoResponse,
-} from "@/types/PhotoTypes";
-import request, { RequestGetType, RequestPostType } from "@/utils/request";
-import { CommonReq, CommonRes } from "./";
-
-const createApi = request.createApi({ baseURL: "/api" });
-
 const photoApi = {
   /** 获取画廊图片列表 **/
-  getGalleryPhotoList: createApi<GetPhotoListResponse, RequestPostType<GetPhotoListRequest>>({
-    url: "/photo/get-photo-list",
-    method: "POST",
-  }),
+  getGalleryPhotoList: async (data = {}) => await baseRequest.Http("/photo/get-photo-list", { method: "POST", data }),
+
   /** 获取画廊图片详情 **/
-  getPhotoDetailInfo: createApi<PhotoDetailInfoResponse, RequestGetType<PhotoDetailInfoRequest>>({
-    url: "/photo/photo-detail-info",
-    method: "GET",
-  }),
+  getPhotoDetailInfo: async (data = {}) => await baseRequest.Http("/photo/photo-detail-info", { method: "GET", data }),
+
   /** 获取用户照片列表 **/
-  getUserPhotoList: createApi<GetUserPhotoListResponse, RequestGetType<GetUserPhotoListRequest>>({
-    url: "/photo/get-user-photo-list",
-    method: "GET",
-  }),
+  getUserPhotoList: async (data = {}) => await baseRequest.Http("/photo/get-user-photo-list", { method: "GET", data }),
+
   /** 上传照片 **/
-  uploadPhoto: createApi<CommonRes, RequestPostType<UploadPhotoResponse>>({
-    url: "/photo/upload-photo",
-    method: "POST",
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }),
+  uploadPhoto: async (data = {}) => await baseRequest.Http("/photo/upload-photo", { method: "POST", data, headers: { "Content-Type": "multipart/form-data" } }),
+
   /** 发布照片 **/
-  publishPhoto: createApi<PublishPhotoResponse, RequestPostType<PublishPhotoRequest>>({
-    url: "/photo/publish-photo",
-    method: "POST",
-  }),
+  publishPhoto: async (data = {}) => await baseRequest.Http("/photo/publish-photo", { method: "POST", data }),
+
   /** 编辑照片 **/
-  updatePhoto: createApi<UpdatePhotoResponse, RequestPostType<UpdatePhotoRequest>>({
-    url: "/photo/update-photo",
-    method: "POST",
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }),
+  updatePhoto: async (data = {}) => await baseRequest.Http("/photo/update-photo", { method: "POST", data, headers: { "Content-Type": "multipart/form-data" } }),
+
   /** 获取画廊图片评论列表 **/
-  getPhotoDetailComments: createApi<CommonRes, RequestGetType<CommonReq>>({
-    url: "/photo/photo-detail-comments",
-    method: "GET",
-  }),
+  getPhotoDetailComments: async (data = {}) => await baseRequest.Http("/photo/photo-detail-comments", { method: "GET", data }),
+
   /** 获取画廊里程碑成员列表 **/
-  getPhotoMilestoneList: createApi<CommonRes, RequestGetType<CommonReq>>({
-    url: "/photo/photo-milestone-list",
-    method: "GET",
-  }),
+  getPhotoMilestoneList: async (data = {}) => await baseRequest.Http("/photo/photo-milestone-list", { method: "GET", data }),
 };
 
 export default photoApi;

@@ -1,70 +1,101 @@
-import axios, { AxiosRequestConfig } from "axios";
-import toast from "react-hot-toast";
-import { Storage } from "@/utils/storage";
-import { axiosFormDataMiddleware, LoadingOption, SerializedError, serializedResponseMiddleware, showErrorMiddleware, ShowErrorOption, AxiosFormDataOption } from "./middleware";
-import { axiosCreateRequest } from "./axiosCreateRequest";
+import type { AxiosInstance } from "axios";
+import axios from "./instance";
+import middlewares from "./middlewares";
+import { StaticRequest, StaticResponse } from "./statics";
+import type { Codelist, Http as HttpType, Maps, Options, StaticMiddlewares, StaticRequest as StaticRequestType, StaticResponse as StaticResponseType, Whitelist } from "./types";
 
-export interface HttpJson<T = any> {
-  retCode: string;
-  message: string;
-  data: T;
+// 初始化:字段映射
+const mapsinit = { code: "retCode", data: "data", message: "message" };
+
+class Request {
+  private fetch: AxiosInstance; // axios 实例
+  private maps: Maps; // 字段映射
+  private whitelist: Whitelist; // 白名单
+  private codelist: Codelist; // code 处理
+
+  constructor(options?: Options) {
+    const { whitelist, codelist, maps, ..._options } = options || {};
+    this.fetch = axios(_options);
+    this.maps = maps || mapsinit;
+    this.whitelist = whitelist || [];
+    this.codelist = codelist || {};
+  }
+
+  static maps: Maps = mapsinit; // 字段映射
+
+  static whitelist: Whitelist = []; // 白名单
+
+  static codelist: Codelist = {}; // code 处理
+
+  static Request: StaticRequestType = StaticRequest; // 处理 Request
+
+  static Response: StaticResponseType = StaticResponse; // 处理 Response
+
+  static Middlewares: StaticMiddlewares = middlewares;
+
+  // 请求
+  Http: HttpType = (url, options) => {
+    const { fetch, maps, whitelist, codelist } = this;
+    const _whitelist = (whitelist || []).concat(Request?.whitelist || []); // 白名单
+    const _codelist = Object.assign(codelist || {}, Request?.codelist || {}); // 白名单
+    const _maps = Object.assign(maps || mapsinit, Request?.maps || mapsinit); // 自定义节点字段
+    const isWhite = _whitelist.some((item) => item.includes(url)); // 白名单
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const promise = new Promise<any>((resolve, reject) => {
+      options.data = options?.data?.data || options?.data;
+      options.params = options?.params?.params || options?.params;
+      const aaa = Request.Request({
+        url,
+        ...(options || {}),
+      });
+      console.log("aaa", aaa);
+      fetch(
+        Request.Request({
+          url,
+          ...(options || {}),
+        }),
+      )
+        .then((response) => {
+          resolve(
+            Request.Response(response, {
+              isWhite,
+              maps: _maps,
+              whitelist: _whitelist,
+              codelist: _codelist,
+            }),
+          );
+        })
+        .catch((error) => {
+          resolve({ error: true, ...(error?.response?.data || {}) });
+          // reject(error);
+        });
+    });
+
+    return promise;
+  };
+
+  // 处理 FormData
+  formData = (data: { [key: string]: any }) => {
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    return formData;
+  };
+
+  // 设置 Token
+  setToken = (token?: string) => {
+    if (token) {
+      this.fetch.defaults.headers.common.Authorization = `Bearer ${token}`;
+    }
+  };
+
+  // 移除 Token
+  removeToken = () => {
+    this.fetch.defaults.headers.common.Authorization = null;
+  };
 }
 
-export type RequestType<T extends RequestConfig> = Omit<RequestConfig, keyof T> & T;
-
-export type RequestGetType<T = Record<string, any>> = RequestType<{ params: T }>;
-export type RequestPostType<T = Record<string, any>> = RequestType<{ data: T }>;
-
-export type RequestConfig = AxiosRequestConfig & LoadingOption & ShowErrorOption & AxiosFormDataOption;
-
-let controller;
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
-
-const request = axiosCreateRequest<RequestConfig, HttpJson>({
-  timeout: 60000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-// php 部分旧的接口需使用 formdata 方式提交数据
-// request.middlewares.request.use(
-//   loadingMiddleware({
-//     showLoading: () => void YkLoading.start(),
-//     hideLoading: () => void YkLoading.end(),
-//     hideLoadingNextTick: true,
-//   }),
-// );
-request.middlewares.request.use(
-  showErrorMiddleware({
-    showError: (err: SerializedError<"retCode", "message">) => void toast.error(err?.message || "系统繁忙，请稍后再试"),
-    handleError: (ctx, { config }) => {
-      const err = ctx.response.data;
-      ctx.message = err.message;
-      ctx.retCode = err.retCode;
-      if (err.retCode === "-3" || err.retCode === "-4") {
-        toast.error("登录态过期，请重新登录！", { id: "1" });
-        const storage = new Storage(localStorage, "Talks");
-        storage.removeItem("token");
-        storage.removeItem("userInfo");
-        window.location.replace("/login?signIn=1");
-        return false;
-      }
-      if (err.retCode === "-5") {
-        toast.error("无权限,请登录后查看!");
-        return false;
-      }
-    },
-  }),
-);
-request.middlewares.request.use(axiosFormDataMiddleware());
-request.middlewares.response.use(serializedResponseMiddleware());
-request.middlewares.request.use(async (ctx, next) => {
-  const { config } = ctx;
-  // config.params = { ...config.data, ...config.params };
-  const storage = new Storage(localStorage, "Talks");
-  const token = storage.getItem("token");
-  if (config.headers) config.headers.Authorization = `Bearer ${token}`;
-  await next();
-});
-export default request;
+export default Request;

@@ -1,33 +1,16 @@
 /* 照片 */
-import {
-  GetGalleryListRequest,
-  GetGalleryListResponse,
-  GetGalleryDetailRequest,
-  GetGalleryDetailResponse,
-  UpdateGalleryRequest,
-  UpdateGalleryResponse,
-} from "@/types/GalleryTypes";
-import request, { RequestGetType, RequestPostType } from "@/utils/request";
-import { CommonReq, CommonRes } from ".";
 
-const createApi = request.createApi({ baseURL: "/api" });
+import { baseRequest } from ".";
 
 const galleryApi = {
   /** 获取画廊列表 **/
-  getGalleryList: createApi<GetGalleryListResponse, RequestPostType<GetGalleryListRequest>>({
-    url: "/gallery/gallery-list",
-    method: "POST",
-  }),
+  getGalleryList: async (data = {}) => await baseRequest.Http("/gallery/gallery-list", { method: "POST", data }),
+
   /** 获取画廊详情 **/
-  getGalleryDetail: createApi<GetGalleryDetailResponse, RequestGetType<GetGalleryDetailRequest>>({
-    url: "/gallery/get-detail",
-    method: "GET",
-  }),
+  getGalleryDetail: async (data = {}) => await baseRequest.Http("/gallery/get-detail", { method: "GET", data }),
+
   /** 编辑画廊 **/
-  updateGallery: createApi<UpdateGalleryResponse, RequestPostType<UpdateGalleryRequest>>({
-    url: "/gallery/update",
-    method: "POST",
-  }),
+  updateGallery: async (data = {}) => await baseRequest.Http("/gallery/update", { method: "POST", data }),
 };
 
 export default galleryApi;

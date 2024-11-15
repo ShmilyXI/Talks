@@ -1,14 +1,14 @@
 import Icon from "@/components/Icon";
-import { useToggle, useSetState, useRequest } from "ahooks";
-import classnames from "classnames";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Storage } from "@/utils/storage";
-import toast from "react-hot-toast";
 import Api from "@/service";
-import _ from "lodash";
 import regExp from "@/utils/regExp";
+import { Storage } from "@/utils/storage";
+import { useSetState, useToggle } from "ahooks";
+import classnames from "classnames";
+import _ from "lodash";
 import md5 from "md5";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./index.less";
 
 interface State {
@@ -90,7 +90,6 @@ const Login = () => {
       const { data, token } = await Api.userLogin({
         data: { ...state.formValue, password: md5(state.formValue.password) },
       });
-      console.log("data", data);
       if (token) {
         const storage = new Storage(localStorage, "Talks");
         storage.setItem("token", token);
@@ -110,23 +109,23 @@ const Login = () => {
 
   const onExperienceLogin = async () => {
     try {
-      const { data, token } = await Api.userLogin({
+      const { data } = await Api.userLogin({
         data: {
           telephone: "17611111111",
           password: "11111111",
         },
       });
-      console.log("data", data);
-      if (token) {
-        const storage = new Storage(localStorage, "Talks");
-        storage.setItem("token", token);
-        toast.success("登录成功");
-        const { data: userInfo = {} } = await Api.getUserInfo({
-          params: { id: +data?.id },
-        });
-        storage.setItem("userInfo", JSON.stringify(userInfo));
-        navigate("/", { replace: true });
+      if (data?.error || !data?.token) {
+        toast.error("登录失败：" + data?.message);
+        return;
       }
+      const storage = new Storage(localStorage, "Talks");
+      const { data: userInfo = {} } = await Api.getUserInfo({
+        params: { id: +data?.id },
+      });
+      storage.setItem("userInfo", JSON.stringify(userInfo));
+      navigate("/", { replace: true });
+      toast.success("登录成功");
     } catch (error) {
       if (error?.message) {
         toast.error(error.message);
