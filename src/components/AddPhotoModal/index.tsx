@@ -150,9 +150,21 @@ const Index: FC<AddPhotoModalProps> = (props) => {
     }
   }, [visible]);
 
+  const onModalClose = () => {
+    form.resetFields();
+    setFileList(undefined);
+    setPreviewOpen(false);
+    setPreviewImage("");
+    setPreviewTitle("");
+    setAddressList([]);
+    setPlaceItem(undefined);
+    setGalleryName("");
+    onClose?.();
+  };
+
   return (
-    <Modal open={visible} onCancel={onClose} onOk={onSubmit} width={540} confirmLoading={loading}>
-      <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="p-5">
+    <Modal title="发布" open={visible} onCancel={onModalClose} onOk={onSubmit} width={540} confirmLoading={loading}>
+      <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="p-5 pb-0">
         <Form.Item noStyle name="newGalleryList" />
         <Form.Item
           name="type"
@@ -161,7 +173,11 @@ const Index: FC<AddPhotoModalProps> = (props) => {
           className="flex justify-center"
           getValueFromEvent={(value) => {
             if (value === "photo" && fileList?.length > 1) {
-              form.setFieldValue("files", fileList.slice(0, 1));
+              const _fileList = fileList.slice(0, 1);
+              console.log("_fileList: ", _fileList);
+              form.setFieldValue("files", _fileList);
+              form.setFieldValue("newGalleryList", []);
+              setFileList(_fileList);
             }
             return value;
           }}
@@ -200,7 +216,7 @@ const Index: FC<AddPhotoModalProps> = (props) => {
                   },
                 ]}
               >
-                <Upload listType="picture-card" onPreview={handlePreview} accept="image/*" multiple={getFieldValue("type") === "gallery"}>
+                <Upload fileList={fileList} listType="picture-card" onPreview={handlePreview} accept="image/*" multiple={getFieldValue("type") === "gallery"}>
                   {getFieldValue("type") === "photo" && fileList?.length >= 1 ? null : (
                     <div className="flex flex-col items-center">
                       <PlusOutlined rev={undefined} className="text-2xl" />
