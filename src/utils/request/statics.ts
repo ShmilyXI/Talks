@@ -23,6 +23,7 @@ const processingCode: ProcessingCode = (response, { codelist, maps }) => {
 // 处理 Response
 export const StaticResponse: StaticResponseType = (response, { isWhite, whitelist, codelist, maps }) => {
   const responseData = response?.data as any;
+  console.log("responseData: ", responseData);
 
   if (response?.status === 200 || response?.status === 201) {
     if (isWhite) {
@@ -36,7 +37,7 @@ export const StaticResponse: StaticResponseType = (response, { isWhite, whitelis
         codelist,
         maps,
       });
-      // console.error('#### code 错误 ####', message);
+      console.error("#### code 错误 ####", message);
       return { error: true, message };
     }
   } else {
@@ -46,7 +47,7 @@ export const StaticResponse: StaticResponseType = (response, { isWhite, whitelis
       codelist,
       maps: { retCode: "status" },
     });
-    // console.error('#### status 错误 ####', message);
+    console.error("#### status 错误 ####", message);
     return { error: true, message };
   }
 };

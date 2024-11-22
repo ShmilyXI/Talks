@@ -64,7 +64,7 @@ const Index: FC<AddPhotoModalProps> = (props) => {
           photosData,
         };
         await Api.publishPhoto({ data: params });
-        await toast.success("发布成功!");
+        toast.success("发布成功!");
       }
       setLoading(false);
       // form.resetFields();

@@ -101,6 +101,7 @@ const Login = () => {
         navigate("/", { replace: true });
       }
     } catch (error) {
+      console.log("error: ", error);
       if (error?.message) {
         toast.error(error.message);
       }

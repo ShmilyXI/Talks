@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-shadow */
+import { Storage } from "@/utils/storage";
 import type {} from "axios";
 import chalk from "chalk";
 import * as CryptoJS from "crypto-js";
+import toast from "react-hot-toast";
 import type { Decrypt as DecryptType, Encrypt as EncryptType, RequestInterceptor, ResponseInterceptor } from "./types";
 
 // 创建密钥
@@ -67,6 +69,7 @@ export const Decrypt: DecryptType = (key, iv) => {
   const { KEY, CONFIG } = createSecretKey(key, iv);
 
   const decrypt: ResponseInterceptor = async (response) => {
+    console.log("decrypt response: ", response);
     if (response?.data) {
       try {
         const decryptedBytes = CryptoJS.AES.decrypt(response.data as unknown as string, KEY, CONFIG);
@@ -87,6 +90,7 @@ export const Decrypt: DecryptType = (key, iv) => {
         console.error("解密失败:", error);
       }
     }
+    console.log("decrypt", response);
     return response; // 可以直接返回，不需要 Promise.resolve
   };
 
@@ -106,8 +110,14 @@ export const Debounce: RequestInterceptor = async (config) => {
 };
 
 // 处理错误
-export const HandleError: ResponseInterceptor = async (response) => {
-  return Promise.resolve(response);
+export const HandleError: any = async (error) => {
+  const storage = new Storage(localStorage, "Talks");
+  if (error.response.status === 401) {
+    toast.error(error?.response?.data?.message || "登录失效，请重新登录");
+    location.replace("/login");
+    storage.clear();
+  }
+  return Promise.reject(error);
 };
 
 // 处理成功
@@ -115,7 +125,7 @@ export const HandleSuccess: ResponseInterceptor = async (response) => {
   return Promise.resolve(response);
 };
 
-export default {
+const Middlewares = {
   Encrypt,
   Decrypt,
   SetToken,
@@ -123,3 +133,5 @@ export default {
   HandleError,
   HandleSuccess,
 };
+
+export default Middlewares;
