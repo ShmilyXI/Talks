@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { PhotoList } from "@/components";
 import Filter from "@/components/Filter";
+import { IItem } from "@/components/Menu";
 import Api from "@/service/index";
 import { usePagination } from "ahooks";
-import { PhotoList } from "@/components";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import _ from "lodash";
-import { IItem } from "@/components/Menu";
 import { useSearchParams } from "umi";
 
 const Browse = () => {
@@ -23,7 +22,9 @@ const Browse = () => {
     ({ current, pageSize, type = dataType }) => {
       return new Promise(async (resolve) => {
         const { data } = await Api.getGalleryPhotoList({
-          data: { pageIndex: current, pageSize, type: type || dataType },
+          pageIndex: current,
+          pageSize,
+          type: type || dataType,
         });
         resolve(data);
       }) as any;

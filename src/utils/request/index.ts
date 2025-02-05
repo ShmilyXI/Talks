@@ -24,7 +24,7 @@ export const request = (option = {}) =>
         if (response.data.retCode !== "0") {
           return Promise.reject(response.data);
         }
-        return response;
+        return response?.data;
       },
     ],
     ...option,

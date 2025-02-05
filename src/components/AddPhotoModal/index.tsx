@@ -47,7 +47,7 @@ const Index: FC<AddPhotoModalProps> = (props) => {
       console.log("params", params);
       if (data?.id) {
         params.id = data.id;
-        await Api.updatePhoto({ data: params });
+        await Api.updatePhoto(params);
         await toast.success("修改成功!");
       } else {
         const formData = new FormData();
@@ -55,15 +55,20 @@ const Index: FC<AddPhotoModalProps> = (props) => {
           const file = fileList[i];
           formData.append("files", file.originFileObj as any);
         }
-        const { data: photosData } = await Api.uploadPhoto({
-          data: formData as any,
-        });
+        formData.append(
+          "jsonData",
+          JSON.stringify({
+            aaa: 1,
+            bbb: 2,
+          }),
+        );
+        const { data: photosData } = await Api.uploadPhoto(formData);
         console.log("photosData", photosData);
         params = {
           ...params,
           photosData,
         };
-        await Api.publishPhoto({ data: params });
+        await Api.publishPhoto(params);
         toast.success("发布成功!");
       }
       setLoading(false);

@@ -73,7 +73,7 @@ const Login = () => {
   const onRegister = async () => {
     try {
       await validate(state.formValue, true);
-      await Api.userRegister({ data: { ...state.formValue, password: md5(state.formValue.password) } });
+      await Api.userRegister({ ...state.formValue, password: md5(state.formValue.password) });
       toast.success("注册成功");
       transformForm(_.pick(state.formValue?.[0], ["telephone", "password"]));
     } catch (error) {
@@ -88,7 +88,8 @@ const Login = () => {
     try {
       await validate(state.formValue);
       const { data, token } = await Api.userLogin({
-        data: { ...state.formValue, password: md5(state.formValue.password) },
+        ...state.formValue,
+        password: md5(state.formValue.password),
       });
       if (token) {
         const storage = new Storage(localStorage, "Talks");
@@ -111,19 +112,19 @@ const Login = () => {
   const onExperienceLogin = async () => {
     try {
       const { data } = await Api.userLogin({
-        data: {
-          telephone: "17611111111",
-          password: "11111111",
-        },
+        telephone: "17611111111",
+        password: "11111111",
       });
       if (data?.error || !data?.token) {
         toast.error("登录失败：" + data?.message);
         return;
       }
       const storage = new Storage(localStorage, "Talks");
+      await storage.setItem("token", data?.token);
       const { data: userInfo = {} } = await Api.getUserInfo({
-        params: { id: +data?.id },
+        id: +data?.id,
       });
+      console.log("userInfo", userInfo);
       storage.setItem("userInfo", JSON.stringify(userInfo));
       navigate("/", { replace: true });
       toast.success("登录成功");
