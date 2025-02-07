@@ -1,14 +1,13 @@
-import classnames from "classnames";
-import React, { useState, useEffect } from "react";
-import { usePagination, useRequest, useToggle } from "ahooks";
-import Api from "@/service/index";
-import Filter from "../Filter";
-import Icon from "@/components/Icon";
-import { useNavigate } from "react-router-dom";
-import { IItem } from "@/components/Menu";
-import _ from "lodash";
 import AddTalkModal from "@/components/AddTalkModal";
-import toast from "react-hot-toast";
+import Icon from "@/components/Icon";
+import Api from "@/service/index";
+import { usePagination, useToggle } from "ahooks";
+import { Avatar } from "antd";
+import classnames from "classnames";
+import _ from "lodash";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Filter from "../Filter";
 
 type articleItem = {
   avatar: string;
@@ -38,9 +37,10 @@ const Index = () => {
     ({ current, pageSize, type = dataType }) => {
       return new Promise(async (resolve) => {
         const { data } = await Api.getTalkList({
-          data: { pageIndex: current, pageSize, type },
+          pageIndex: current,
+          pageSize,
+          type,
         });
-        resolve(data);
       }) as any;
     },
     { refreshDeps: [dataType] },
@@ -147,7 +147,11 @@ const Index = () => {
                               target="_blank"
                               key={comment.id}
                             >
-                              <img src={comment.user_avatar_url} width="28" height="28" alt="" className="avatar__photo is-loaded w-[28px] h-[28px] object-cover rounded-full" />
+                              {comment?.user_avatar_url ? (
+                                <Avatar size={28} src={comment?.user_avatar_url} />
+                              ) : (
+                                <Avatar size={28}>{comment?.user?.display_name || comment.username}</Avatar>
+                              )}
                             </a>
                           ))
                         : null}

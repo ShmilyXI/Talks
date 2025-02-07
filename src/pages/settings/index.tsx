@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Filter from "@/components/Filter";
-import Menu, { IItem } from "@/components/Menu";
-import Form, { Field } from "rc-field-form";
-import toast from "react-hot-toast";
-import classnames from "classnames";
-import { Storage } from "@/utils/storage";
-import Api from "@/service";
-import _ from "lodash";
 import Place from "@/components/AddPhotoModal/place";
+import Filter from "@/components/Filter";
+import { IItem } from "@/components/Menu";
+import Api from "@/service";
+import { Storage } from "@/utils/storage";
+import classnames from "classnames";
+import Form, { Field } from "rc-field-form";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Index = () => {
   const [tempFile, setTempFile] = useState<any>(); // 暂存上传的图片文件
@@ -60,25 +59,21 @@ const Index = () => {
       // 如果已经存在头像,且没有上传新的头像,则不需要上传
       let avatarUrl = userInfo?.avatar_url;
       if (tempFile) {
-        const { data: _avatarUrl } = await Api.uploadAvatar({
-          data: tempFile,
-        });
+        const { data: _avatarUrl } = await Api.uploadAvatar(tempFile);
         avatarUrl = _avatarUrl;
       }
       // 个人简介保存时,需要将\r\n替换为<br/>
       const individualResume = values.individualResume?.replace(/\r\n/g, "<br/>").replace(/\n/g, "<br/>").replace(/\s/g, " ");
       const { data } = await Api.updateUserInfo({
-        data: {
-          ...values,
-          place: values?.place?.label,
-          placeId: values?.place?.value,
-          location: values?.place?.location,
-          provincialName: values?.place?.provincialName,
-          cityName: values?.place?.cityName,
-          areaName: values?.place?.areaName,
-          individualResume,
-          avatarUrl,
-        },
+        ...values,
+        place: values?.place?.label,
+        placeId: values?.place?.value,
+        location: values?.place?.location,
+        provincialName: values?.place?.provincialName,
+        cityName: values?.place?.cityName,
+        areaName: values?.place?.areaName,
+        individualResume,
+        avatarUrl,
       });
       form.resetFields();
       setTempFile(undefined);
@@ -89,7 +84,6 @@ const Index = () => {
       setLoading(false);
       await toast.success("提交成功!");
       location.reload();
-
     } catch (error) {
       setLoading(false);
     }

@@ -1,16 +1,12 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import { useIsomorphicLayoutEffect, useRequest } from "ahooks";
-import dayjs from "dayjs";
 import { Comments } from "@/components";
-import UnansweredTalks from "@/components/UnansweredTalks";
 import TopContributors from "@/components/TopContributors";
+import UnansweredTalks from "@/components/UnansweredTalks";
 import Api from "@/service";
 import { TalkItem } from "@/types/TalkTypes";
+import dayjs from "dayjs";
 import _ from "lodash";
-import { CommentData, CommentItem } from "@/types/CommentTypes";
-import toast from "react-hot-toast";
-import { scrollToElement } from "@/utils/common";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Detail = () => {
   const [routeParams] = useSearchParams();
@@ -25,7 +21,7 @@ const Detail = () => {
 
   // 获取讨论详情信息
   const getTalkInfo = async (id: number) => {
-    const { data } = await Api.getTalkDetailInfo({ params: { id } });
+    const { data } = await Api.getTalkDetailInfo({ id });
     setDetailInfo(data);
   };
 

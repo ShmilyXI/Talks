@@ -1,16 +1,16 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
-import PhotoAlbum from "react-photo-album";
-import classnames from "classnames";
-import { Icon, PlaceholderSvg } from "@/components";
-import { useRequest, configResponsive, useResponsive, useUpdateLayoutEffect, usePagination } from "ahooks";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import _ from "lodash";
-import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
-import dayjs from "dayjs";
-import { UserLikedRequest, UserFavoriteRequest } from "@/types/UserTypes";
+import { Icon } from "@/components";
 import Api from "@/service";
+import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
+import { UserFavoriteRequest, UserLikedRequest } from "@/types/UserTypes";
+import { configResponsive, useResponsive, useUpdateLayoutEffect } from "ahooks";
+import classnames from "classnames";
+import dayjs from "dayjs";
+import _ from "lodash";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import PhotoAlbum from "react-photo-album";
+import { useNavigate } from "react-router-dom";
 
 type PhotoListProps = {
   getData: () => void;
@@ -83,11 +83,9 @@ const PhotoList: FC<PhotoListProps> = (props) => {
     try {
       const { likedId, likedStatus, likedType } = value;
       await Api.userLiked({
-        data: {
-          likedId,
-          likedStatus,
-          likedType,
-        },
+        likedId,
+        likedStatus,
+        likedType,
       });
       await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
       getData();
@@ -99,13 +97,11 @@ const PhotoList: FC<PhotoListProps> = (props) => {
   // 用户收藏照片
   const onUserPhotoFavorite = async (value: UserFavoriteRequest) => {
     try {
-      const { favoriteId, favoriteStatus,favoriteType } = value;
+      const { favoriteId, favoriteStatus, favoriteType } = value;
       await Api.userPhotoFavorite({
-        data: {
-          favoriteId,
-          favoriteStatus,
-          favoriteType,
-        },
+        favoriteId,
+        favoriteStatus,
+        favoriteType,
       });
       await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
       getData();

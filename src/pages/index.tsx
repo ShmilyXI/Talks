@@ -3,6 +3,7 @@ import Filter from "@/components/Filter";
 import { IItem } from "@/components/Menu";
 import Api from "@/service/index";
 import { usePagination } from "ahooks";
+import { Empty, Spin } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "umi";
@@ -69,7 +70,13 @@ const Browse = () => {
           </div>
         </div>
       </div>
-      <PhotoList getData={getData} list={photoData?.list || []} total={photoData?.total} />
+      {getGalleryPhotoListLoading ? (
+        <Spin size="large" className="flex justify-center items-center h-[350px]" />
+      ) : photoData?.list?.length ? (
+        <PhotoList getData={getData} list={photoData?.list || []} total={photoData?.total} />
+      ) : (
+        <Empty className="h-[350px] flex flex-col justify-center items-center" />
+      )}
     </div>
   );
 };

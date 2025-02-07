@@ -1,13 +1,14 @@
-import Api from "@/service/index";
-import { useInfiniteScroll, useRequest } from "ahooks";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "umi";
-import { PhotoList, Filter, Icon } from "@/components";
-import _ from "lodash";
-import { BaseUserInfo } from "@/types/UserTypes";
-import classnames from "classnames";
-import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
+import { Filter, Icon, PhotoList } from "@/components";
 import GalleryList from "@/components/GalleryList";
+import Api from "@/service/index";
+import { PhotoList as PhotoListType } from "@/types/PhotoTypes";
+import { BaseUserInfo } from "@/types/UserTypes";
+import { useInfiniteScroll } from "ahooks";
+import { Avatar } from "antd";
+import classnames from "classnames";
+import _ from "lodash";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "umi";
 
 const PAGE_SIZE = 20;
 const UserDetail = () => {
@@ -30,7 +31,10 @@ const UserDetail = () => {
       const page = d ? Math.ceil(d.list.length / PAGE_SIZE) + 1 : 1;
       return new Promise(async (resolve) => {
         const { data } = await Api.getGalleryList({
-          data: { pageIndex: page, pageSize: PAGE_SIZE, type: "user", user_id: id },
+          pageIndex: page,
+          pageSize: PAGE_SIZE,
+          type: "user",
+          user_id: id,
         });
         resolve(data);
       }) as any;
@@ -42,14 +46,14 @@ const UserDetail = () => {
 
   const getUserInfo = async (id: number) => {
     const { data = {} }: any = await Api.getUserInfo({
-      params: { id },
+      id,
     });
     setUserInfo(data);
   };
 
   const getUserPhotoList = async (id: number) => {
     const { data = {} }: any = await Api.getUserPhotoList({
-      params: { id },
+      id,
     });
     setPhotoList(data?.list || []);
   };
@@ -68,20 +72,20 @@ const UserDetail = () => {
         break;
     }
   }, [id, type]);
-
   return (
     <div>
       <div className="d-container max-w-744 xl:min-w-744 xl:max-w-full pt-16 pb-24 grid:py-48 xl:py-80 flex justify-center">
         <div className="grid:flex items-start relative w-full grid:w-auto">
           <div className="relative w-[128px] h-[128px]">
             <div className="avatar">
-              <img
+              {/* <img
                 src={userInfo?.avatar_url || "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'128' height%3D'128'%2F%3E"}
                 width="128"
                 height="128"
                 alt=""
                 className="avatar__photo w-[128px] h-[128px] object-cover rounded-full"
-              />
+              /> */}
+              {userInfo?.avatar_url ? <Avatar size={128} src={userInfo?.avatar_url} /> : <Avatar size={128}>{userInfo?.display_name || userInfo?.username}</Avatar>}
             </div>
             {/* 个人徽章 */}
             <div className="absolute flex flex-col items-end grid:items-start grid:flex-row pin-r top-[12px] md:top-[32px] grid:pin-b grid:pin-t-auto grid:pin-r-center grid:h-auto w-36 grid:w-108 -mr-16 grid:mr-0 grid:-mb-18 z-1">

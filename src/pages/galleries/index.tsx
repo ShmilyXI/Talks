@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Filter, Icon } from "@/components";
-import { useInfiniteScroll, usePagination } from "ahooks";
-import Api from "@/service";
-import { BaseUserInfo, UserFavoriteRequest } from "@/types/UserTypes";
-import toast from "react-hot-toast";
-import _ from "lodash";
+import { Filter } from "@/components";
 import GalleryList from "@/components/GalleryList";
+import Api from "@/service";
+import { BaseUserInfo } from "@/types/UserTypes";
 import { Storage } from "@/utils/storage";
+import { useInfiniteScroll } from "ahooks";
+import { useEffect, useState } from "react";
 
 const PAGE_SIZE = 20;
 const Index = () => {
@@ -30,7 +28,9 @@ const Index = () => {
       const page = d ? Math.ceil(d.list.length / PAGE_SIZE) + 1 : 1;
       return new Promise(async (resolve) => {
         const { data } = await Api.getGalleryList({
-          data: { pageIndex: page, pageSize: PAGE_SIZE, type: dataType },
+          pageIndex: page,
+          pageSize: PAGE_SIZE,
+          type: dataType,
         });
         resolve(data);
       }) as any;

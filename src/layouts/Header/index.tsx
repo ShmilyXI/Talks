@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import AddPhotoModal from "@/components/AddPhotoModal";
 import Icon from "@/components/Icon";
-import { useClickAway, useToggle } from "ahooks";
-import classnames from "classnames";
-import { useNavigate } from "react-router-dom";
-import _ from "lodash";
-import { Storage } from "@/utils/storage";
-import toast from "react-hot-toast";
 import type { IItem } from "@/components/Menu";
 import Menu from "@/components/Menu/index";
-import { useTranslation } from "react-i18next";
-import AddPhotoModal from "@/components/AddPhotoModal";
 import { BaseUserInfo } from "@/types/UserTypes";
 import { toggleBodyOverflow } from "@/utils/common";
+import { Storage } from "@/utils/storage";
+import { useClickAway, useToggle } from "ahooks";
+import { Avatar } from "antd";
+import classnames from "classnames";
+import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -110,7 +110,6 @@ const Index = () => {
       goRoute(`/${item.value}`);
     }
   };
-
   // 退出登录
   const onLogout = () => {
     const storage = new Storage(localStorage, "Talks");
@@ -386,13 +385,7 @@ const Index = () => {
           onClick={() => goRoute(`/userDetail?id=${userInfo.id}`)}
         >
           <span className="avatar">
-            <img
-              src={userInfo?.avatar_url || "https://tookapic.com/img/avatars/default.svg"}
-              width="32"
-              height="32"
-              alt={userInfo?.username}
-              className="avatar__photo w-[32px] h-[32px] object-cover rounded-full"
-            />
+            {userInfo?.avatar_url ? <Avatar size={32} src={userInfo?.avatar_url} /> : <Avatar size={32}>{userInfo?.display_name || userInfo?.username}</Avatar>}
           </span>
         </a>
       </div>
@@ -691,13 +684,7 @@ const Index = () => {
               }}
             >
               <a className="block avatar cursor-pointer" onClick={toggleUserMenu}>
-                <img
-                  src={userInfo?.avatar_url || "https://dummyimage.com/32x32&placeholder"}
-                  width="32"
-                  height="32"
-                  alt={userInfo?.username}
-                  className="avatar__photo object-cover w-[32px] h-[32px]"
-                />
+                {userInfo?.avatar_url ? <Avatar size={32} src={userInfo?.avatar_url} /> : <Avatar size={32}>{userInfo?.display_name || userInfo?.username}</Avatar>}
               </a>
             </Menu>
           </div>

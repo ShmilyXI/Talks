@@ -1,11 +1,11 @@
-import React, { FC, useEffect, useState } from "react";
 import { Icon } from "@/components";
-import _ from "lodash";
-import { BaseUserInfo, UserFavoriteRequest } from "@/types/UserTypes";
 import Api from "@/service";
-import toast from "react-hot-toast";
 import { GalleryItem } from "@/types/GalleryTypes";
+import { BaseUserInfo, UserFavoriteRequest } from "@/types/UserTypes";
 import { Storage } from "@/utils/storage";
+import _ from "lodash";
+import { FC, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type GalleryListProps = {
   getData: () => void;
@@ -29,11 +29,9 @@ const GalleryList: FC<GalleryListProps> = (props) => {
     try {
       const { favoriteId, favoriteStatus, favoriteType } = value;
       await Api.userPhotoFavorite({
-        data: {
-          favoriteId,
-          favoriteStatus,
-          favoriteType,
-        },
+        favoriteId,
+        favoriteStatus,
+        favoriteType,
       });
       await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
       getData();

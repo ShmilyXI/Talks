@@ -4,7 +4,7 @@ import { baseRequest } from ".";
 
 const commentApi = {
   /** 获取评论列表 **/
-  getCommentList: async (data = {}) => await baseRequest("/comment/get-comment-list", { method: "GET", data }),
+  getCommentList: async (params = {}) => await baseRequest("/comment/get-comment-list", { method: "GET", params }),
 
   /** 新增评论 **/
   addComment: async (data = {}) => await baseRequest("/comment/add-comment", { method: "POST", data }),

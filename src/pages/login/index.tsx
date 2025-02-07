@@ -96,7 +96,7 @@ const Login = () => {
         storage.setItem("token", token);
         toast.success("登录成功");
         const { data: userInfo = {} } = await Api.getUserInfo({
-          params: { id: +data?.id },
+          id: +data?.id,
         });
         storage.setItem("userInfo", JSON.stringify(userInfo));
         navigate("/", { replace: true });

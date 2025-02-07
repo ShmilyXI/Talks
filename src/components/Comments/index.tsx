@@ -1,17 +1,18 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import { CommentData, CommentItem } from "@/types/CommentTypes";
 import Icon from "@/components/Icon";
+import Api from "@/service";
+import { CommentData, CommentItem } from "@/types/CommentTypes";
+import { BaseUserInfo, UserLikedRequest } from "@/types/UserTypes";
+import { scrollToElement } from "@/utils/common";
+import { Storage } from "@/utils/storage";
 import { useClickAway, useIsomorphicLayoutEffect, useToggle } from "ahooks";
+import { Avatar } from "antd";
 import classnames from "classnames";
 import dayjs from "dayjs";
 import _ from "lodash";
-import { BaseUserInfo, UserLikedRequest } from "@/types/UserTypes";
-import { Storage } from "@/utils/storage";
-import swal from "sweetalert";
-import Api from "@/service";
+import { FC, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { scrollToElement } from "@/utils/common";
-import { useLocation } from 'umi';
+import swal from "sweetalert";
+import { useLocation } from "umi";
 
 type Props = {
   type: "photo" | "talk";
@@ -57,7 +58,7 @@ const Comments: FC<Props> = (props) => {
 
   // 获取评论列表
   const getCommentList = async (targetId?: number) => {
-    const { data } = await Api.getCommentList({ params: { targetId, type } });
+    const { data } = await Api.getCommentList({ targetId, type });
     setCommentList(data?.list || []);
   };
 
@@ -73,7 +74,7 @@ const Comments: FC<Props> = (props) => {
       targetId,
       type,
     };
-    await Api.addComment({ data });
+    await Api.addComment(data);
     await toast.success("评论成功!");
     callback();
     getCommentList(targetId);
@@ -84,11 +85,9 @@ const Comments: FC<Props> = (props) => {
     try {
       const { likedId, likedStatus, likedType } = value;
       await Api.userLiked({
-        data: {
-          likedId,
-          likedStatus,
-          likedType,
-        },
+        likedId,
+        likedStatus,
+        likedType,
       });
       await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
       getCommentList(targetId);
@@ -101,7 +100,7 @@ const Comments: FC<Props> = (props) => {
   const onDeleteComment = async (id: number) => {
     if (_.isNil(id) || _.isNil(targetId)) return;
     try {
-      await Api.deleteComment({ data: { id, targetId, type } });
+      await Api.deleteComment({ id, targetId, type });
       await toast.success("删除成功!");
       getCommentList(targetId);
     } catch (error) {
@@ -195,13 +194,7 @@ const Comments: FC<Props> = (props) => {
                   <div className="comment bg-inherit flex py-6 relative" id={`comment-${item.id}`}>
                     <div className="flex-none mr-12 relative z-10">
                       <div className="avatar relative">
-                        <img
-                          src={item.user_avatar_url || "https://tookapic.com/img/avatars/default.svg"}
-                          width="24"
-                          height="24"
-                          alt=""
-                          className="avatar__photo is-loaded w-[24px] h-[24px] object-cover rounded-full"
-                        />
+                        {item?.user_avatar_url ? <Avatar size={24} src={item?.user_avatar_url} /> : <Avatar size={24}>{item?.user?.display_name || item.username}</Avatar>}
                       </div>
                     </div>
 

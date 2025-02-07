@@ -7,7 +7,6 @@ import dayjs from "dayjs";
 import _ from "lodash";
 import React, { FC, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { v4 as uuid } from "uuid";
 import { IItem } from "../Menu";
 
 type AddPhotoModalProps = {
@@ -29,6 +28,18 @@ const Index: FC<AddPhotoModalProps> = (props) => {
 
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<InputRef>(null);
+
+  // 锁定页面滚动
+  useEffect(() => {
+    if (visible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [visible]);
 
   const onSubmit = async () => {
     setLoading(true);
@@ -55,15 +66,8 @@ const Index: FC<AddPhotoModalProps> = (props) => {
           const file = fileList[i];
           formData.append("files", file.originFileObj as any);
         }
-        formData.append(
-          "jsonData",
-          JSON.stringify({
-            aaa: 1,
-            bbb: 2,
-          }),
-        );
+
         const { data: photosData } = await Api.uploadPhoto(formData);
-        console.log("photosData", photosData);
         params = {
           ...params,
           photosData,
@@ -108,29 +112,33 @@ const Index: FC<AddPhotoModalProps> = (props) => {
   };
 
   // 新增画廊元素
-  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (!galleryName) return;
-    const storage = new Storage(localStorage, "Talks");
-    const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
-    const item = {
-      id: uuid(),
-      title: galleryName,
-      user_id: _userInfo.id,
-      // user: {
-      //   username: _userInfo.username,
-      //   display_name: _userInfo.display_name,
-      //   avatar_url: _userInfo.avatar_url,
-      //   telephone: _userInfo.telephone,
-      // },
-    };
-    setGalleryList([...galleryList, item]);
-    const newGalleryList = form.getFieldValue("newGalleryList") || [];
-    form.setFieldValue("newGalleryList", [...newGalleryList, item]);
-    setGalleryName("");
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
+  const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    try {
+      e.preventDefault();
+      if (!galleryName) return;
+      const storage = new Storage(localStorage, "Talks");
+      const _userInfo = JSON.parse(storage.getItem("userInfo") || "{}");
+      const item = {
+        title: galleryName,
+        user_id: _userInfo.id,
+      };
+      const { data } = await Api.addGallery(item);
+      await getGalleryData();
+      const newGalleryList = [...(form.getFieldValue("newGalleryList") || []), data];
+      form.setFieldValue("newGalleryList", newGalleryList);
+      form.setFieldValue(
+        "gallery",
+        newGalleryList.map((item) => item.id),
+      );
+      setGalleryName("");
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    } catch (error) {
+      if (error?.message) {
+        toast.error(error.message);
+      }
+    }
   };
 
   // 预览
@@ -143,8 +151,11 @@ const Index: FC<AddPhotoModalProps> = (props) => {
   // 获取画廊列表
   const getGalleryData = async () => {
     const { data } = await Api.getGalleryList({
-      data: { pageIndex: 1, pageSize: 999, type: "mine" },
+      pageIndex: 1,
+      pageSize: 999,
+      type: "mine",
     });
+    console.log("data", data);
     const list = data?.list || [];
     setGalleryList(list);
   };
@@ -168,7 +179,16 @@ const Index: FC<AddPhotoModalProps> = (props) => {
   };
 
   return (
-    <Modal title="发布" open={visible} onCancel={onModalClose} onOk={onSubmit} width={540} confirmLoading={loading}>
+    <Modal
+      title="发布"
+      open={visible}
+      onCancel={onModalClose}
+      onOk={onSubmit}
+      width={540}
+      confirmLoading={loading}
+      style={{ top: 20 }}
+      bodyStyle={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}
+    >
       <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="p-5 pb-0">
         <Form.Item noStyle name="newGalleryList" />
         <Form.Item
@@ -179,7 +199,6 @@ const Index: FC<AddPhotoModalProps> = (props) => {
           getValueFromEvent={(value) => {
             if (value === "photo" && fileList?.length > 1) {
               const _fileList = fileList.slice(0, 1);
-              console.log("_fileList: ", _fileList);
               form.setFieldValue("files", _fileList);
               form.setFieldValue("newGalleryList", []);
               setFileList(_fileList);
@@ -234,10 +253,10 @@ const Index: FC<AddPhotoModalProps> = (props) => {
           }}
         </Form.Item>
         <Form.Item label="标题" required name="title" rules={[{ required: true, message: "请输入标题" }]}>
-          <Input placeholder="请输入标题" />
+          <Input placeholder="为你的照片添加一个标题" />
         </Form.Item>
         <Form.Item label="日期" required name="shootingDate" rules={[{ required: true, message: "请选择拍摄日期" }]} initialValue={dayjs()}>
-          <DatePicker placeholder="请选择日期" showTime className="w-full" />
+          <DatePicker placeholder="选择拍摄的日期和时间" showTime className="w-full" />
         </Form.Item>
         <Form.Item noStyle dependencies={["type"]}>
           {({ getFieldValue }) => (
@@ -245,10 +264,16 @@ const Index: FC<AddPhotoModalProps> = (props) => {
               label="画廊"
               required={getFieldValue("type") === "gallery"}
               name="gallery"
+              valuePropName="value"
               rules={[{ required: getFieldValue("type") === "gallery", message: "请选择画廊" }]}
+              getValueFromEvent={(value) => {
+                console.log("value", value);
+
+                return value;
+              }}
             >
               <Select
-                placeholder="请选择画廊"
+                placeholder="选择或创建一个画廊来组织你的照片"
                 showSearch
                 optionFilterProp="label"
                 mode="multiple"
@@ -258,9 +283,14 @@ const Index: FC<AddPhotoModalProps> = (props) => {
                     {menu}
                     <Divider className="my-2" />
                     <div className="px-2 pb-1 w-full flex justify-between">
-                      <Input className="flex-1 mr-4" placeholder="输入以新增画廊" ref={inputRef} value={galleryName} onChange={onGalleryNameChange} />
-                      <Button type="text" icon={<PlusOutlined rev={undefined} />} onClick={addItem}>
-                        Add Gallery
+                      <Input className="flex-1 mr-4" placeholder="输入新画廊名称" ref={inputRef} value={galleryName} onChange={onGalleryNameChange} />
+                      <Button
+                        type="text"
+                        className="inline-flex items-center text-sm font-medium rounded-md px-4 py-2 transition-colors hover:bg-gray-100 focus:outline-none"
+                        icon={<PlusOutlined rev={undefined} />}
+                        onClick={addItem}
+                      >
+                        创建画廊
                       </Button>
                     </div>
                   </>
@@ -281,10 +311,10 @@ const Index: FC<AddPhotoModalProps> = (props) => {
             return value;
           }}
         >
-          <Select placeholder="请输入位置查询" options={placeList} showSearch onSearch={onAddressSearch} filterOption={false} />
+          <Select placeholder="输入地点名称进行搜索" options={placeList} showSearch onSearch={onAddressSearch} filterOption={false} />
         </Form.Item>
         <Form.Item label="描述" name="description">
-          <Input.TextArea rows={3} placeholder="描述你的一天..." />
+          <Input.TextArea rows={3} placeholder="添加一些文字来描述这张照片的故事..." />
         </Form.Item>
       </Form>
       <Image

@@ -1,9 +1,9 @@
 import Api from "@/service";
-import { useClickAway, useToggle } from "ahooks";
 import { GalleryItem } from "@/types/GalleryTypes";
+import { useClickAway, useToggle } from "ahooks";
 import classnames from "classnames";
 import _ from "lodash";
-import React, { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 type GalleryProps = {
   onChange?: (value?: number[]) => void;
@@ -42,13 +42,15 @@ const Gallery: FC<GalleryProps> = (props) => {
 
   const getGalleryData = async () => {
     const { data } = await Api.getGalleryList({
-      data: { pageIndex: 1, pageSize: 999, type: "mine" },
+      pageIndex: 1,
+      pageSize: 999,
+      type: "mine",
     });
     const list = data?.list || [];
     setGalleryList(list);
     setDefaultGalleryList(list);
   };
-  
+
   // 画廊弹窗搜索
   const searchGalleryList = (value: string) => {
     const items = defaultGalleryList.filter((v) => v?.title?.includes(value));

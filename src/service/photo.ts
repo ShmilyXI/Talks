@@ -6,10 +6,10 @@ const photoApi = {
   getGalleryPhotoList: async (data = {}) => await baseRequest("/photo/get-photo-list", { method: "POST", data }),
 
   /** 获取画廊图片详情 **/
-  getPhotoDetailInfo: async (data = {}) => await baseRequest("/photo/photo-detail-info", { method: "GET", data }),
+  getPhotoDetailInfo: async (params = {}) => await baseRequest("/photo/photo-detail-info", { method: "GET", params }),
 
   /** 获取用户照片列表 **/
-  getUserPhotoList: async (data = {}) => await baseRequest("/photo/get-user-photo-list", { method: "GET", data }),
+  getUserPhotoList: async (params = {}) => await baseRequest("/photo/get-user-photo-list", { method: "GET", params }),
 
   /** 上传照片 **/
   uploadPhoto: async (data = {}) => await baseRequest("/photo/upload-photo", { method: "POST", data, headers: { "Content-Type": "multipart/form-data" } }),
@@ -21,10 +21,10 @@ const photoApi = {
   updatePhoto: async (data = {}) => await baseRequest("/photo/update-photo", { method: "POST", data, headers: { "Content-Type": "multipart/form-data" } }),
 
   /** 获取画廊图片评论列表 **/
-  getPhotoDetailComments: async (data = {}) => await baseRequest("/photo/photo-detail-comments", { method: "GET", data }),
+  getPhotoDetailComments: async (params = {}) => await baseRequest("/photo/photo-detail-comments", { method: "GET", params }),
 
   /** 获取画廊里程碑成员列表 **/
-  getPhotoMilestoneList: async (data = {}) => await baseRequest("/photo/photo-milestone-list", { method: "GET", data }),
+  getPhotoMilestoneList: async (params = {}) => await baseRequest("/photo/photo-milestone-list", { method: "GET", params }),
 };
 
 export default photoApi;

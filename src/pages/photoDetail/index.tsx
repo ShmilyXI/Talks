@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useSearchParams } from "umi";
-import { Icon, Menu, PhotoViews, Comments } from "@/components";
-import classnames from "classnames";
-import dayjs from "dayjs";
-import { useIsomorphicLayoutEffect, useToggle } from "ahooks";
-import { useTranslation } from "react-i18next";
-import Api from "@/service";
-import { PhotoList, PhotoDetailInfoResponse } from "@/types/PhotoTypes";
-import classNames from "classnames";
-import _ from "lodash";
-import toast from "react-hot-toast";
+import { Comments, Icon, Menu, PhotoViews } from "@/components";
 import AddPhotoModal from "@/components/AddPhotoModal";
-import { CommentData, CommentItem } from "@/types/CommentTypes";
-import { Storage } from "@/utils/storage";
-import { BaseUserInfo, UserLikedRequest, UserFavoriteRequest } from "@/types/UserTypes";
 import { IItem } from "@/components/Menu";
+import Api from "@/service";
+import { CommentItem } from "@/types/CommentTypes";
+import { PhotoDetailInfoResponse, PhotoList } from "@/types/PhotoTypes";
+import { BaseUserInfo, UserFavoriteRequest, UserLikedRequest } from "@/types/UserTypes";
 import { scrollToElement, toggleBodyOverflow } from "@/utils/common";
+import { Storage } from "@/utils/storage";
+import { useIsomorphicLayoutEffect, useToggle } from "ahooks";
+import { Avatar } from "antd";
+import { default as classnames, default as classNames } from "classnames";
+import dayjs from "dayjs";
+import _ from "lodash";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import { useLocation, useSearchParams } from "umi";
 
 type Mood = Record<string, { text: string; icon: string }>;
 
@@ -94,7 +94,7 @@ const Index = () => {
 
   // 获取图片详情信息
   const getPhotoInfo = async (id: number) => {
-    const { data } = await Api.getPhotoDetailInfo({ params: { id } });
+    const { data } = await Api.getPhotoDetailInfo({ id });
     const list = data?.list || [];
     const index = data?.index || 0;
     console.log("data", data);
@@ -123,11 +123,9 @@ const Index = () => {
     try {
       const { likedId, likedStatus, likedType } = value;
       await Api.userLiked({
-        data: {
-          likedId,
-          likedStatus,
-          likedType,
-        },
+        likedId,
+        likedStatus,
+        likedType,
       });
       await toast.success(likedStatus === 1 ? "点赞成功!" : "取消点赞成功!");
       getPhotoInfo(curPhotoInfo.id);
@@ -141,11 +139,9 @@ const Index = () => {
     try {
       const { favoriteId, favoriteStatus, favoriteType } = value;
       await Api.userPhotoFavorite({
-        data: {
-          favoriteId,
-          favoriteStatus,
-          favoriteType,
-        },
+        favoriteId,
+        favoriteStatus,
+        favoriteType,
       });
       await toast.success(favoriteStatus === 1 ? "收藏成功!" : "取消收藏成功!");
       getPhotoInfo(curPhotoInfo.id);
@@ -162,7 +158,11 @@ const Index = () => {
           <div className="flex items-center min-w-0">
             <div className="flex-none">
               <div className="avatar">
-                <img src={curPhotoInfo?.user?.avatar_url} width="32" height="32" alt="" className="avatar__photo w-[32px] h-[32px] object-cover rounded-full" />
+                {curPhotoInfo?.user?.avatar_url ? (
+                  <Avatar size={32} src={curPhotoInfo?.user?.avatar_url} />
+                ) : (
+                  <Avatar size={32}>{curPhotoInfo?.user?.display_name || curPhotoInfo?.user?.username}</Avatar>
+                )}
               </div>
             </div>
 

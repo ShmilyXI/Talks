@@ -1,12 +1,12 @@
+import BaseEditor from "@/components/BaseEditor";
+import Api from "@/service";
+import { PhotoList } from "@/types/PhotoTypes";
+import { sleep } from "@/utils/common";
 import classnames from "classnames";
 import _ from "lodash";
-import React, { FC, useEffect, useState } from "react";
-import Api from "@/service";
-import toast from "react-hot-toast";
 import Form, { Field } from "rc-field-form";
-import { PhotoList } from "@/types/PhotoTypes";
-import BaseEditor from "@/components/BaseEditor";
-import { sleep } from "@/utils/common";
+import { FC, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
   visible: boolean;
@@ -42,7 +42,7 @@ const Index: FC<Props> = (props) => {
       const values = await form.validateFields();
       if (defaultValue?.id) {
         toast.promise(
-          Api.updateTalk({ data: { ...values, id: defaultValue.id } }),
+          Api.updateTalk({ ...values, id: defaultValue.id }),
           {
             loading: "Loading...",
             success: () => "修改成功!",
@@ -52,7 +52,7 @@ const Index: FC<Props> = (props) => {
         );
       } else {
         toast.promise(
-          Api.addTalk({ data: values }),
+          Api.addTalk(values),
           {
             loading: "Loading...",
             success: () => "发布成功!",
